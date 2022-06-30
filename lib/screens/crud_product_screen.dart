@@ -130,7 +130,12 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                           brand: 'brand',
                           categoryName: 'categoryName',
                           unitMeasurement: 'unitMeasurement');
-                      _product.save();
+
+                      try {
+                        _product.save();
+                      } catch (e) {
+                        print('The error $e');
+                      }
                     },
                     child: Text('Salvar')))
           ],

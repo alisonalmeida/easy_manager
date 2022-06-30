@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, avoid_print
 
+import 'package:easy_manager/screens/clients_screen.dart';
+import 'package:easy_manager/screens/products_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -22,27 +24,41 @@ class _HomePageState extends State<HomePage> {
             child: Center(
               child: GridView(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4),
+                    crossAxisCount: 3),
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      print('tap');
-                    },
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ClientsScreen(),
+                        )),
                     child: Card(
                         child: GridTile(
                             header: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 20,
                               color: Colors.amber,
-                            ),
-                            footer: Text(
-                              'Clientes',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 40),
+                              child: Text('Clientes',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 20)),
                             ),
                             child: Icon(
                               FontAwesomeIcons.bilibili,
                             ))),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductsScreen(),
+                        )),
+                    child: Card(
+                        child: GridTile(
+                            header: Container(
+                              color: Colors.amber,
+                              child: Text('Produtos',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 20)),
+                            ),
+                            child: Icon(FontAwesomeIcons.boxOpen))),
                   ),
                 ],
               ),

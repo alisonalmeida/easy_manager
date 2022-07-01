@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:easy_manager/core/database_helper.dart';
 import 'package:easy_manager/models/address_model.dart';
 import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
@@ -103,16 +104,13 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                     onPressed: () {
                       List<String> _phoneList = [];
                       Address _address = Address(
+                          id: '',
                           cep: 'cep',
                           logradouro: 'logradouro',
                           complemento: 'complemento',
                           bairro: 'bairro',
                           localidade: 'localidade',
                           uf: 'uf',
-                          ibge: 'ibge',
-                          gia: 'gia',
-                          ddd: 'ddd',
-                          siafi: 'siafi',
                           numero: 'numero');
                       ProductProvider _productProvider = ProductProvider(
                           name: 'name',
@@ -130,12 +128,6 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                           brand: 'brand',
                           categoryName: 'categoryName',
                           unitMeasurement: 'unitMeasurement');
-
-                      try {
-                        _product.save();
-                      } catch (e) {
-                        print('The error $e');
-                      }
                     },
                     child: Text('Salvar')))
           ],

@@ -1,4 +1,3 @@
-import 'package:easy_manager/core/database_helper.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
 
 class Product {
@@ -20,8 +19,4 @@ class Product {
   final String brand;
   final String categoryName;
   final String unitMeasurement;
-
-  void save() async {
-    await ConectDb();
-  }
 }

@@ -1,6 +1,13 @@
+// ignore_for_file: prefer_const_constructors
+
+import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
+import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
+import 'package:easy_manager/custom_widgets/custom_list_tile.dart';
 import 'package:easy_manager/screens/crud_client_screen.dart';
-import 'package:easy_manager/screens/crud_product_screen.dart';
+import 'package:easy_manager/screens/products_screen.dart';
+import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ClientsScreen extends StatefulWidget {
   const ClientsScreen({Key? key}) : super(key: key);
@@ -13,21 +20,52 @@ class _ClientsScreenState extends State<ClientsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Clientes'),
-      ),
-      body: Center(
+      appBar: CustomAppBar(
+          height: 150,
+          child: Container(
+            color: dandelion,
+            child: SafeArea(
+              child: Column(
+                children: [
+                  SvgPicture.asset('lib/assets/svg/person.svg'),
+                  Row(
+                    children: [
+                      ButtonRoundWithShadow(
+                          size: 48,
+                          borderColor: woodSmoke,
+                          color: white,
+                          callback: () => Navigator.pop(context),
+                          shadowColor: woodSmoke,
+                          iconPath: 'lib/assets/svg/arrow_back.svg'),
+                      const SizedBox(width: 50),
+                      Text(
+                        textAlign: TextAlign.center,
+                        'Clientes',
+                        style: TextStyle(
+                            fontSize: 30,
+                            fontFamily: 'JosefinsSans',
+                            fontWeight: FontWeight.w700),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          )),
+      body: Container(
+        color: dandelion,
         child: ListView(
           children: [
-            GestureDetector(
-              onTap: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => CrudClientScreen())),
-              child: Card(
-                child: ListTile(
-                  title: Text('Cadastrar cliente'),
-                ),
-              ),
-            )
+            CustomListTile(
+              icon: Icons.add,
+              text: 'Cadastrar',
+              callback: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CrudClientScreen(),
+                  )),
+            ),
+            CustomListTile(icon: Icons.list, text: 'Listar', callback: () {}),
           ],
         ),
       ),

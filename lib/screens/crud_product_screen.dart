@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:easy_manager/core/database_helper.dart';
+import 'package:easy_manager/core/database_connection.dart';
 import 'package:easy_manager/models/address_model.dart';
 import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/models/product_provider_model.dart';

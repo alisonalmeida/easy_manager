@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 const persianBlue = Color(0xFF1947E6);
+const blueBlue = Color.fromARGB(255, 137, 208, 255);
+const blueBlueShadow = Color.fromARGB(255, 102, 178, 228);
+
 const white = Color(0xFFFFFFFF);
 const athensGray = Color(0xFFF4F5F7);
 const lighteningYellow = Color(0xFFFFBD12);
@@ -11,8 +14,10 @@ const trout = Color(0xFF474A57);
 const santasGray = Color(0xFF969BAB);
 const selago = Color(0xFFE9E7FC);
 const carribeanGreen = Color(0xFF00C6AE);
+const carribeanGreenShadow = Color.fromARGB(255, 1, 141, 125);
 const santasGray10 = Color(0xFF9FA4B4);
 const dandelion = Color(0xFFFFD465);
+const dandelionShadow = Color.fromARGB(255, 233, 184, 60);
 const caribbeanColor = Color(0xFF00C6AE);
 const pastelPink = Color(0xFFFFC7DE);
 const pinkSalomn = Color(0xFFFF89BB);

@@ -10,14 +10,14 @@ import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 
-class CrudProductScreen extends StatefulWidget {
-  const CrudProductScreen({Key? key}) : super(key: key);
+class CrudProviderScreen extends StatefulWidget {
+  const CrudProviderScreen({Key? key}) : super(key: key);
 
   @override
-  State<CrudProductScreen> createState() => _CrudProductScreenState();
+  State<CrudProviderScreen> createState() => _CrudProviderScreenState();
 }
 
-class _CrudProductScreenState extends State<CrudProductScreen> {
+class _CrudProviderScreenState extends State<CrudProviderScreen> {
   final _productNameController = TextEditingController();
   final _productCodeController = TextEditingController();
   final _productProviderController = TextEditingController();
@@ -30,7 +30,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: pastelPink,
+      backgroundColor: carribeanGreen,
       appBar: CustomAppBar(
           height: 100,
           child: Padding(
@@ -50,7 +50,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                       const SizedBox(width: 20),
                       Text(
                         textAlign: TextAlign.center,
-                        'Cadastrar Produto',
+                        'Cadastrar Fornecedor',
                         style: TextStyle(
                             fontSize: 25,
                             fontFamily: 'JosefinsSans',
@@ -63,7 +63,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
             ),
           )),
       body: Container(
-        color: pastelPink,
+        color: carribeanGreen,
         padding: EdgeInsets.symmetric(horizontal: 15),
         child: ListView(
           children: [

@@ -10,6 +10,8 @@ import 'package:easy_manager/models/address_model.dart';
 import 'package:easy_manager/models/client_model.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_mask/easy_mask.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -35,7 +37,7 @@ class _CrudClientScreenState extends State<CrudClientScreen> {
 
   Address _address = Address();
 
-  _showGeneralDialogMessage(String message) {
+  _showGeneralDialogErrorMessage(String message) {
     showDialog(
         context: context,
         builder: (context) {
@@ -49,6 +51,16 @@ class _CrudClientScreenState extends State<CrudClientScreen> {
         });
   }
 
+  _showGeneralWaitingDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: CircularProgressIndicator(),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,29 +69,31 @@ class _CrudClientScreenState extends State<CrudClientScreen> {
           height: 100,
           child: Padding(
             padding: const EdgeInsets.all(5),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    ButtonRoundWithShadow(
-                        size: 48,
-                        borderColor: woodSmoke,
-                        color: white,
-                        callback: () => Navigator.pop(context),
-                        shadowColor: woodSmoke,
-                        iconPath: 'lib/assets/svg/arrow_back.svg'),
-                    const SizedBox(width: 20),
-                    Text(
-                      textAlign: TextAlign.center,
-                      'Cadastrar Cliente',
-                      style: TextStyle(
-                          fontSize: 25,
-                          fontFamily: 'JosefinsSans',
-                          fontWeight: FontWeight.w700),
-                    ),
-                  ],
-                ),
-              ],
+            child: SafeArea(
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      ButtonRoundWithShadow(
+                          size: 48,
+                          borderColor: woodSmoke,
+                          color: white,
+                          callback: () => Navigator.pop(context),
+                          shadowColor: woodSmoke,
+                          iconPath: 'lib/assets/svg/arrow_back.svg'),
+                      const SizedBox(width: 20),
+                      Text(
+                        textAlign: TextAlign.center,
+                        'Cadastrar Cliente',
+                        style: TextStyle(
+                            fontSize: 25,
+                            fontFamily: 'JosefinsSans',
+                            fontWeight: FontWeight.w700),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           )),
       body: Container(
@@ -89,16 +103,23 @@ class _CrudClientScreenState extends State<CrudClientScreen> {
           children: [
             SizedBox(height: 5),
             CustomTextField(
+                textInputType: TextInputType.name,
                 controller: _nameController,
                 name: 'Nome',
                 textInputAction: TextInputAction.next),
             SizedBox(height: 5),
             CustomTextField(
+                textInputType: TextInputType.number,
+                textInputFormatterList: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  TextInputMask(mask: '999.999.999-99')
+                ],
                 controller: _cpfController,
                 name: 'CPF',
                 textInputAction: TextInputAction.next),
             SizedBox(height: 5),
             CustomTextField(
+                textInputType: TextInputType.emailAddress,
                 controller: _emailController,
                 name: 'Email',
                 textInputAction: TextInputAction.next),
@@ -107,10 +128,16 @@ class _CrudClientScreenState extends State<CrudClientScreen> {
               children: [
                 Expanded(
                     child: CustomTextField(
+                        textInputType: TextInputType.number,
+                        textInputFormatterList: [
+                          TextInputMask(mask: '99999-999')
+                        ],
                         controller: _cepController,
                         name: 'CEP',
                         textInputAction: TextInputAction.done,
                         callback: () async {
+                          _showGeneralWaitingDialog();
+
                           try {
                             var r = await CepHelper.getData(_cepController.text
                                 .replaceAll(RegExp(r'[^0-9]'), ''));
@@ -119,8 +146,10 @@ class _CrudClientScreenState extends State<CrudClientScreen> {
                             _cityController.text = _address.localidade!;
                             _streetController.text = _address.logradouro!;
                             _districtController.text = _address.bairro!;
+                            if (!mounted) return; //check if the data has come
+                            Navigator.pop(context);
                           } catch (e) {
-                            _showGeneralDialogMessage('Cep incorreto');
+                            _showGeneralDialogErrorMessage('Erro');
                           }
                         })),
                 SizedBox(
@@ -133,6 +162,8 @@ class _CrudClientScreenState extends State<CrudClientScreen> {
                       iconPath: 'lib/assets/svg/refresh.svg',
                       size: 50,
                       callback: () async {
+                        _showGeneralWaitingDialog();
+
                         try {
                           var r = await CepHelper.getData(_cepController.text
                               .replaceAll(RegExp(r'[^0-9]'), ''));
@@ -141,8 +172,10 @@ class _CrudClientScreenState extends State<CrudClientScreen> {
                           _cityController.text = _address.localidade!;
                           _streetController.text = _address.logradouro!;
                           _districtController.text = _address.bairro!;
+                          if (!mounted) return; //check if the data has come
+                          Navigator.pop(context);
                         } catch (e) {
-                          _showGeneralDialogMessage('Cep incorreto');
+                          _showGeneralDialogErrorMessage('Erro');
                         }
                       }),
                 ),

@@ -2,6 +2,7 @@
 
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomTextField extends StatelessWidget {
   CustomTextField(
@@ -9,9 +10,13 @@ class CustomTextField extends StatelessWidget {
       required this.controller,
       required this.name,
       required this.textInputAction,
-      this.callback})
+      this.callback,
+      this.textInputFormatterList,
+      this.textInputType})
       : super(key: key);
 
+  final List<TextInputFormatter>? textInputFormatterList;
+  final TextInputType? textInputType;
   final TextEditingController controller;
   final String name;
   final TextInputAction textInputAction;
@@ -20,6 +25,8 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      keyboardType: textInputType,
+      inputFormatters: textInputFormatterList,
       textInputAction: textInputAction,
       onEditingComplete: callback,
       controller: controller,

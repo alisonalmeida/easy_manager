@@ -13,6 +13,6 @@ class ProductProvider {
   final String document;
   final List<String> phoneList;
   final Address address;
-  final String email;
+  final List<String> email;
   final String observations;
 }

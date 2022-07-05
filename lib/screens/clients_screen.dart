@@ -4,7 +4,6 @@ import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_list_tile.dart';
 import 'package:easy_manager/screens/crud_client_screen.dart';
-import 'package:easy_manager/screens/products_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -25,30 +24,32 @@ class _ClientsScreenState extends State<ClientsScreen> {
         height: 150,
         child: Padding(
           padding: const EdgeInsets.all(5),
-          child: Column(
-            children: [
-              SvgPicture.asset('lib/assets/svg/person.svg'),
-              Row(
-                children: [
-                  ButtonRoundWithShadow(
-                      size: 48,
-                      borderColor: woodSmoke,
-                      color: white,
-                      callback: () => Navigator.pop(context),
-                      shadowColor: woodSmoke,
-                      iconPath: 'lib/assets/svg/arrow_back.svg'),
-                  const SizedBox(width: 50),
-                  Text(
-                    textAlign: TextAlign.center,
-                    'Clientes',
-                    style: TextStyle(
-                        fontSize: 30,
-                        fontFamily: 'JosefinsSans',
-                        fontWeight: FontWeight.w700),
-                  ),
-                ],
-              ),
-            ],
+          child: SafeArea(
+            child: Column(
+              children: [
+                SvgPicture.asset('lib/assets/svg/person.svg'),
+                Row(
+                  children: [
+                    ButtonRoundWithShadow(
+                        size: 48,
+                        borderColor: woodSmoke,
+                        color: white,
+                        callback: () => Navigator.pop(context),
+                        shadowColor: woodSmoke,
+                        iconPath: 'lib/assets/svg/arrow_back.svg'),
+                    const SizedBox(width: 50),
+                    Text(
+                      textAlign: TextAlign.center,
+                      'Clientes',
+                      style: TextStyle(
+                          fontSize: 30,
+                          fontFamily: 'JosefinsSans',
+                          fontWeight: FontWeight.w700),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

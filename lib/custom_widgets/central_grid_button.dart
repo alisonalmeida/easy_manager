@@ -26,15 +26,16 @@ class CentralGridButton extends StatelessWidget {
     return GestureDetector(
       onTap: callback,
       child: Container(
+        margin: EdgeInsets.all(2),
         decoration: ShapeDecoration(shadows: [
           BoxShadow(
             color: shadowColor,
             offset: const Offset(
-              0.0, // Move to right 10  horizontally
-              4.0, // Move to bottom 5 Vertically
+              1.0, // Move horizontally
+              2.0, // Move Vertically
             ),
           )
-        ], color: color, shape: Border.all()
+        ], color: color, shape: Border.all(color: borderColor)
             // CircleBorder(side: BorderSide(color: borderColor, width: 2)),
             ),
         child: Container(
@@ -45,8 +46,12 @@ class CentralGridButton extends StatelessWidget {
               Text(title,
                   style: TextStyle(
                       fontFamily: 'JosefinsSans', fontWeight: FontWeight.w700)),
-              SvgPicture.asset(
-                iconPath,
+              SizedBox(
+                height: 50,
+                width: 50,
+                child: SvgPicture.asset(
+                  iconPath,
+                ),
               ),
             ],
           ),

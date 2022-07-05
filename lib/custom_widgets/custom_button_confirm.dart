@@ -13,14 +13,14 @@ class CursomButtonConfirm extends StatelessWidget {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
             shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(16.0)),
+                borderRadius: BorderRadius.circular(16.0)),
             padding: const EdgeInsets.all(16),
             primary: Colors.black),
         onPressed: onTap,
         child: Text(
           text,
           maxLines: 1,
-          style: TextStyle(fontWeight: FontWeight.w800),
+          style: const TextStyle(fontWeight: FontWeight.w800),
         ),
       ),
     );

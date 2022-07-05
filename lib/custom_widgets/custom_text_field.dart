@@ -1,16 +1,27 @@
+// ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors
+
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {
-  CustomTextField({Key? key, required this.controller, required this.name})
+  CustomTextField(
+      {Key? key,
+      required this.controller,
+      required this.name,
+      required this.textInputAction,
+      this.callback})
       : super(key: key);
 
   final TextEditingController controller;
   final String name;
+  final TextInputAction textInputAction;
+  final VoidCallback? callback;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      textInputAction: textInputAction,
+      onEditingComplete: callback,
       controller: controller,
       decoration: InputDecoration(
           fillColor: white,

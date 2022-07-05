@@ -20,40 +20,40 @@ class _ClientsScreenState extends State<ClientsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: dandelion,
       appBar: CustomAppBar(
-          height: 150,
-          child: Container(
-            color: dandelion,
-            child: SafeArea(
-              child: Column(
+        height: 150,
+        child: Padding(
+          padding: const EdgeInsets.all(5),
+          child: Column(
+            children: [
+              SvgPicture.asset('lib/assets/svg/person.svg'),
+              Row(
                 children: [
-                  SvgPicture.asset('lib/assets/svg/person.svg'),
-                  Row(
-                    children: [
-                      ButtonRoundWithShadow(
-                          size: 48,
-                          borderColor: woodSmoke,
-                          color: white,
-                          callback: () => Navigator.pop(context),
-                          shadowColor: woodSmoke,
-                          iconPath: 'lib/assets/svg/arrow_back.svg'),
-                      const SizedBox(width: 50),
-                      Text(
-                        textAlign: TextAlign.center,
-                        'Clientes',
-                        style: TextStyle(
-                            fontSize: 30,
-                            fontFamily: 'JosefinsSans',
-                            fontWeight: FontWeight.w700),
-                      ),
-                    ],
+                  ButtonRoundWithShadow(
+                      size: 48,
+                      borderColor: woodSmoke,
+                      color: white,
+                      callback: () => Navigator.pop(context),
+                      shadowColor: woodSmoke,
+                      iconPath: 'lib/assets/svg/arrow_back.svg'),
+                  const SizedBox(width: 50),
+                  Text(
+                    textAlign: TextAlign.center,
+                    'Clientes',
+                    style: TextStyle(
+                        fontSize: 30,
+                        fontFamily: 'JosefinsSans',
+                        fontWeight: FontWeight.w700),
                   ),
                 ],
               ),
-            ),
-          )),
-      body: Container(
-        color: dandelion,
+            ],
+          ),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5),
         child: ListView(
           children: [
             CustomListTile(

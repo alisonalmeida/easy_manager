@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:easy_manager/core/cep_network.dart';
 import 'package:easy_manager/core/database_connection.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
@@ -20,45 +21,65 @@ class CrudClientScreen extends StatefulWidget {
 }
 
 class _CrudClientScreenState extends State<CrudClientScreen> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _cpfController = TextEditingController();
-  final TextEditingController _cepController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _observationsController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _cpfController = TextEditingController();
+  final _cepController = TextEditingController();
+  final _streetController = TextEditingController();
+  final _districtController = TextEditingController();
+  final _numberController = TextEditingController();
+  final _complementController = TextEditingController();
+  final _ufController = TextEditingController();
+  final _cityController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _observationsController = TextEditingController();
+
+  Address _address = Address();
+
+  _showGeneralDialogMessage(String message) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            actions: [
+              ElevatedButton(
+                  onPressed: () => Navigator.pop(context), child: Text('OK'))
+            ],
+            content: Text(message),
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: dandelion,
       appBar: CustomAppBar(
           height: 100,
-          child: Container(
-            padding: EdgeInsets.only(top: 10),
-            color: dandelion,
-            child: SafeArea(
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      ButtonRoundWithShadow(
-                          size: 48,
-                          borderColor: woodSmoke,
-                          color: white,
-                          callback: () => Navigator.pop(context),
-                          shadowColor: woodSmoke,
-                          iconPath: 'lib/assets/svg/arrow_back.svg'),
-                      const SizedBox(width: 20),
-                      Text(
-                        textAlign: TextAlign.center,
-                        'Cadastrar Cliente',
-                        style: TextStyle(
-                            fontSize: 25,
-                            fontFamily: 'JosefinsSans',
-                            fontWeight: FontWeight.w700),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+          child: Padding(
+            padding: const EdgeInsets.all(5),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    ButtonRoundWithShadow(
+                        size: 48,
+                        borderColor: woodSmoke,
+                        color: white,
+                        callback: () => Navigator.pop(context),
+                        shadowColor: woodSmoke,
+                        iconPath: 'lib/assets/svg/arrow_back.svg'),
+                    const SizedBox(width: 20),
+                    Text(
+                      textAlign: TextAlign.center,
+                      'Cadastrar Cliente',
+                      style: TextStyle(
+                          fontSize: 25,
+                          fontFamily: 'JosefinsSans',
+                          fontWeight: FontWeight.w700),
+                    ),
+                  ],
+                ),
+              ],
             ),
           )),
       body: Container(
@@ -66,37 +87,113 @@ class _CrudClientScreenState extends State<CrudClientScreen> {
         color: dandelion,
         child: ListView(
           children: [
-            SizedBox(height: 10),
-            CustomTextField(controller: _nameController, name: 'Nome'),
-            SizedBox(height: 10),
-            CustomTextField(controller: _cpfController, name: 'CPF'),
-            SizedBox(height: 20),
-            CustomTextField(controller: _cpfController, name: 'CEP'),
-            SizedBox(height: 10),
+            SizedBox(height: 5),
+            CustomTextField(
+                controller: _nameController,
+                name: 'Nome',
+                textInputAction: TextInputAction.next),
+            SizedBox(height: 5),
+            CustomTextField(
+                controller: _cpfController,
+                name: 'CPF',
+                textInputAction: TextInputAction.next),
+            SizedBox(height: 5),
+            CustomTextField(
+                controller: _emailController,
+                name: 'Email',
+                textInputAction: TextInputAction.next),
+            SizedBox(height: 5),
+            Row(
+              children: [
+                Expanded(
+                    child: CustomTextField(
+                        controller: _cepController,
+                        name: 'CEP',
+                        textInputAction: TextInputAction.done,
+                        callback: () async {
+                          try {
+                            var r = await CepHelper.getData(_cepController.text
+                                .replaceAll(RegExp(r'[^0-9]'), ''));
+                            _address = Address.fromJson(r);
+                            _ufController.text = _address.uf!;
+                            _cityController.text = _address.localidade!;
+                            _streetController.text = _address.logradouro!;
+                            _districtController.text = _address.bairro!;
+                          } catch (e) {
+                            _showGeneralDialogMessage('Cep incorreto');
+                          }
+                        })),
+                SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: ButtonRoundWithShadow(
+                      borderColor: woodSmoke,
+                      shadowColor: woodSmoke,
+                      color: white,
+                      iconPath: 'lib/assets/svg/refresh.svg',
+                      size: 50,
+                      callback: () async {
+                        try {
+                          var r = await CepHelper.getData(_cepController.text
+                              .replaceAll(RegExp(r'[^0-9]'), ''));
+                          _address = Address.fromJson(r);
+                          _ufController.text = _address.uf!;
+                          _cityController.text = _address.localidade!;
+                          _streetController.text = _address.logradouro!;
+                          _districtController.text = _address.bairro!;
+                        } catch (e) {
+                          _showGeneralDialogMessage('Cep incorreto');
+                        }
+                      }),
+                ),
+              ],
+            ),
+            SizedBox(height: 5),
             Row(
               children: [
                 Expanded(
                   flex: 2,
-                  child:
-                      CustomTextField(controller: _cpfController, name: 'UF'),
+                  child: CustomTextField(
+                      controller: _ufController,
+                      name: 'UF',
+                      textInputAction: TextInputAction.next),
                 ),
                 Spacer(flex: 1),
                 Expanded(
                   flex: 8,
                   child: CustomTextField(
-                      controller: _cpfController, name: 'Cidade'),
+                      controller: _cityController,
+                      name: 'Cidade',
+                      textInputAction: TextInputAction.next),
                 )
               ],
             ),
             SizedBox(height: 5),
-            CustomTextField(controller: _cpfController, name: 'Rua'),
+            CustomTextField(
+                controller: _streetController,
+                name: 'Rua',
+                textInputAction: TextInputAction.next),
             SizedBox(height: 5),
-            CustomTextField(controller: _cpfController, name: 'Número'),
+            CustomTextField(
+                controller: _numberController,
+                name: 'Número',
+                textInputAction: TextInputAction.next),
             SizedBox(height: 5),
-            CustomTextField(controller: _cpfController, name: 'Bairro'),
+            CustomTextField(
+                controller: _districtController,
+                name: 'Bairro',
+                textInputAction: TextInputAction.next),
             SizedBox(height: 5),
-            CustomTextField(controller: _cpfController, name: 'Complemento'),
-            SizedBox(height: 20),
+            CustomTextField(
+                controller: _complementController,
+                name: 'Complemento',
+                textInputAction: TextInputAction.next),
+            SizedBox(height: 10),
+            CustomTextField(
+                controller: _observationsController,
+                name: 'Observações',
+                textInputAction: TextInputAction.next),
+            SizedBox(height: 40),
             CursomButtonConfirm(
               text: 'Salvar',
               onTap: () async {
@@ -123,6 +220,7 @@ class _CrudClientScreenState extends State<CrudClientScreen> {
                 Navigator.pop(context);
               },
             ),
+            SizedBox(height: 50),
           ],
         ),
       ),

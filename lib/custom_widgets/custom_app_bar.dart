@@ -13,8 +13,9 @@ class CustomAppBar extends PreferredSize {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: preferredSize.height,
-        alignment: Alignment.bottomCenter,
-        child: child);
+      height: preferredSize.height,
+      alignment: Alignment.bottomCenter,
+      child: child,
+    );
   }
 }

@@ -29,3 +29,6 @@ const lavandarBush = Color(0xFFFFF3F8);
 const monaLisa = Color(0xFFFF9692);
 const athens = Color(0xFFEEEFF4);
 const turquoiseBlue = Color(0xFF61E4C5);
+
+const purple = Color.fromARGB(255, 200, 116, 255);
+const purpleShadow = Color.fromARGB(255, 165, 74, 226);

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
@@ -9,6 +10,7 @@ import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 class CrudProductScreen extends StatefulWidget {
   const CrudProductScreen({Key? key}) : super(key: key);
@@ -18,6 +20,8 @@ class CrudProductScreen extends StatefulWidget {
 }
 
 class _CrudProductScreenState extends State<CrudProductScreen> {
+  late Box _productBox;
+
   final _productNameController = TextEditingController();
   final _productCodeController = TextEditingController();
   final _productProviderController = TextEditingController();
@@ -26,6 +30,16 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
   final _unitMeasurementController = TextEditingController();
   final _costValueController = TextEditingController();
   final _saleValueController = TextEditingController();
+
+  @override
+  void initState() {
+    _openBoxes();
+    super.initState();
+  }
+
+  _saveProduct() async {}
+
+  _openBoxes() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -68,30 +82,86 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
         child: ListView(
           children: [
             SizedBox(height: 5),
-            CustomTextField(
-                controller: _productCodeController,
-                name: 'Código',
-                textInputAction: TextInputAction.next),
+            Row(
+              children: [
+                Expanded(
+                  child: CustomTextField(
+                      prefixIcon:
+                          GestureDetector(child: Icon(Icons.qr_code_scanner)),
+                      controller: _productCodeController,
+                      name: 'Código',
+                      textInputAction: TextInputAction.next),
+                ),
+                ButtonRoundWithShadow(
+                    borderColor: black,
+                    shadowColor: black,
+                    color: white,
+                    iconPath: 'lib/assets/svg/shuffle.svg',
+                    size: 50,
+                    callback: () {
+                      //TODO random number based key box
+                    })
+              ],
+            ),
             SizedBox(height: 5),
             CustomTextField(
                 controller: _productNameController,
                 name: 'Nome do Produto',
                 textInputAction: TextInputAction.next),
             SizedBox(height: 5),
-            CustomTextField(
-                controller: _productProviderController,
-                name: 'Fornecedor',
-                textInputAction: TextInputAction.next),
+            Row(
+              children: [
+                Expanded(
+                  child: CustomTextField(
+                      controller: _productProviderController,
+                      name: 'Fornecedor',
+                      textInputAction: TextInputAction.next),
+                ),
+                ButtonRoundWithShadow(
+                    borderColor: black,
+                    shadowColor: black,
+                    color: white,
+                    iconPath: 'lib/assets/svg/plus.svg',
+                    size: 50,
+                    callback: () {})
+              ],
+            ),
             SizedBox(height: 5),
-            CustomTextField(
-                controller: _productBrandController,
-                name: 'Marca',
-                textInputAction: TextInputAction.next),
+            Row(
+              children: [
+                Expanded(
+                  child: CustomTextField(
+                      controller: _productBrandController,
+                      name: 'Marca',
+                      textInputAction: TextInputAction.next),
+                ),
+                ButtonRoundWithShadow(
+                    borderColor: black,
+                    shadowColor: black,
+                    color: white,
+                    iconPath: 'lib/assets/svg/plus.svg',
+                    size: 50,
+                    callback: () {})
+              ],
+            ),
             SizedBox(height: 5),
-            CustomTextField(
-                controller: _productCategoryController,
-                name: 'Categoria',
-                textInputAction: TextInputAction.next),
+            Row(
+              children: [
+                Expanded(
+                  child: CustomTextField(
+                      controller: _productCategoryController,
+                      name: 'Categoria',
+                      textInputAction: TextInputAction.next),
+                ),
+                ButtonRoundWithShadow(
+                    borderColor: black,
+                    shadowColor: black,
+                    color: white,
+                    iconPath: 'lib/assets/svg/plus.svg',
+                    size: 50,
+                    callback: () {})
+              ],
+            ),
             SizedBox(height: 5),
             CustomTextField(
                 controller: _unitMeasurementController,
@@ -108,40 +178,14 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                 name: 'Valor de Venda',
                 textInputAction: TextInputAction.next),
             SizedBox(height: 40),
-            CursomButtonConfirm(
-                text: 'Salvar',
-                onTap: () {
-                  List<String> _phoneList = [];
-                  List<String> _emailList = [];
-                  Address _address = Address(
-                      id: '',
-                      cep: 'cep',
-                      logradouro: 'logradouro',
-                      complemento: 'complemento',
-                      bairro: 'bairro',
-                      localidade: 'localidade',
-                      uf: 'uf',
-                      numero: 'numero');
-                  ProductProvider _productProvider = ProductProvider(
-                      name: 'name',
-                      document: 'document',
-                      phoneList: _phoneList,
-                      address: _address,
-                      email: _emailList,
-                      observations: 'observations');
-                  Product _product = Product(
-                      name: 'name',
-                      cod: 'cod',
-                      productProvider: _productProvider,
-                      costValue: 1,
-                      saleValue: 1,
-                      brand: 'brand',
-                      categoryName: 'categoryName',
-                      unitMeasurement: 'unitMeasurement');
-                }),
+            CursomButtonConfirm(text: 'Salvar', onTap: () => _saveProduct()),
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        var v = _productBox.values.first as Product;
+        print(v.brand);
+      }),
     );
   }
 }

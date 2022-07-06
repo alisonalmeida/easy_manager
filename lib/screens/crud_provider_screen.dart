@@ -108,37 +108,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
                 name: 'Valor de Venda',
                 textInputAction: TextInputAction.next),
             SizedBox(height: 40),
-            CursomButtonConfirm(
-                text: 'Salvar',
-                onTap: () {
-                  List<String> _phoneList = [];
-                  List<String> _emailList = [];
-                  Address _address = Address(
-                      id: '',
-                      cep: 'cep',
-                      logradouro: 'logradouro',
-                      complemento: 'complemento',
-                      bairro: 'bairro',
-                      localidade: 'localidade',
-                      uf: 'uf',
-                      numero: 'numero');
-                  ProductProvider _productProvider = ProductProvider(
-                      name: 'name',
-                      document: 'document',
-                      phoneList: _phoneList,
-                      address: _address,
-                      email: _emailList,
-                      observations: 'observations');
-                  Product _product = Product(
-                      name: 'name',
-                      cod: 'cod',
-                      productProvider: _productProvider,
-                      costValue: 1,
-                      saleValue: 1,
-                      brand: 'brand',
-                      categoryName: 'categoryName',
-                      unitMeasurement: 'unitMeasurement');
-                }),
+            CursomButtonConfirm(text: 'Salvar', onTap: () {}),
           ],
         ),
       ),

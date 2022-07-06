@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/core/cep_network.dart';
-import 'package:easy_manager/core/database_connection.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
@@ -12,8 +12,7 @@ import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:hive/hive.dart';
 
 class CrudClientScreen extends StatefulWidget {
   const CrudClientScreen({Key? key}) : super(key: key);
@@ -23,6 +22,7 @@ class CrudClientScreen extends StatefulWidget {
 }
 
 class _CrudClientScreenState extends State<CrudClientScreen> {
+  late Box _clientBox;
   final _nameController = TextEditingController();
   final _cpfController = TextEditingController();
   final _cepController = TextEditingController();
@@ -36,6 +36,16 @@ class _CrudClientScreenState extends State<CrudClientScreen> {
   final _observationsController = TextEditingController();
 
   Address _address = Address();
+
+  @override
+  void initState() {
+    _openBox();
+    super.initState();
+  }
+
+  addUpdateClient(Client client) async {
+    await _clientBox.add(client);
+  }
 
   _showGeneralDialogErrorMessage(String message) {
     showDialog(
@@ -59,6 +69,10 @@ class _CrudClientScreenState extends State<CrudClientScreen> {
             title: CircularProgressIndicator(),
           );
         });
+  }
+
+  _openBox() async {
+    _clientBox = await Hive.openBox(kClientBox);
   }
 
   @override
@@ -229,26 +243,24 @@ class _CrudClientScreenState extends State<CrudClientScreen> {
             SizedBox(height: 40),
             CursomButtonConfirm(
               text: 'Salvar',
-              onTap: () async {
+              onTap: () {
                 Address address = Address(
-                    id: '_cepController.text',
-                    cep: '',
-                    logradouro: 'logradouro',
-                    complemento: 'complemento',
-                    bairro: 'bairro',
-                    localidade: 'localidade',
-                    uf: 'uf',
-                    numero: 'numero');
+                    cep: _cepController.text,
+                    logradouro: _streetController.text,
+                    complemento: _complementController.text,
+                    bairro: _districtController.text,
+                    localidade: _cityController.text,
+                    uf: _ufController.text,
+                    numero: _numberController.text);
                 Client client = Client(
                     name: _nameController.text,
-                    cpf: '_cpf.text',
+                    cpf: _cpfController.text,
                     address: address,
                     phoneList: [],
-                    email: '_email.text',
-                    observations: '_observations.text');
+                    email: _emailController.text,
+                    observations: _observationsController.text);
 
-                var db = DatabaseConnection.instance;
-                print(db.close());
+                addUpdateClient(client);
 
                 Navigator.pop(context);
               },
@@ -257,6 +269,19 @@ class _CrudClientScreenState extends State<CrudClientScreen> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        _clientBox.toMap().forEach((key, value) {
+          Client client = value;
+
+          print('Key: $key');
+          print('Value: ${client.name}');
+          print('Value: ${client.address}');
+          print('Value: ${client.cpf}');
+          print('Value: ${client.email}');
+          print('Value: ${client.observations}');
+          print('Value: ${client.phoneList}');
+        });
+      }),
     );
   }
 }

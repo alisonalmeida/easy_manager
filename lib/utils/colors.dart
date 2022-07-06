@@ -32,3 +32,6 @@ const turquoiseBlue = Color(0xFF61E4C5);
 
 const purple = Color.fromARGB(255, 200, 116, 255);
 const purpleShadow = Color.fromARGB(255, 165, 74, 226);
+
+const grey = Color.fromARGB(255, 193, 193, 194);
+const greyShadow = Color.fromARGB(255, 115, 115, 119);

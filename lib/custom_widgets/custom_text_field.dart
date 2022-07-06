@@ -5,15 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CustomTextField extends StatelessWidget {
-  CustomTextField(
-      {Key? key,
-      required this.controller,
-      required this.name,
-      required this.textInputAction,
-      this.callback,
-      this.textInputFormatterList,
-      this.textInputType})
-      : super(key: key);
+  CustomTextField({
+    Key? key,
+    required this.controller,
+    required this.name,
+    required this.textInputAction,
+    this.callback,
+    this.textInputFormatterList,
+    this.textInputType,
+    this.prefixIcon,
+  }) : super(key: key);
 
   final List<TextInputFormatter>? textInputFormatterList;
   final TextInputType? textInputType;
@@ -21,6 +22,7 @@ class CustomTextField extends StatelessWidget {
   final String name;
   final TextInputAction textInputAction;
   final VoidCallback? callback;
+  final Widget? prefixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,7 @@ class CustomTextField extends StatelessWidget {
       onEditingComplete: callback,
       controller: controller,
       decoration: InputDecoration(
+          prefixIcon: prefixIcon,
           fillColor: white,
           filled: true,
           focusColor: white,

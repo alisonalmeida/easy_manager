@@ -51,19 +51,6 @@ class _HomePageState extends State<HomePage> {
               crossAxisCount: 3),
           children: [
             CentralGridButton(
-              title: 'Clientes',
-              backgroundColor: dandelion,
-              borderColor: dandelionShadow,
-              shadowColor: dandelionShadow,
-              color: white,
-              iconPath: 'lib/assets/svg/person.svg',
-              callback: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ClientsScreen(),
-                  )),
-            ),
-            CentralGridButton(
               title: 'Produtos',
               backgroundColor: pastelPink,
               borderColor: pinkSalomn,
@@ -74,6 +61,19 @@ class _HomePageState extends State<HomePage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ProductsScreen(),
+                  )),
+            ),
+            CentralGridButton(
+              title: 'Clientes',
+              backgroundColor: dandelion,
+              borderColor: dandelionShadow,
+              shadowColor: dandelionShadow,
+              color: white,
+              iconPath: 'lib/assets/svg/person.svg',
+              callback: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ClientsScreen(),
                   )),
             ),
             CentralGridButton(
@@ -107,9 +107,9 @@ class _HomePageState extends State<HomePage> {
                 callback: () {}),
             CentralGridButton(
                 title: 'Entrada e Saída',
-                backgroundColor: blueBlue,
-                borderColor: blueBlueShadow,
-                shadowColor: blueBlueShadow,
+                backgroundColor: grey,
+                borderColor: greyShadow,
+                shadowColor: greyShadow,
                 color: white,
                 iconPath: 'lib/assets/svg/money.svg',
                 callback: () {}),

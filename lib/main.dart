@@ -18,11 +18,11 @@ void main() async {
     ..registerAdapter(AddressAdapter())
     ..registerAdapter(CustomerAdapter())
     ..registerAdapter(ProductAdapter())
-    ..registerAdapter(ProductProviderAdapter());
-  Hive.openBox(kAddressBox);
-  Hive.openBox(kCustomerBox);
-  Hive.openBox(kProductBox);
-  Hive.openBox(kProductProviderBox);
+    ..registerAdapter(ProductProviderAdapter())
+    ..openBox(kAddressBox)
+    ..openBox(kCustomerBox)
+    ..openBox(kProductBox)
+    ..openBox(kProductProviderBox);
 
   runApp(const MyApp());
 }

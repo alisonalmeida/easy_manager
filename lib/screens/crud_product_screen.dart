@@ -178,7 +178,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                 name: 'Valor de Venda',
                 textInputAction: TextInputAction.next),
             SizedBox(height: 40),
-            CursomButtonConfirm(text: 'Salvar', onTap: () => _saveProduct()),
+            CustomButtonConfirm(text: 'Salvar', onTap: () => _saveProduct()),
           ],
         ),
       ),

@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> {
                   )),
             ),
             CentralGridButton(
-              title: 'Customeres',
+              title: 'Clientes',
               backgroundColor: dandelion,
               borderColor: dandelionShadow,
               shadowColor: dandelionShadow,

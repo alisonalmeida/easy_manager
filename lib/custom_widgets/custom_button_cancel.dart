@@ -1,11 +1,11 @@
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 
-class CustomButtonConfirm extends StatelessWidget {
+class CustomButtonCancel extends StatelessWidget {
   final String text;
   final VoidCallback onTap;
 
-  const CustomButtonConfirm({Key? key, required this.text, required this.onTap})
+  const CustomButtonCancel({Key? key, required this.text, required this.onTap})
       : super(key: key);
 
   @override
@@ -17,7 +17,7 @@ class CustomButtonConfirm extends StatelessWidget {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16.0)),
             padding: const EdgeInsets.all(16),
-            primary: persianBlue),
+            primary: flamingo),
         onPressed: onTap,
         child: Text(
           text,

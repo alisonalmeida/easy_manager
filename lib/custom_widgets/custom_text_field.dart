@@ -14,6 +14,8 @@ class CustomTextField extends StatelessWidget {
     this.textInputFormatterList,
     this.textInputType,
     this.prefixIcon,
+    this.minLines,
+    this.maxLines,
   }) : super(key: key);
 
   final List<TextInputFormatter>? textInputFormatterList;
@@ -23,6 +25,8 @@ class CustomTextField extends StatelessWidget {
   final TextInputAction textInputAction;
   final VoidCallback? callback;
   final Widget? prefixIcon;
+  final int? minLines;
+  final int? maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +36,8 @@ class CustomTextField extends StatelessWidget {
       textInputAction: textInputAction,
       onEditingComplete: callback,
       controller: controller,
+      minLines: minLines,
+      maxLines: maxLines,
       decoration: InputDecoration(
           prefixIcon: prefixIcon,
           fillColor: white,

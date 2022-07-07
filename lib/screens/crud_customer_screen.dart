@@ -98,7 +98,7 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
                       const SizedBox(width: 20),
                       Text(
                         textAlign: TextAlign.center,
-                        'Cadastrar Customere',
+                        'Cadastrar Cliente',
                         style: TextStyle(
                             fontSize: 25,
                             fontFamily: 'JosefinsSans',
@@ -166,33 +166,29 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
                             _showGeneralDialogErrorMessage('Erro');
                           }
                         })),
-                SizedBox(
-                  height: 50,
-                  width: 50,
-                  child: ButtonRoundWithShadow(
-                      borderColor: woodSmoke,
-                      shadowColor: woodSmoke,
-                      color: white,
-                      iconPath: 'lib/assets/svg/refresh.svg',
-                      size: 50,
-                      callback: () async {
-                        _showGeneralWaitingDialog();
+                ButtonRoundWithShadow(
+                    borderColor: woodSmoke,
+                    shadowColor: woodSmoke,
+                    color: white,
+                    iconPath: 'lib/assets/svg/refresh.svg',
+                    size: 50,
+                    callback: () async {
+                      _showGeneralWaitingDialog();
 
-                        try {
-                          var r = await CepHelper.getData(_cepController.text
-                              .replaceAll(RegExp(r'[^0-9]'), ''));
-                          _address = Address.fromJson(r);
-                          _ufController.text = _address.uf!;
-                          _cityController.text = _address.localidade!;
-                          _streetController.text = _address.logradouro!;
-                          _districtController.text = _address.bairro!;
-                          if (!mounted) return; //check if the data has come
-                          Navigator.pop(context);
-                        } catch (e) {
-                          _showGeneralDialogErrorMessage('Erro');
-                        }
-                      }),
-                ),
+                      try {
+                        var r = await CepHelper.getData(_cepController.text
+                            .replaceAll(RegExp(r'[^0-9]'), ''));
+                        _address = Address.fromJson(r);
+                        _ufController.text = _address.uf!;
+                        _cityController.text = _address.localidade!;
+                        _streetController.text = _address.logradouro!;
+                        _districtController.text = _address.bairro!;
+                        if (!mounted) return; //check if the data has come
+                        Navigator.pop(context);
+                      } catch (e) {
+                        _showGeneralDialogErrorMessage('Erro');
+                      }
+                    }),
               ],
             ),
             SizedBox(height: 5),
@@ -241,7 +237,7 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
                 name: 'Observações',
                 textInputAction: TextInputAction.next),
             SizedBox(height: 40),
-            CursomButtonConfirm(
+            CustomButtonConfirm(
               text: 'Salvar',
               onTap: () {
                 Address address = Address(

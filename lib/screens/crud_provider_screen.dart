@@ -1,14 +1,19 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
+import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
 import 'package:easy_manager/models/address_model.dart';
 import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/utils/colors.dart';
+import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
 
 class CrudProviderScreen extends StatefulWidget {
   const CrudProviderScreen({Key? key}) : super(key: key);
@@ -18,14 +23,34 @@ class CrudProviderScreen extends StatefulWidget {
 }
 
 class _CrudProviderScreenState extends State<CrudProviderScreen> {
-  final _productNameController = TextEditingController();
-  final _productCodeController = TextEditingController();
-  final _productProviderController = TextEditingController();
-  final _productBrandController = TextEditingController();
-  final _productCategoryController = TextEditingController();
-  final _unitMeasurementController = TextEditingController();
-  final _costValueController = TextEditingController();
-  final _saleValueController = TextEditingController();
+  late Box _productProviderBox;
+  final _providerNameController = TextEditingController();
+  final _cpfCnpjController = TextEditingController();
+  final _phoneNumberController1 = TextEditingController();
+  final _phoneNumberController2 = TextEditingController();
+  final _emailController = TextEditingController();
+  final _observationsController = TextEditingController();
+
+  late bool _phoneVisibility;
+
+  @override
+  void initState() {
+    _openBox();
+    _phoneVisibility = false; //TODO
+    super.initState();
+  }
+
+  _addUpdate() {}
+
+  _openBox() async {
+    _productProviderBox = await Hive.openBox(kProductProviderBox);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,46 +94,85 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
           children: [
             SizedBox(height: 5),
             CustomTextField(
-                controller: _productCodeController,
-                name: 'Código',
+                controller: _providerNameController,
+                name: 'Nome do Fornecedor',
                 textInputAction: TextInputAction.next),
             SizedBox(height: 5),
             CustomTextField(
-                controller: _productNameController,
-                name: 'Nome do Produto',
+                textInputType: TextInputType.number,
+                textInputFormatterList: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  TextInputMask(mask: ['999.999.999-99', '99.999.999/9999-99'])
+                ],
+                controller: _cpfCnpjController,
+                name: 'CPF/CNPJ',
+                textInputAction: TextInputAction.next),
+            SizedBox(height: 5),
+            Row(
+              children: [
+                Expanded(
+                  child: CustomTextField(
+                    textInputType: TextInputType.number,
+                    textInputFormatterList: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      TextInputMask(mask: ['(99) 9 9999-9999)'])
+                    ],
+                    controller: _phoneNumberController1,
+                    name: 'Telefone',
+                    textInputAction: TextInputAction.next,
+                  ),
+                ),
+                ButtonRoundWithShadow(
+                    borderColor: woodSmoke,
+                    shadowColor: woodSmoke,
+                    color: white,
+                    iconPath: _phoneVisibility ? kpathSvgMinus : kpathSvgPlus,
+                    size: 50,
+                    callback: () => setState(() {
+                          _phoneVisibility = !_phoneVisibility;
+                          _phoneNumberController2.clear();
+                        }))
+              ],
+            ),
+            Visibility(visible: _phoneVisibility, child: SizedBox(height: 5)),
+            Visibility(
+              visible: _phoneVisibility,
+              child: CustomTextField(
+                textInputType: TextInputType.number,
+                textInputFormatterList: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  TextInputMask(mask: ['(99) 9 9999-9999)'])
+                ],
+                controller: _phoneNumberController2,
+                name: 'Telefone',
+                textInputAction: TextInputAction.next,
+              ),
+            ),
+            SizedBox(height: 5),
+            CustomTextField(
+                controller: _emailController,
+                name: 'E-mail',
                 textInputAction: TextInputAction.next),
             SizedBox(height: 5),
             CustomTextField(
-                controller: _productProviderController,
-                name: 'Fornecedor',
-                textInputAction: TextInputAction.next),
-            SizedBox(height: 5),
-            CustomTextField(
-                controller: _productBrandController,
-                name: 'Marca',
-                textInputAction: TextInputAction.next),
-            SizedBox(height: 5),
-            CustomTextField(
-                controller: _productCategoryController,
-                name: 'Categoria',
-                textInputAction: TextInputAction.next),
-            SizedBox(height: 5),
-            CustomTextField(
-                controller: _unitMeasurementController,
-                name: 'Unidade de Medição',
-                textInputAction: TextInputAction.next),
-            SizedBox(height: 5),
-            CustomTextField(
-                controller: _costValueController,
-                name: 'Valor de Custo',
-                textInputAction: TextInputAction.next),
-            SizedBox(height: 5),
-            CustomTextField(
-                controller: _saleValueController,
-                name: 'Valor de Venda',
+                minLines: 3,
+                maxLines: 6,
+                controller: _observationsController,
+                name: 'Observações',
                 textInputAction: TextInputAction.next),
             SizedBox(height: 40),
-            CursomButtonConfirm(text: 'Salvar', onTap: () {}),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                    flex: 4,
+                    child: CustomButtonCancel(text: 'Cancelar', onTap: () {})),
+                Spacer(flex: 1),
+                Expanded(
+                    flex: 4,
+                    child: CustomButtonConfirm(text: 'Salvar', onTap: () {}))
+              ],
+            ),
           ],
         ),
       ),

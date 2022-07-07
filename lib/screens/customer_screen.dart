@@ -40,7 +40,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                     const SizedBox(width: 50),
                     Text(
                       textAlign: TextAlign.center,
-                      'Customeres',
+                      'Clientes',
                       style: TextStyle(
                           fontSize: 30,
                           fontFamily: 'JosefinsSans',

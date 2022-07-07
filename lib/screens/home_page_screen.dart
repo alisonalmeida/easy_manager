@@ -2,7 +2,7 @@
 
 import 'package:easy_manager/custom_widgets/central_grid_Button.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
-import 'package:easy_manager/screens/clients_screen.dart';
+import 'package:easy_manager/screens/customer_screen.dart';
 import 'package:easy_manager/screens/products_screen.dart';
 import 'package:easy_manager/screens/providers_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> {
                   )),
             ),
             CentralGridButton(
-              title: 'Clientes',
+              title: 'Customeres',
               backgroundColor: dandelion,
               borderColor: dandelionShadow,
               shadowColor: dandelionShadow,
@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
               callback: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ClientsScreen(),
+                    builder: (context) => CustomerScreen(),
                   )),
             ),
             CentralGridButton(

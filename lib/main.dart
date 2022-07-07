@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/models/address_model.dart';
-import 'package:easy_manager/models/client_model.dart';
+import 'package:easy_manager/models/customer_model.dart';
 import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/screens/home_page_screen.dart';
@@ -16,11 +16,11 @@ void main() async {
   Hive
     ..init(dir.path)
     ..registerAdapter(AddressAdapter())
-    ..registerAdapter(ClientAdapter())
+    ..registerAdapter(CustomerAdapter())
     ..registerAdapter(ProductAdapter())
     ..registerAdapter(ProductProviderAdapter());
   Hive.openBox(kAddressBox);
-  Hive.openBox(kClientBox);
+  Hive.openBox(kCustomerBox);
   Hive.openBox(kProductBox);
   Hive.openBox(kProductProviderBox);
 

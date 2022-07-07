@@ -221,10 +221,10 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  frontend_server_client:
+  frontend_server_Customer:
     dependency: transitive
     description:
-      name: frontend_server_client
+      name: frontend_server_Customer
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.3"

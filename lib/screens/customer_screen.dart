@@ -3,19 +3,19 @@
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_list_tile.dart';
-import 'package:easy_manager/screens/crud_client_screen.dart';
+import 'package:easy_manager/screens/crud_customer_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class ClientsScreen extends StatefulWidget {
-  const ClientsScreen({Key? key}) : super(key: key);
+class CustomerScreen extends StatefulWidget {
+  const CustomerScreen({Key? key}) : super(key: key);
 
   @override
-  State<ClientsScreen> createState() => _ClientsScreenState();
+  State<CustomerScreen> createState() => _CustomerScreenState();
 }
 
-class _ClientsScreenState extends State<ClientsScreen> {
+class _CustomerScreenState extends State<CustomerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +40,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                     const SizedBox(width: 50),
                     Text(
                       textAlign: TextAlign.center,
-                      'Clientes',
+                      'Customeres',
                       style: TextStyle(
                           fontSize: 30,
                           fontFamily: 'JosefinsSans',
@@ -63,7 +63,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
               callback: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CrudClientScreen(),
+                    builder: (context) => CrudCustomerScreen(),
                   )),
             ),
             CustomListTile(icon: Icons.list, text: 'Listar', callback: () {}),

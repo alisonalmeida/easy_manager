@@ -7,22 +7,22 @@ import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
 import 'package:easy_manager/models/address_model.dart';
-import 'package:easy_manager/models/client_model.dart';
+import 'package:easy_manager/models/customer_model.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 
-class CrudClientScreen extends StatefulWidget {
-  const CrudClientScreen({Key? key}) : super(key: key);
+class CrudCustomerScreen extends StatefulWidget {
+  const CrudCustomerScreen({Key? key}) : super(key: key);
 
   @override
-  State<CrudClientScreen> createState() => _CrudClientScreenState();
+  State<CrudCustomerScreen> createState() => _CrudCustomerScreenState();
 }
 
-class _CrudClientScreenState extends State<CrudClientScreen> {
-  late Box _clientBox;
+class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
+  late Box _customerBox;
   final _nameController = TextEditingController();
   final _cpfController = TextEditingController();
   final _cepController = TextEditingController();
@@ -43,8 +43,8 @@ class _CrudClientScreenState extends State<CrudClientScreen> {
     super.initState();
   }
 
-  addUpdateClient(Client client) async {
-    await _clientBox.add(client);
+  addUpdateCustomer(Customer customer) async {
+    await _customerBox.add(customer);
   }
 
   _showGeneralDialogErrorMessage(String message) {
@@ -72,7 +72,7 @@ class _CrudClientScreenState extends State<CrudClientScreen> {
   }
 
   _openBox() async {
-    _clientBox = await Hive.openBox(kClientBox);
+    _customerBox = await Hive.openBox(kCustomerBox);
   }
 
   @override
@@ -98,7 +98,7 @@ class _CrudClientScreenState extends State<CrudClientScreen> {
                       const SizedBox(width: 20),
                       Text(
                         textAlign: TextAlign.center,
-                        'Cadastrar Cliente',
+                        'Cadastrar Customere',
                         style: TextStyle(
                             fontSize: 25,
                             fontFamily: 'JosefinsSans',
@@ -252,7 +252,7 @@ class _CrudClientScreenState extends State<CrudClientScreen> {
                     localidade: _cityController.text,
                     uf: _ufController.text,
                     numero: _numberController.text);
-                Client client = Client(
+                Customer customer = Customer(
                     name: _nameController.text,
                     cpf: _cpfController.text,
                     address: address,
@@ -260,7 +260,7 @@ class _CrudClientScreenState extends State<CrudClientScreen> {
                     email: _emailController.text,
                     observations: _observationsController.text);
 
-                addUpdateClient(client);
+                addUpdateCustomer(customer);
 
                 Navigator.pop(context);
               },
@@ -270,16 +270,16 @@ class _CrudClientScreenState extends State<CrudClientScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(onPressed: () {
-        _clientBox.toMap().forEach((key, value) {
-          Client client = value;
+        _customerBox.toMap().forEach((key, value) {
+          Customer customer = value;
 
           print('Key: $key');
-          print('Value: ${client.name}');
-          print('Value: ${client.address}');
-          print('Value: ${client.cpf}');
-          print('Value: ${client.email}');
-          print('Value: ${client.observations}');
-          print('Value: ${client.phoneList}');
+          print('Value: ${customer.name}');
+          print('Value: ${customer.address}');
+          print('Value: ${customer.cpf}');
+          print('Value: ${customer.email}');
+          print('Value: ${customer.observations}');
+          print('Value: ${customer.phoneList}');
         });
       }),
     );

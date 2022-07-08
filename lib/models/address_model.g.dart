@@ -17,13 +17,13 @@ class AddressAdapter extends TypeAdapter<Address> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Address(
-      cep: fields[0] as String?,
-      logradouro: fields[1] as String?,
-      complemento: fields[2] as String?,
-      bairro: fields[3] as String?,
-      localidade: fields[4] as String?,
-      uf: fields[5] as String?,
-      numero: fields[6] as String?,
+      cep: fields[0] as String,
+      logradouro: fields[1] as String,
+      complemento: fields[2] as String,
+      bairro: fields[3] as String,
+      localidade: fields[4] as String,
+      uf: fields[5] as String,
+      numero: fields[6] as String,
     );
   }
 

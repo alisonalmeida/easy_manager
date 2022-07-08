@@ -8,7 +8,6 @@ import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
 import 'package:easy_manager/models/address_model.dart';
-import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:easy_mask/easy_mask.dart';
@@ -17,48 +16,90 @@ import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 
 class CrudProviderScreen extends StatefulWidget {
-  CrudProviderScreen({Key? key, required this.isUpdate}) : super(key: key);
+  const CrudProviderScreen(
+      {Key? key, required this.isUpdate, this.productProviderKey})
+      : super(key: key);
 
-  bool isUpdate;
+  final bool isUpdate;
+  final int? productProviderKey;
 
   @override
   State<CrudProviderScreen> createState() => _CrudProviderScreenState();
 }
 
 class _CrudProviderScreenState extends State<CrudProviderScreen> {
+  late FocusNode _focusNode;
   late Box _productProviderBox;
+
   final _providerNameController = TextEditingController();
   final _cpfCnpjController = TextEditingController();
   final _phoneNumberController1 = TextEditingController();
   final _phoneNumberController2 = TextEditingController();
   final _emailController = TextEditingController();
+  final _cepController = TextEditingController();
+  final _ufController = TextEditingController();
+  final _cityController = TextEditingController();
+  final _streetController = TextEditingController();
+  final _districtController = TextEditingController();
+  final _numberController = TextEditingController();
+  final _complementController = TextEditingController();
   final _observationsController = TextEditingController();
-
-  late bool _phoneVisibility;
 
   @override
   void initState() {
     _openBox();
-    _phoneVisibility = false; //TODO
+    _focusNode = FocusNode();
+    //TODO
     super.initState();
   }
 
   _addUpdate() async {
     if (widget.isUpdate) {
     } else {
-//ProductProvider(name: _providerNameController.text, document: _cpfCnpjController.text, phoneList: [_phoneNumberController1.text,_phoneNumberController2.text], address: , email: email, observations: observations)
-      //     await _productProviderBox.add();
+      Address address = Address(
+          bairro: _districtController.text,
+          cep: _cepController.text,
+          complemento: _complementController.text,
+          localidade: _cityController.text,
+          logradouro: _streetController.text,
+          numero: _numberController.text,
+          uf: _ufController.text);
+      ProductProvider productProvider = ProductProvider(
+          name: _providerNameController.text,
+          document: _cpfCnpjController.text,
+          phoneNumber1: _phoneNumberController1.text,
+          phoneNumber2: _phoneNumberController2.text,
+          address: address,
+          email: _emailController.text,
+          observations: _observationsController.text);
+      await _productProviderBox.add(productProvider);
     }
+    Navigator.pop(context);
   }
 
   _openBox() async {
     _productProviderBox = await Hive.openBox(kProductProviderBox);
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
+  _getCep() async {
+    showGeneralWaitingDialog(context);
+    try {
+      final Address address;
+      var r = await CepHelper.getData(
+          _cepController.text.replaceAll(RegExp(r'[^0-9]'), ''));
+      address = Address.fromJson(r);
+      _ufController.text = address.uf;
+      _cityController.text = address.localidade;
+      _streetController.text = address.logradouro;
+      _districtController.text = address.bairro;
+
+      if (!mounted) return; //check if the data has come
+      Navigator.pop(context);
+      _focusNode.requestFocus();
+    } catch (e) {
+      Navigator.pop(context);
+      showGeneralDialogErrorMessage('Erro: $e', context);
+    }
   }
 
   @override
@@ -117,48 +158,29 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
                 name: 'CPF/CNPJ',
                 textInputAction: TextInputAction.next),
             SizedBox(height: 5),
-            Row(
-              children: [
-                Expanded(
-                  child: CustomTextField(
-                    textInputType: TextInputType.number,
-                    textInputFormatterList: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      TextInputMask(mask: ['(99) 9 9999-9999)'])
-                    ],
-                    controller: _phoneNumberController1,
-                    name: 'Telefone',
-                    textInputAction: TextInputAction.next,
-                  ),
-                ),
-                ButtonRoundWithShadow(
-                    borderColor: woodSmoke,
-                    shadowColor: woodSmoke,
-                    color: white,
-                    iconPath: _phoneVisibility ? kpathSvgMinus : kpathSvgPlus,
-                    size: 50,
-                    callback: () => setState(() {
-                          _phoneVisibility = !_phoneVisibility;
-                          _phoneNumberController2.clear();
-                        }))
+            CustomTextField(
+              textInputType: TextInputType.number,
+              textInputFormatterList: [
+                FilteringTextInputFormatter.digitsOnly,
+                TextInputMask(mask: ['(99) 9 9999-9999)'])
               ],
+              controller: _phoneNumberController1,
+              name: 'Telefone 1',
+              textInputAction: TextInputAction.next,
             ),
-            Visibility(visible: _phoneVisibility, child: SizedBox(height: 5)),
-            Visibility(
-              visible: _phoneVisibility,
-              child: CustomTextField(
-                textInputType: TextInputType.number,
-                textInputFormatterList: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  TextInputMask(mask: ['(99) 9 9999-9999)'])
-                ],
-                controller: _phoneNumberController2,
-                name: 'Telefone',
-                textInputAction: TextInputAction.next,
-              ),
+            CustomTextField(
+              textInputType: TextInputType.number,
+              textInputFormatterList: [
+                FilteringTextInputFormatter.digitsOnly,
+                TextInputMask(mask: ['(99) 9 9999-9999)'])
+              ],
+              controller: _phoneNumberController2,
+              name: 'Telefone 2',
+              textInputAction: TextInputAction.next,
             ),
             SizedBox(height: 5),
             CustomTextField(
+                textInputType: TextInputType.emailAddress,
                 controller: _emailController,
                 name: 'E-mail',
                 textInputAction: TextInputAction.next),
@@ -174,46 +196,14 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
                         controller: _cepController,
                         name: 'CEP',
                         textInputAction: TextInputAction.done,
-                        callback: () async {
-                          showGeneralWaitingDialog(context);
-
-                          try {
-                            var r = await CepHelper.getData(_cepController.text
-                                .replaceAll(RegExp(r'[^0-9]'), ''));
-                            _address = Address.fromJson(r);
-                            _ufController.text = _address.uf!;
-                            _cityController.text = _address.localidade!;
-                            _streetController.text = _address.logradouro!;
-                            _districtController.text = _address.bairro!;
-                            if (!mounted) return; //check if the data has come
-                            Navigator.pop(context);
-                          } catch (e) {
-                            showGeneralDialogErrorMessage('Erro', context);
-                          }
-                        })),
+                        callback: () => _getCep())),
                 ButtonRoundWithShadow(
                     borderColor: woodSmoke,
                     shadowColor: woodSmoke,
                     color: white,
                     iconPath: 'lib/assets/svg/refresh.svg',
                     size: 50,
-                    callback: () async {
-                      showGeneralWaitingDialog(context);
-
-                      try {
-                        var r = await CepHelper.getData(_cepController.text
-                            .replaceAll(RegExp(r'[^0-9]'), ''));
-                        _address = Address.fromJson(r);
-                        _ufController.text = _address.uf!;
-                        _cityController.text = _address.localidade!;
-                        _streetController.text = _address.logradouro!;
-                        _districtController.text = _address.bairro!;
-                        if (!mounted) return; //check if the data has come
-                        Navigator.pop(context);
-                      } catch (e) {
-                        _showGeneralDialogErrorMessage('Erro');
-                      }
-                    }),
+                    callback: () => _getCep()),
               ],
             ),
             SizedBox(height: 5),
@@ -243,6 +233,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
                 textInputAction: TextInputAction.next),
             SizedBox(height: 5),
             CustomTextField(
+                focusNode: _focusNode,
                 controller: _numberController,
                 name: 'Número',
                 textInputAction: TextInputAction.next),
@@ -262,7 +253,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
                 maxLines: 6,
                 controller: _observationsController,
                 name: 'Observações',
-                textInputAction: TextInputAction.next),
+                textInputAction: TextInputAction.done),
             SizedBox(height: 40),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -273,12 +264,19 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
                 Spacer(flex: 1),
                 Expanded(
                     flex: 4,
-                    child: CustomButtonConfirm(text: 'Salvar', onTap: () {}))
+                    child: CustomButtonConfirm(
+                        text: 'Salvar', onTap: () async => _addUpdate()))
               ],
             ),
+            SizedBox(height: 40),
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+          child: Text('Teste'),
+          onPressed: () {
+            _productProviderBox.clear();
+          }),
     );
   }
 }

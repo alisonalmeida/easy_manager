@@ -35,8 +35,6 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
   final _emailController = TextEditingController();
   final _observationsController = TextEditingController();
 
-  Address _address = Address();
-
   @override
   void initState() {
     _openBox();
@@ -131,11 +129,13 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
                           try {
                             var r = await CepHelper.getData(_cepController.text
                                 .replaceAll(RegExp(r'[^0-9]'), ''));
+                            /*
                             _address = Address.fromJson(r);
                             _ufController.text = _address.uf!;
                             _cityController.text = _address.localidade!;
                             _streetController.text = _address.logradouro!;
                             _districtController.text = _address.bairro!;
+                            */
                             if (!mounted) return; //check if the data has come
                             Navigator.pop(context);
                           } catch (e) {
@@ -154,11 +154,15 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
                       try {
                         var r = await CepHelper.getData(_cepController.text
                             .replaceAll(RegExp(r'[^0-9]'), ''));
+
+                        /*
                         _address = Address.fromJson(r);
                         _ufController.text = _address.uf!;
                         _cityController.text = _address.localidade!;
                         _streetController.text = _address.logradouro!;
                         _districtController.text = _address.bairro!;
+
+                        */
                         if (!mounted) return; //check if the data has come
                         Navigator.pop(context);
                       } catch (e) {

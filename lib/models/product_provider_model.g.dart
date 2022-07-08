@@ -19,28 +19,31 @@ class ProductProviderAdapter extends TypeAdapter<ProductProvider> {
     return ProductProvider(
       name: fields[0] as String,
       document: fields[1] as String,
-      phoneList: (fields[2] as List).cast<String>(),
-      address: fields[3] as Address,
-      email: (fields[4] as List).cast<String>(),
-      observations: fields[5] as String,
+      phoneNumber1: fields[2] as String,
+      phoneNumber2: fields[3] as String,
+      address: fields[4] as Address,
+      email: fields[5] as String,
+      observations: fields[6] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, ProductProvider obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
       ..write(obj.document)
       ..writeByte(2)
-      ..write(obj.phoneList)
+      ..write(obj.phoneNumber1)
       ..writeByte(3)
-      ..write(obj.address)
+      ..write(obj.phoneNumber2)
       ..writeByte(4)
-      ..write(obj.email)
+      ..write(obj.address)
       ..writeByte(5)
+      ..write(obj.email)
+      ..writeByte(6)
       ..write(obj.observations);
   }
 

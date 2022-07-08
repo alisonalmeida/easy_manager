@@ -22,7 +22,12 @@ class CustomButtonConfirm extends StatelessWidget {
         child: Text(
           text,
           maxLines: 1,
-          style: const TextStyle(fontWeight: FontWeight.w800),
+          style: const TextStyle(
+              fontWeight: FontWeight.w800,
+              fontSize: 20,
+              shadows: [
+                Shadow(blurRadius: 5, color: Colors.black, offset: Offset(1, 2))
+              ]),
         ),
       ),
     );

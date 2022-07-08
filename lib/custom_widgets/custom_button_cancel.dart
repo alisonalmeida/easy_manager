@@ -13,6 +13,7 @@ class CustomButtonCancel extends StatelessWidget {
     return ButtonTheme(
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
+            elevation: 5,
             side: const BorderSide(width: 2),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16.0)),
@@ -22,7 +23,12 @@ class CustomButtonCancel extends StatelessWidget {
         child: Text(
           text,
           maxLines: 1,
-          style: const TextStyle(fontWeight: FontWeight.w800),
+          style: const TextStyle(
+              fontWeight: FontWeight.w800,
+              fontSize: 20,
+              shadows: [
+                Shadow(blurRadius: 5, color: Colors.black, offset: Offset(1, 2))
+              ]),
         ),
       ),
     );

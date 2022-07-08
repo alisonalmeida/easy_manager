@@ -4,7 +4,7 @@ import 'package:easy_manager/custom_widgets/central_grid_Button.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/screens/customer_screen.dart';
 import 'package:easy_manager/screens/products_screen.dart';
-import 'package:easy_manager/screens/providers_screen.dart';
+import 'package:easy_manager/screens/provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

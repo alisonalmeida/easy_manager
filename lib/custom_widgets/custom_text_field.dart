@@ -5,18 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CustomTextField extends StatelessWidget {
-  CustomTextField({
-    Key? key,
-    required this.controller,
-    required this.name,
-    required this.textInputAction,
-    this.callback,
-    this.textInputFormatterList,
-    this.textInputType,
-    this.prefixIcon,
-    this.minLines,
-    this.maxLines,
-  }) : super(key: key);
+  CustomTextField(
+      {Key? key,
+      required this.controller,
+      required this.name,
+      required this.textInputAction,
+      this.callback,
+      this.textInputFormatterList,
+      this.textInputType,
+      this.prefixIcon,
+      this.minLines,
+      this.maxLines,
+      this.focusNode})
+      : super(key: key);
 
   final List<TextInputFormatter>? textInputFormatterList;
   final TextInputType? textInputType;
@@ -27,10 +28,12 @@ class CustomTextField extends StatelessWidget {
   final Widget? prefixIcon;
   final int? minLines;
   final int? maxLines;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      focusNode: focusNode,
       keyboardType: textInputType,
       inputFormatters: textInputFormatterList,
       textInputAction: textInputAction,
@@ -48,7 +51,7 @@ class CustomTextField extends StatelessWidget {
               borderSide: BorderSide(width: 2, color: black),
               borderRadius: BorderRadius.all(Radius.circular(16))),
           focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(width: 2, color: black),
+              borderSide: BorderSide(width: 4, color: black),
               borderRadius: BorderRadius.all(Radius.circular(5))),
           labelText: name,
           labelStyle: TextStyle(color: black),

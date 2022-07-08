@@ -6,26 +6,26 @@ part 'address_model.g.dart';
 @HiveType(typeId: 0)
 class Address {
   Address({
-    this.cep,
-    this.logradouro,
-    this.complemento,
-    this.bairro,
-    this.localidade,
-    this.uf,
+    required this.cep,
+    required this.logradouro,
+    required this.complemento,
+    required this.bairro,
+    required this.localidade,
+    required this.uf,
     this.numero,
   });
   @HiveField(0)
-  String? cep;
+  String cep;
   @HiveField(1)
-  String? logradouro;
+  String logradouro;
   @HiveField(2)
-  String? complemento;
+  String complemento;
   @HiveField(3)
-  String? bairro;
+  String bairro;
   @HiveField(4)
-  String? localidade;
+  String localidade;
   @HiveField(5)
-  String? uf;
+  String uf;
   @HiveField(6)
   String? numero;
 
@@ -36,7 +36,6 @@ class Address {
         complemento: json['complemento'],
         localidade: json['localidade'],
         logradouro: json['logradouro'],
-        numero: json['numero'],
         uf: json['uf']);
   }
 }

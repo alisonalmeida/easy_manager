@@ -9,7 +9,8 @@ class ProductProvider {
   ProductProvider(
       {required this.name,
       required this.document,
-      required this.phoneList,
+      required this.phoneNumber1,
+      required this.phoneNumber2,
       required this.address,
       required this.email,
       required this.observations});
@@ -18,11 +19,13 @@ class ProductProvider {
   @HiveField(1)
   final String document;
   @HiveField(2)
-  final List<String> phoneList;
+  final String phoneNumber1;
   @HiveField(3)
-  final Address address;
+  final String phoneNumber2;
   @HiveField(4)
-  final List<String> email;
+  final Address address;
   @HiveField(5)
+  final String email;
+  @HiveField(6)
   final String observations;
 }

@@ -17,14 +17,14 @@ class ProductAdapter extends TypeAdapter<Product> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Product(
-      name: fields[0] as String,
       cod: fields[1] as String,
+      name: fields[0] as String,
       productProvider: fields[2] as ProductProvider,
-      costValue: fields[3] as double,
-      saleValue: fields[4] as double,
       brand: fields[5] as String,
       categoryName: fields[6] as String,
       unitMeasurement: fields[7] as String,
+      costValue: fields[3] as double,
+      saleValue: fields[4] as double,
       minQuantity: fields[8] as int,
       description: fields[9] as String,
     );

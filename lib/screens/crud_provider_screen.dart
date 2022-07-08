@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:easy_manager/consts.dart';
+import 'package:easy_manager/core/cep_network.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
@@ -16,7 +17,9 @@ import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 
 class CrudProviderScreen extends StatefulWidget {
-  const CrudProviderScreen({Key? key}) : super(key: key);
+  CrudProviderScreen({Key? key, required this.isUpdate}) : super(key: key);
+
+  bool isUpdate;
 
   @override
   State<CrudProviderScreen> createState() => _CrudProviderScreenState();
@@ -40,7 +43,13 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
     super.initState();
   }
 
-  _addUpdate() {}
+  _addUpdate() async {
+    if (widget.isUpdate) {
+    } else {
+//ProductProvider(name: _providerNameController.text, document: _cpfCnpjController.text, phoneList: [_phoneNumberController1.text,_phoneNumberController2.text], address: , email: email, observations: observations)
+      //     await _productProviderBox.add();
+    }
+  }
 
   _openBox() async {
     _productProviderBox = await Hive.openBox(kProductProviderBox);
@@ -152,6 +161,100 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
             CustomTextField(
                 controller: _emailController,
                 name: 'E-mail',
+                textInputAction: TextInputAction.next),
+            SizedBox(height: 5),
+            Row(
+              children: [
+                Expanded(
+                    child: CustomTextField(
+                        textInputType: TextInputType.number,
+                        textInputFormatterList: [
+                          TextInputMask(mask: '99999-999')
+                        ],
+                        controller: _cepController,
+                        name: 'CEP',
+                        textInputAction: TextInputAction.done,
+                        callback: () async {
+                          showGeneralWaitingDialog(context);
+
+                          try {
+                            var r = await CepHelper.getData(_cepController.text
+                                .replaceAll(RegExp(r'[^0-9]'), ''));
+                            _address = Address.fromJson(r);
+                            _ufController.text = _address.uf!;
+                            _cityController.text = _address.localidade!;
+                            _streetController.text = _address.logradouro!;
+                            _districtController.text = _address.bairro!;
+                            if (!mounted) return; //check if the data has come
+                            Navigator.pop(context);
+                          } catch (e) {
+                            showGeneralDialogErrorMessage('Erro', context);
+                          }
+                        })),
+                ButtonRoundWithShadow(
+                    borderColor: woodSmoke,
+                    shadowColor: woodSmoke,
+                    color: white,
+                    iconPath: 'lib/assets/svg/refresh.svg',
+                    size: 50,
+                    callback: () async {
+                      showGeneralWaitingDialog(context);
+
+                      try {
+                        var r = await CepHelper.getData(_cepController.text
+                            .replaceAll(RegExp(r'[^0-9]'), ''));
+                        _address = Address.fromJson(r);
+                        _ufController.text = _address.uf!;
+                        _cityController.text = _address.localidade!;
+                        _streetController.text = _address.logradouro!;
+                        _districtController.text = _address.bairro!;
+                        if (!mounted) return; //check if the data has come
+                        Navigator.pop(context);
+                      } catch (e) {
+                        _showGeneralDialogErrorMessage('Erro');
+                      }
+                    }),
+              ],
+            ),
+            SizedBox(height: 5),
+            Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: CustomTextField(
+                      controller: _ufController,
+                      name: 'UF',
+                      textInputAction: TextInputAction.next),
+                ),
+                Spacer(flex: 1),
+                Expanded(
+                  flex: 8,
+                  child: CustomTextField(
+                      controller: _cityController,
+                      name: 'Cidade',
+                      textInputAction: TextInputAction.next),
+                )
+              ],
+            ),
+            SizedBox(height: 5),
+            CustomTextField(
+                controller: _streetController,
+                name: 'Rua',
+                textInputAction: TextInputAction.next),
+            SizedBox(height: 5),
+            CustomTextField(
+                controller: _numberController,
+                name: 'Número',
+                textInputAction: TextInputAction.next),
+            SizedBox(height: 5),
+            CustomTextField(
+                controller: _districtController,
+                name: 'Bairro',
+                textInputAction: TextInputAction.next),
+            SizedBox(height: 5),
+            CustomTextField(
+                controller: _complementController,
+                name: 'Complemento',
                 textInputAction: TextInputAction.next),
             SizedBox(height: 5),
             CustomTextField(

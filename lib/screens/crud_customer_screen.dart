@@ -47,30 +47,6 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
     await _customerBox.add(customer);
   }
 
-  _showGeneralDialogErrorMessage(String message) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            actions: [
-              ElevatedButton(
-                  onPressed: () => Navigator.pop(context), child: Text('OK'))
-            ],
-            content: Text(message),
-          );
-        });
-  }
-
-  _showGeneralWaitingDialog() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: CircularProgressIndicator(),
-          );
-        });
-  }
-
   _openBox() async {
     _customerBox = await Hive.openBox(kCustomerBox);
   }
@@ -150,7 +126,7 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
                         name: 'CEP',
                         textInputAction: TextInputAction.done,
                         callback: () async {
-                          _showGeneralWaitingDialog();
+                          showGeneralWaitingDialog(context);
 
                           try {
                             var r = await CepHelper.getData(_cepController.text
@@ -163,7 +139,7 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
                             if (!mounted) return; //check if the data has come
                             Navigator.pop(context);
                           } catch (e) {
-                            _showGeneralDialogErrorMessage('Erro');
+                            showGeneralDialogErrorMessage('Erro', context);
                           }
                         })),
                 ButtonRoundWithShadow(
@@ -173,7 +149,7 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
                     iconPath: 'lib/assets/svg/refresh.svg',
                     size: 50,
                     callback: () async {
-                      _showGeneralWaitingDialog();
+                      showGeneralWaitingDialog(context);
 
                       try {
                         var r = await CepHelper.getData(_cepController.text
@@ -186,7 +162,7 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
                         if (!mounted) return; //check if the data has come
                         Navigator.pop(context);
                       } catch (e) {
-                        _showGeneralDialogErrorMessage('Erro');
+                        showGeneralDialogErrorMessage('Erro', context);
                       }
                     }),
               ],

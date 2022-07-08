@@ -67,7 +67,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
               callback: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CrudProviderScreen(),
+                    builder: (context) => CrudProviderScreen(isUpdate: false),
                   )),
             ),
             CustomListTile(icon: Icons.list, text: 'Listar', callback: () {}),

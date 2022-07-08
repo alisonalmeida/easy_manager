@@ -6,15 +6,24 @@ import 'package:easy_manager/models/customer_model.dart';
 import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/screens/home_page_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() async {
+  await _initHive();
+  runApp(const MyApp());
+}
+
+_initHive() async {
   WidgetsFlutterBinding.ensureInitialized();
-  var dir = await getApplicationDocumentsDirectory();
+  if (!kIsWeb) {
+    //check if the system is web
+    Directory dir = await getApplicationDocumentsDirectory();
+    Hive.init(dir.path);
+  }
   Hive
-    ..init(dir.path)
     ..registerAdapter(AddressAdapter())
     ..registerAdapter(CustomerAdapter())
     ..registerAdapter(ProductAdapter())
@@ -23,8 +32,6 @@ void main() async {
     ..openBox(kCustomerBox)
     ..openBox(kProductBox)
     ..openBox(kProductProviderBox);
-
-  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {

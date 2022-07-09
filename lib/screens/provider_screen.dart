@@ -3,7 +3,6 @@
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
-import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/screens/crud_provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
@@ -82,39 +81,33 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                   list.add(value);
                 });
                 if (box.isEmpty) {
-                  return Center(
-                      child: Container(
-                          padding: const EdgeInsets.all(10),
+                  return EmptyWidget();
+                } else {
+                  return ListView.builder(
+                    itemCount: list.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CrudProviderScreen(
+                                    isUpdate: true,
+                                    productProviderKey: list[index].document))),
+                        child: Container(
+                          margin: EdgeInsets.only(bottom: 5),
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5),
+                              color: white,
                               border: Border.all(),
                               boxShadow: const [
                                 BoxShadow(
                                     offset: Offset(3, 2), color: Colors.black)
                               ]),
-                          child: const Text(
-                            'Vazio',
-                            style: TextStyle(fontSize: 40),
-                          )));
-                } else {
-                  return ListView.builder(
-                    itemCount: list.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        margin: EdgeInsets.only(bottom: 5),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: white,
-                            border: Border.all(),
-                            boxShadow: const [
-                              BoxShadow(
-                                  offset: Offset(3, 2), color: Colors.black)
-                            ]),
-                        child: ListTile(
-                          leading: Text(index.toString()),
-                          title: Text(list[index].name),
-                          subtitle: Text(list[index].document),
+                          child: ListTile(
+                            leading: Text(index.toString()),
+                            title: Text(list[index].name),
+                            subtitle: Text(list[index].document),
+                          ),
                         ),
                       );
                     },
@@ -122,7 +115,16 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                 }
               }),
         ),
-        persistentFooterButtons: [Text('teste')],
+        persistentFooterButtons: [
+          ElevatedButton(
+              onPressed: () {
+                _productProviderBox.toMap().forEach((key, value) {
+                  print(key);
+                  print(value);
+                });
+              },
+              child: Text('teste'))
+        ],
         floatingActionButton: ButtonRoundWithShadow(
             size: 60,
             borderColor: woodSmoke,
@@ -132,20 +134,30 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                 MaterialPageRoute(
                     builder: (context) => CrudProviderScreen(isUpdate: false))),
             shadowColor: woodSmoke,
-            iconPath: 'lib/assets/svg/plus.svg')
+            iconPath: 'lib/assets/svg/plus.svg'));
+  }
+}
 
-        /*
-      ButtonRoundWithShadow(
-          size: 48,
-          borderColor: woodSmoke,
-          color: white,
-          callback: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => CrudProviderScreen(isUpdate: false))),
-          shadowColor: woodSmoke,
-          iconPath: 'lib/assets/svg/plus.svg'),
-          */
-        );
+class EmptyWidget extends StatelessWidget {
+  const EmptyWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: Colors.white,
+                border: Border.all(),
+                boxShadow: const [
+                  BoxShadow(offset: Offset(3, 2), color: Colors.black)
+                ]),
+            child: const Text(
+              'Vazio',
+              style: TextStyle(fontSize: 40),
+            )));
   }
 }

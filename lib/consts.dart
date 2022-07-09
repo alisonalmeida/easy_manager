@@ -7,6 +7,8 @@ const String kProductProviderBox = 'productProviderBox';
 
 const String kpathSvgPlus = 'lib/assets/svg/plus.svg';
 const String kpathSvgMinus = 'lib/assets/svg/minus.svg';
+const String kpathSvgArrowBack = 'lib/assets/svg/arrow_back.svg';
+const String kpathSvgRefresh = 'lib/assets/svg/refresh.svg';
 
 showGeneralDialogErrorMessage(String message, BuildContext context) {
   showDialog(
@@ -15,7 +17,8 @@ showGeneralDialogErrorMessage(String message, BuildContext context) {
         return AlertDialog(
           actions: [
             ElevatedButton(
-                onPressed: () => Navigator.pop(context), child: Text('OK'))
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'))
           ],
           content: Text(message),
         );
@@ -26,8 +29,9 @@ showGeneralWaitingDialog(BuildContext context) {
   showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: CircularProgressIndicator(),
+        return const AlertDialog(
+          title: SizedBox(
+              height: 50, width: 50, child: CircularProgressIndicator()),
         );
       });
 }

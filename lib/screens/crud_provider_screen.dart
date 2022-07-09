@@ -7,6 +7,7 @@ import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
+import 'package:easy_manager/custom_widgets/custom_title_text.dart';
 import 'package:easy_manager/models/address_model.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/utils/colors.dart';
@@ -21,7 +22,7 @@ class CrudProviderScreen extends StatefulWidget {
       : super(key: key);
 
   final bool isUpdate;
-  final int? productProviderKey;
+  final String? productProviderKey;
 
   @override
   State<CrudProviderScreen> createState() => _CrudProviderScreenState();
@@ -30,6 +31,7 @@ class CrudProviderScreen extends StatefulWidget {
 class _CrudProviderScreenState extends State<CrudProviderScreen> {
   late FocusNode _focusNode;
   late Box _productProviderBox;
+  late String keyToDelete;
 
   final _providerNameController = TextEditingController();
   final _cpfCnpjController = TextEditingController();
@@ -47,38 +49,52 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
 
   @override
   void initState() {
-    _openBox();
+    _productProviderBox = Hive.box(kProductProviderBox);
     _focusNode = FocusNode();
-    //TODO
+    if (widget.isUpdate) {
+      keyToDelete = widget.productProviderKey!;
+      ProductProvider productProvider =
+          _productProviderBox.get(widget.productProviderKey);
+
+      _providerNameController.text = productProvider.name;
+      _cpfCnpjController.text = productProvider.document;
+      _phoneNumberController1.text = productProvider.phoneNumber1;
+      _phoneNumberController2.text = productProvider.phoneNumber2;
+      _emailController.text = productProvider.email;
+      _cepController.text = productProvider.address.cep;
+      _ufController.text = productProvider.address.uf;
+      _cityController.text = productProvider.address.localidade;
+      _streetController.text = productProvider.address.logradouro;
+      _numberController.text = productProvider.address.numero.toString();
+      _districtController.text = productProvider.address.bairro;
+      _complementController.text = productProvider.address.complemento;
+      _observationsController.text = productProvider.observations;
+    }
     super.initState();
   }
 
   _addUpdate() async {
+    Address address = Address(
+        bairro: _districtController.text,
+        cep: _cepController.text,
+        complemento: _complementController.text,
+        localidade: _cityController.text,
+        logradouro: _streetController.text,
+        numero: _numberController.text,
+        uf: _ufController.text);
+    ProductProvider productProvider = ProductProvider(
+        name: _providerNameController.text,
+        document: _cpfCnpjController.text,
+        phoneNumber1: _phoneNumberController1.text,
+        phoneNumber2: _phoneNumberController2.text,
+        address: address,
+        email: _emailController.text,
+        observations: _observationsController.text);
     if (widget.isUpdate) {
-    } else {
-      Address address = Address(
-          bairro: _districtController.text,
-          cep: _cepController.text,
-          complemento: _complementController.text,
-          localidade: _cityController.text,
-          logradouro: _streetController.text,
-          numero: _numberController.text,
-          uf: _ufController.text);
-      ProductProvider productProvider = ProductProvider(
-          name: _providerNameController.text,
-          document: _cpfCnpjController.text,
-          phoneNumber1: _phoneNumberController1.text,
-          phoneNumber2: _phoneNumberController2.text,
-          address: address,
-          email: _emailController.text,
-          observations: _observationsController.text);
-      await _productProviderBox.add(productProvider);
+      await _productProviderBox.delete(keyToDelete);
     }
+    await _productProviderBox.put(_cpfCnpjController.text, productProvider);
     Navigator.pop(context);
-  }
-
-  _openBox() async {
-    _productProviderBox = await Hive.openBox(kProductProviderBox);
   }
 
   _getCep() async {
@@ -121,16 +137,9 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
                           color: white,
                           callback: () => Navigator.pop(context),
                           shadowColor: woodSmoke,
-                          iconPath: 'lib/assets/svg/arrow_back.svg'),
+                          iconPath: kpathSvgArrowBack),
                       const SizedBox(width: 20),
-                      Text(
-                        textAlign: TextAlign.center,
-                        'Cadastrar Fornecedor',
-                        style: TextStyle(
-                            fontSize: 25,
-                            fontFamily: 'JosefinsSans',
-                            fontWeight: FontWeight.w700),
-                      ),
+                      CustomTitleText(title: 'Cadastrar Fornecedor')
                     ],
                   ),
                 ],
@@ -201,7 +210,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
                     borderColor: woodSmoke,
                     shadowColor: woodSmoke,
                     color: white,
-                    iconPath: 'lib/assets/svg/refresh.svg',
+                    iconPath: kpathSvgRefresh,
                     size: 50,
                     callback: () => _getCep()),
               ],
@@ -260,23 +269,22 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
               children: [
                 Expanded(
                     flex: 4,
-                    child: CustomButtonCancel(text: 'Cancelar', onTap: () {})),
+                    child: CustomButtonCancel(
+                        text: 'Cancelar',
+                        onTap: () {
+                          Navigator.pop(context);
+                        })),
                 Spacer(flex: 1),
                 Expanded(
                     flex: 4,
                     child: CustomButtonConfirm(
-                        text: 'Salvar', onTap: () async => _addUpdate()))
+                        text: 'Salvar', onTap: () async => await _addUpdate()))
               ],
             ),
             SizedBox(height: 40),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-          child: Text('Teste'),
-          onPressed: () {
-            _productProviderBox.clear();
-          }),
     );
   }
 }

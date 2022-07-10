@@ -93,8 +93,12 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
     if (widget.isUpdate) {
       await _productProviderBox.delete(keyToDelete);
     }
-    await _productProviderBox.put(_cpfCnpjController.text, productProvider);
-    Navigator.pop(context);
+    if (_productProviderBox.containsKey(_cpfCnpjController.text)) {
+      showGeneralDialogErrorMessage('Este CNPJ já foi cadastrado!', context);
+    } else {
+      await _productProviderBox.put(_cpfCnpjController.text, productProvider);
+      Navigator.pop(context);
+    }
   }
 
   _getCep() async {

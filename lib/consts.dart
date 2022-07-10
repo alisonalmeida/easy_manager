@@ -9,6 +9,7 @@ const String kpathSvgPlus = 'lib/assets/svg/plus.svg';
 const String kpathSvgMinus = 'lib/assets/svg/minus.svg';
 const String kpathSvgArrowBack = 'lib/assets/svg/arrow_back.svg';
 const String kpathSvgRefresh = 'lib/assets/svg/refresh.svg';
+const String kpathSvgPerson = 'lib/assets/svg/person.svg';
 
 showGeneralDialogErrorMessage(String message, BuildContext context) {
   showDialog(

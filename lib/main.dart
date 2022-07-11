@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/models/address_model.dart';
 import 'package:easy_manager/models/customer_model.dart';
@@ -19,7 +18,7 @@ void main() async {
 _initHive() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (!kIsWeb) {
-    //check if the system is web
+    //check if the system is not web
     Directory dir = await getApplicationDocumentsDirectory();
     Hive.init(dir.path);
   }

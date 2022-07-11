@@ -23,7 +23,7 @@ class AddressAdapter extends TypeAdapter<Address> {
       bairro: fields[3] as String,
       localidade: fields[4] as String,
       uf: fields[5] as String,
-      numero: fields[6] as String,
+      numero: fields[6] as String?,
     );
   }
 

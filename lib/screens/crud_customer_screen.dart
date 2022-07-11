@@ -4,6 +4,7 @@ import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/core/cep_network.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
+import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
 import 'package:easy_manager/models/address_model.dart';
@@ -15,14 +16,19 @@ import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 
 class CrudCustomerScreen extends StatefulWidget {
-  const CrudCustomerScreen({Key? key}) : super(key: key);
+  const CrudCustomerScreen({Key? key, required this.isUpdate, this.customerKey})
+      : super(key: key);
+  final bool isUpdate;
+  final String? customerKey;
 
   @override
   State<CrudCustomerScreen> createState() => _CrudCustomerScreenState();
 }
 
 class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
+  late FocusNode _focusNode;
   late Box _customerBox;
+  late String keyToDelete;
   final _nameController = TextEditingController();
   final _cpfController = TextEditingController();
   final _cepController = TextEditingController();
@@ -32,21 +38,85 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
   final _complementController = TextEditingController();
   final _ufController = TextEditingController();
   final _cityController = TextEditingController();
+  final _phoneNumber1Controller = TextEditingController();
+  final _phoneNumber2Controller = TextEditingController();
   final _emailController = TextEditingController();
   final _observationsController = TextEditingController();
 
   @override
   void initState() {
-    _openBox();
+    _focusNode = FocusNode();
+    _customerBox = Hive.box(kCustomerBox);
+    if (widget.isUpdate) {
+      keyToDelete = widget.customerKey!;
+      Customer customer = _customerBox.get(widget.customerKey);
+
+      _nameController.text = customer.name;
+      _cpfController.text = customer.cpf;
+      _phoneNumber1Controller.text = customer.phoneNumber1;
+      _phoneNumber2Controller.text = customer.phoneNumber2;
+      _emailController.text = customer.email;
+      _cepController.text = customer.address.cep;
+      _ufController.text = customer.address.uf;
+      _cityController.text = customer.address.localidade;
+      _streetController.text = customer.address.logradouro;
+      _numberController.text = customer.address.numero.toString();
+      _districtController.text = customer.address.bairro;
+      _complementController.text = customer.address.complemento;
+      _observationsController.text = customer.observations;
+    }
+
     super.initState();
   }
 
-  addUpdateCustomer(Customer customer) async {
-    await _customerBox.add(customer);
+  _addUpdate() async {
+    Address address = Address(
+        bairro: _districtController.text,
+        cep: _cepController.text,
+        complemento: _complementController.text,
+        localidade: _cityController.text,
+        logradouro: _streetController.text,
+        numero: _numberController.text,
+        uf: _ufController.text);
+    Customer customer = Customer(
+        name: _nameController.text,
+        cpf: _cpfController.text,
+        address: address,
+        phoneNumber1: _phoneNumber1Controller.text,
+        phoneNumber2: _phoneNumber2Controller.text,
+        email: _emailController.text,
+        observations: _observationsController.text);
+
+    if (widget.isUpdate) {
+      await _customerBox.delete(keyToDelete);
+    }
+    if (_customerBox.containsKey(_cpfController.text)) {
+      showGeneralDialogErrorMessage('Este CPF já foi cadastrado!', context);
+    } else {
+      await _customerBox.put(_cpfController.text, customer);
+      Navigator.pop(context);
+    }
   }
 
-  _openBox() async {
-    _customerBox = await Hive.openBox(kCustomerBox);
+  _getCep() async {
+    showGeneralWaitingDialog(context);
+    try {
+      final Address address;
+      var r = await CepHelper.getData(
+          _cepController.text.replaceAll(RegExp(r'[^0-9]'), ''));
+      address = Address.fromJson(r);
+      _ufController.text = address.uf;
+      _cityController.text = address.localidade;
+      _streetController.text = address.logradouro;
+      _districtController.text = address.bairro;
+
+      if (!mounted) return; //check if the data has come
+      Navigator.pop(context);
+      _focusNode.requestFocus();
+    } catch (e) {
+      Navigator.pop(context);
+      showGeneralDialogErrorMessage('Erro: $e', context);
+    }
   }
 
   @override
@@ -68,7 +138,7 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
                           color: white,
                           callback: () => Navigator.pop(context),
                           shadowColor: woodSmoke,
-                          iconPath: 'lib/assets/svg/arrow_back.svg'),
+                          iconPath: kpathSvgArrowBack),
                       const SizedBox(width: 20),
                       Text(
                         textAlign: TextAlign.center,
@@ -123,52 +193,14 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
                         controller: _cepController,
                         name: 'CEP',
                         textInputAction: TextInputAction.done,
-                        callback: () async {
-                          showGeneralWaitingDialog(context);
-
-                          try {
-                            var r = await CepHelper.getData(_cepController.text
-                                .replaceAll(RegExp(r'[^0-9]'), ''));
-                            /*
-                            _address = Address.fromJson(r);
-                            _ufController.text = _address.uf!;
-                            _cityController.text = _address.localidade!;
-                            _streetController.text = _address.logradouro!;
-                            _districtController.text = _address.bairro!;
-                            */
-                            if (!mounted) return; //check if the data has come
-                            Navigator.pop(context);
-                          } catch (e) {
-                            showGeneralDialogErrorMessage('Erro', context);
-                          }
-                        })),
+                        callback: () => _getCep)),
                 ButtonRoundWithShadow(
                     borderColor: woodSmoke,
                     shadowColor: woodSmoke,
                     color: white,
                     iconPath: 'lib/assets/svg/refresh.svg',
                     size: 50,
-                    callback: () async {
-                      showGeneralWaitingDialog(context);
-
-                      try {
-                        var r = await CepHelper.getData(_cepController.text
-                            .replaceAll(RegExp(r'[^0-9]'), ''));
-
-                        /*
-                        _address = Address.fromJson(r);
-                        _ufController.text = _address.uf!;
-                        _cityController.text = _address.localidade!;
-                        _streetController.text = _address.logradouro!;
-                        _districtController.text = _address.bairro!;
-
-                        */
-                        if (!mounted) return; //check if the data has come
-                        Navigator.pop(context);
-                      } catch (e) {
-                        showGeneralDialogErrorMessage('Erro', context);
-                      }
-                    }),
+                    callback: () => _getCep),
               ],
             ),
             SizedBox(height: 5),
@@ -217,47 +249,27 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
                 name: 'Observações',
                 textInputAction: TextInputAction.next),
             SizedBox(height: 40),
-            CustomButtonConfirm(
-              text: 'Salvar',
-              onTap: () {
-                Address address = Address(
-                    cep: _cepController.text,
-                    logradouro: _streetController.text,
-                    complemento: _complementController.text,
-                    bairro: _districtController.text,
-                    localidade: _cityController.text,
-                    uf: _ufController.text,
-                    numero: _numberController.text);
-                Customer customer = Customer(
-                    name: _nameController.text,
-                    cpf: _cpfController.text,
-                    address: address,
-                    phoneList: [],
-                    email: _emailController.text,
-                    observations: _observationsController.text);
-
-                addUpdateCustomer(customer);
-
-                Navigator.pop(context);
-              },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                    flex: 4,
+                    child: CustomButtonCancel(
+                        text: 'Cancelar',
+                        onTap: () {
+                          Navigator.pop(context);
+                        })),
+                Spacer(flex: 1),
+                Expanded(
+                    flex: 4,
+                    child: CustomButtonConfirm(
+                        text: 'Salvar', onTap: () => _addUpdate())),
+              ],
             ),
             SizedBox(height: 50),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        _customerBox.toMap().forEach((key, value) {
-          Customer customer = value;
-
-          print('Key: $key');
-          print('Value: ${customer.name}');
-          print('Value: ${customer.address}');
-          print('Value: ${customer.cpf}');
-          print('Value: ${customer.email}');
-          print('Value: ${customer.observations}');
-          print('Value: ${customer.phoneList}');
-        });
-      }),
     );
   }
 }

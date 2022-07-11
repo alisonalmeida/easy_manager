@@ -9,7 +9,8 @@ class Customer {
     required this.name,
     required this.cpf,
     required this.address,
-    required this.phoneList,
+    required this.phoneNumber1,
+    required this.phoneNumber2,
     required this.email,
     required this.observations,
   });
@@ -20,9 +21,11 @@ class Customer {
   @HiveField(2)
   final Address address;
   @HiveField(3)
-  final List<String> phoneList;
+  final String phoneNumber1;
   @HiveField(4)
-  final String email;
+  final String phoneNumber2;
   @HiveField(5)
+  final String email;
+  @HiveField(6)
   final String observations;
 }

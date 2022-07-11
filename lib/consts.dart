@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const String kAddressBox = 'addressBox';
-const String kCustomerBox = 'CustomerBox';
+const String kCustomerBox = 'customerBox';
 const String kProductBox = 'productBox';
 const String kProductProviderBox = 'productProviderBox';
 

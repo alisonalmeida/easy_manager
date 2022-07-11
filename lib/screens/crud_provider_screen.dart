@@ -282,7 +282,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
                 Expanded(
                     flex: 4,
                     child: CustomButtonConfirm(
-                        text: 'Salvar', onTap: () async => await _addUpdate()))
+                        text: 'Salvar', onTap: () => _addUpdate()))
               ],
             ),
             SizedBox(height: 40),

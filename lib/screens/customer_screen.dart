@@ -3,8 +3,8 @@
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
-import 'package:easy_manager/models/product_provider_model.dart';
-import 'package:easy_manager/screens/crud_provider_screen.dart';
+import 'package:easy_manager/models/customer_model.dart';
+import 'package:easy_manager/screens/crud_customer_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -22,7 +22,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
 
   @override
   void initState() {
-    _customerBox = Hive.box(kProductProviderBox);
+    _customerBox = Hive.box(kCustomerBox);
     super.initState();
   }
 
@@ -76,7 +76,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
           child: ValueListenableBuilder(
               valueListenable: _customerBox.listenable(),
               builder: (context, Box box, widget) {
-                List<ProductProvider> list = [];
+                List<Customer> list = [];
                 box.toMap().forEach((key, value) {
                   list.add(value);
                 });
@@ -90,9 +90,9 @@ class _CustomerScreenState extends State<CustomerScreen> {
                         onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => CrudProviderScreen(
+                                builder: (context) => CrudCustomerScreen(
                                     isUpdate: true,
-                                    productProviderKey: list[index].document))),
+                                    customerKey: list[index].cpf))),
                         child: Container(
                           margin: EdgeInsets.only(bottom: 5),
                           decoration: BoxDecoration(
@@ -106,7 +106,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                           child: ListTile(
                             leading: Text(index.toString()),
                             title: Text(list[index].name),
-                            subtitle: Text(list[index].document),
+                            subtitle: Text(list[index].cpf),
                           ),
                         ),
                       );
@@ -116,11 +116,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
               }),
         ),
         persistentFooterButtons: [
-          ElevatedButton(
-              onPressed: () {
-                _customerBox.toMap().forEach((key, value) {});
-              },
-              child: Text('teste'))
+          ElevatedButton(onPressed: () {}, child: Text('teste'))
         ],
         floatingActionButton: ButtonRoundWithShadow(
             size: 60,
@@ -129,7 +125,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
             callback: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => CrudProviderScreen(isUpdate: false))),
+                    builder: (context) => CrudCustomerScreen(isUpdate: false))),
             shadowColor: woodSmoke,
             iconPath: 'lib/assets/svg/plus.svg'));
   }

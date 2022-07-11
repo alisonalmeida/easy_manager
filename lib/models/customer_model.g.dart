@@ -20,16 +20,17 @@ class CustomerAdapter extends TypeAdapter<Customer> {
       name: fields[0] as String,
       cpf: fields[1] as String,
       address: fields[2] as Address,
-      phoneList: (fields[3] as List).cast<String>(),
-      email: fields[4] as String,
-      observations: fields[5] as String,
+      phoneNumber1: fields[3] as String,
+      phoneNumber2: fields[4] as String,
+      email: fields[5] as String,
+      observations: fields[6] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Customer obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -37,10 +38,12 @@ class CustomerAdapter extends TypeAdapter<Customer> {
       ..writeByte(2)
       ..write(obj.address)
       ..writeByte(3)
-      ..write(obj.phoneList)
+      ..write(obj.phoneNumber1)
       ..writeByte(4)
-      ..write(obj.email)
+      ..write(obj.phoneNumber2)
       ..writeByte(5)
+      ..write(obj.email)
+      ..writeByte(6)
       ..write(obj.observations);
   }
 

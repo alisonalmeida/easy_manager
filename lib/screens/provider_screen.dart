@@ -3,11 +3,11 @@
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
+import 'package:easy_manager/custom_widgets/empty_widget.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/screens/crud_provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class ProvidersScreen extends StatefulWidget {
@@ -27,49 +27,12 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: carribeanGreen,
         appBar: CustomAppBar(
-          height: 150,
-          child: Padding(
-            padding: const EdgeInsets.all(5),
-            child: SafeArea(
-              child: Column(
-                children: [
-                  SizedBox(
-                      height: 50,
-                      width: 50,
-                      child: SvgPicture.asset('lib/assets/svg/factory.svg')),
-                  Row(
-                    children: [
-                      ButtonRoundWithShadow(
-                          size: 48,
-                          borderColor: woodSmoke,
-                          color: white,
-                          callback: () => Navigator.pop(context),
-                          shadowColor: woodSmoke,
-                          iconPath: 'lib/assets/svg/arrow_back.svg'),
-                      const SizedBox(width: 50),
-                      Text(
-                        textAlign: TextAlign.center,
-                        'Fornecedores',
-                        style: TextStyle(
-                            fontSize: 30,
-                            fontFamily: 'JosefinsSans',
-                            fontWeight: FontWeight.w700),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
+          backgroundColor: carribeanGreen,
+          title: 'Fornecedores',
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -118,12 +81,9 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
         persistentFooterButtons: [
           ElevatedButton(
               onPressed: () {
-                _productProviderBox.toMap().forEach((key, value) {
-                  print(key);
-                  print(value);
-                });
+                _productProviderBox.clear();
               },
-              child: Text('teste'))
+              child: Text('Limpar Box'))
         ],
         floatingActionButton: ButtonRoundWithShadow(
             size: 60,
@@ -134,30 +94,6 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                 MaterialPageRoute(
                     builder: (context) => CrudProviderScreen(isUpdate: false))),
             shadowColor: woodSmoke,
-            iconPath: 'lib/assets/svg/plus.svg'));
-  }
-}
-
-class EmptyWidget extends StatelessWidget {
-  const EmptyWidget({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-        child: Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                color: Colors.white,
-                border: Border.all(),
-                boxShadow: const [
-                  BoxShadow(offset: Offset(3, 2), color: Colors.black)
-                ]),
-            child: const Text(
-              'Vazio',
-              style: TextStyle(fontSize: 40),
-            )));
+            iconPath: kpathSvgPlus));
   }
 }

@@ -9,7 +9,7 @@ class Product {
   Product(
       {required this.cod,
       required this.name,
-      required this.productProvider,
+      required this.productProviderDocument,
       required this.brand,
       required this.categoryName,
       required this.unitMeasurement,
@@ -22,7 +22,7 @@ class Product {
   @HiveField(1)
   final String cod;
   @HiveField(2)
-  final ProductProvider productProvider;
+  final String productProviderDocument;
   @HiveField(3)
   final double costValue;
   @HiveField(4)

@@ -124,36 +124,9 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
     return Scaffold(
       backgroundColor: dandelion,
       appBar: CustomAppBar(
-          height: 100,
-          child: Padding(
-            padding: const EdgeInsets.all(5),
-            child: SafeArea(
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      ButtonRoundWithShadow(
-                          size: 48,
-                          borderColor: woodSmoke,
-                          color: white,
-                          callback: () => Navigator.pop(context),
-                          shadowColor: woodSmoke,
-                          iconPath: kpathSvgArrowBack),
-                      const SizedBox(width: 20),
-                      Text(
-                        textAlign: TextAlign.center,
-                        'Cadastrar Cliente',
-                        style: TextStyle(
-                            fontSize: 25,
-                            fontFamily: 'JosefinsSans',
-                            fontWeight: FontWeight.w700),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          )),
+        backgroundColor: dandelion,
+        title: 'Cadastrar Cliente',
+      ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 15),
         color: dandelion,

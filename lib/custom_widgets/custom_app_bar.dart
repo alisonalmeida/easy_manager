@@ -1,21 +1,56 @@
+import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
+import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 
-class CustomAppBar extends PreferredSize {
-  final double height;
-  final Widget child;
+class CustomAppBar extends StatelessWidget implements PreferredSize {
+  @override
+  const CustomAppBar({
+    Key? key,
+    required this.title,
+    required this.backgroundColor,
+  }) : super(key: key);
 
-  CustomAppBar({Key? key, required this.height, required this.child})
-      : super(key: key, preferredSize: Size.fromHeight(height), child: child);
+  final String title;
+  final Color backgroundColor;
 
   @override
-  Size get preferredSize => Size.fromHeight(height);
+  Size get preferredSize => const Size.fromHeight(100);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: preferredSize.height,
-      alignment: Alignment.bottomCenter,
-      child: child,
+    return AppBar(
+      titleSpacing: 20,
+      automaticallyImplyLeading: false,
+      elevation: 0,
+      backgroundColor: backgroundColor,
+      leading: null,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          ButtonRoundWithShadow(
+              size: 45,
+              borderColor: woodSmoke,
+              color: white,
+              callback: () => Navigator.pop(context),
+              shadowColor: woodSmoke,
+              iconPath: 'lib/assets/svg/arrow_back.svg'),
+          Expanded(
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: woodSmoke,
+                  fontSize: 25,
+                  fontFamily: 'JosefinsSans',
+                  fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
+      ),
     );
   }
+
+  @override
+  // TODO: implement child
+  Widget get child => throw UnimplementedError();
 }

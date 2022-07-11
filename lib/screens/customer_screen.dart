@@ -7,7 +7,6 @@ import 'package:easy_manager/models/customer_model.dart';
 import 'package:easy_manager/screens/crud_customer_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class CustomerScreen extends StatefulWidget {
@@ -35,42 +34,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: dandelion,
-        appBar: CustomAppBar(
-          height: 150,
-          child: Padding(
-            padding: const EdgeInsets.all(5),
-            child: SafeArea(
-              child: Column(
-                children: [
-                  SizedBox(
-                      height: 50,
-                      width: 50,
-                      child: SvgPicture.asset(kpathSvgPerson)),
-                  Row(
-                    children: [
-                      ButtonRoundWithShadow(
-                          size: 48,
-                          borderColor: woodSmoke,
-                          color: white,
-                          callback: () => Navigator.pop(context),
-                          shadowColor: woodSmoke,
-                          iconPath: kpathSvgArrowBack),
-                      const SizedBox(width: 50),
-                      Text(
-                        textAlign: TextAlign.center,
-                        'Clientes',
-                        style: TextStyle(
-                            fontSize: 30,
-                            fontFamily: 'JosefinsSans',
-                            fontWeight: FontWeight.w700),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+        appBar: CustomAppBar(title: 'Clientes', backgroundColor: dandelion),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5),
           child: ValueListenableBuilder(

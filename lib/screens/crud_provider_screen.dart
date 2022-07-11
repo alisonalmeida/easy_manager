@@ -7,7 +7,6 @@ import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
-import 'package:easy_manager/custom_widgets/custom_title_text.dart';
 import 'package:easy_manager/models/address_model.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/utils/colors.dart';
@@ -53,7 +52,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
     _focusNode = FocusNode();
     if (widget.isUpdate) {
       keyToDelete = widget.productProviderKey!;
-      ProductProvider productProvider =
+      final ProductProvider productProvider =
           _productProviderBox.get(widget.productProviderKey);
 
       _providerNameController.text = productProvider.name;
@@ -74,7 +73,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
   }
 
   _addUpdate() async {
-    Address address = Address(
+    final Address address = Address(
         bairro: _districtController.text,
         cep: _cepController.text,
         complemento: _complementController.text,
@@ -82,7 +81,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
         logradouro: _streetController.text,
         numero: _numberController.text,
         uf: _ufController.text);
-    ProductProvider productProvider = ProductProvider(
+    final ProductProvider productProvider = ProductProvider(
         name: _providerNameController.text,
         document: _cpfCnpjController.text,
         phoneNumber1: _phoneNumberController1.text,
@@ -123,33 +122,31 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
   }
 
   @override
+  void dispose() {
+    _focusNode.dispose();
+    _providerNameController.dispose();
+    _cpfCnpjController.dispose();
+    _phoneNumberController1.dispose();
+    _phoneNumberController2.dispose();
+    _emailController.dispose();
+    _cepController.dispose();
+    _ufController.dispose();
+    _cityController.dispose();
+    _streetController.dispose();
+    _districtController.dispose();
+    _numberController.dispose();
+    _complementController.dispose();
+    _observationsController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: carribeanGreen,
       appBar: CustomAppBar(
-          height: 100,
-          child: Padding(
-            padding: const EdgeInsets.all(5),
-            child: SafeArea(
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      ButtonRoundWithShadow(
-                          size: 48,
-                          borderColor: woodSmoke,
-                          color: white,
-                          callback: () => Navigator.pop(context),
-                          shadowColor: woodSmoke,
-                          iconPath: kpathSvgArrowBack),
-                      const SizedBox(width: 20),
-                      CustomTitleText(title: 'Cadastrar Fornecedor')
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          )),
+          title: 'Cadastrar Fornecedor', backgroundColor: carribeanGreen),
       body: Container(
         color: carribeanGreen,
         padding: EdgeInsets.symmetric(horizontal: 15),

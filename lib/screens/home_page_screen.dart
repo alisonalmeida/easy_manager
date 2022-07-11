@@ -1,9 +1,10 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, avoid_print
 
+import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/central_grid_Button.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/screens/customer_screen.dart';
-import 'package:easy_manager/screens/products_screen.dart';
+import 'package:easy_manager/screens/product_screen.dart';
 import 'package:easy_manager/screens/provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -21,9 +22,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: selago,
-      appBar: CustomAppBar(
+      /*appBar: CustomAppBar(
           height: 100,
-          child: SafeArea(
+          childAppbar: SafeArea(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -42,6 +43,8 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           )),
+
+          */
       body: Container(
         color: selago,
         padding: EdgeInsets.all(5),
@@ -56,7 +59,7 @@ class _HomePageState extends State<HomePage> {
               borderColor: pinkSalomn,
               shadowColor: pinkSalomn,
               color: white,
-              iconPath: 'lib/assets/svg/product.svg',
+              iconPath: kpathSvgProduct,
               callback: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -69,7 +72,7 @@ class _HomePageState extends State<HomePage> {
               borderColor: dandelionShadow,
               shadowColor: dandelionShadow,
               color: white,
-              iconPath: 'lib/assets/svg/person.svg',
+              iconPath: kpathSvgPerson,
               callback: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -82,7 +85,7 @@ class _HomePageState extends State<HomePage> {
               borderColor: carribeanGreenShadow,
               shadowColor: carribeanGreenShadow,
               color: white,
-              iconPath: 'lib/assets/svg/factory.svg',
+              iconPath: kpathSvgFactory,
               callback: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -95,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                 borderColor: purpleShadow,
                 shadowColor: purpleShadow,
                 color: white,
-                iconPath: 'lib/assets/svg/pdv.svg',
+                iconPath: kpathSvgPdv,
                 callback: () {}),
             CentralGridButton(
                 title: 'Gráficos',
@@ -103,7 +106,7 @@ class _HomePageState extends State<HomePage> {
                 borderColor: blueBlueShadow,
                 shadowColor: blueBlueShadow,
                 color: white,
-                iconPath: 'lib/assets/svg/bar-chart-and-polyline.svg',
+                iconPath: kpathSvgChart,
                 callback: () {}),
             CentralGridButton(
                 title: 'Entrada e Saída',
@@ -111,7 +114,7 @@ class _HomePageState extends State<HomePage> {
                 borderColor: greyShadow,
                 shadowColor: greyShadow,
                 color: white,
-                iconPath: 'lib/assets/svg/money.svg',
+                iconPath: kpathSvgMoney,
                 callback: () {}),
           ],
         ),

@@ -24,16 +24,16 @@ class ButtonRoundWithShadow extends StatelessWidget {
     return GestureDetector(
       onTap: callback,
       child: Container(
-        height: size == null ? null : size,
-        width: size == null ? null : size,
-        padding: EdgeInsets.all(size != null ? 8 : 16),
+        height: size,
+        width: size,
+        padding: const EdgeInsets.all(8),
         decoration: ShapeDecoration(
             shadows: [
               BoxShadow(
                 color: shadowColor,
-                offset: Offset(
-                  0.0, // Move to right 10  horizontally
-                  4.0, // Move to bottom 5 Vertically
+                offset: const Offset(
+                  0.0, // Move to right 0  horizontally
+                  4.0, // Move to bottom 4 Vertically
                 ),
               )
             ],

@@ -26,7 +26,7 @@ class CentralGridButton extends StatelessWidget {
     return GestureDetector(
       onTap: callback,
       child: Container(
-        margin: EdgeInsets.all(2),
+        margin: const EdgeInsets.all(2),
         decoration: ShapeDecoration(shadows: [
           BoxShadow(
             color: shadowColor,
@@ -44,7 +44,7 @@ class CentralGridButton extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(title,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontFamily: 'JosefinsSans', fontWeight: FontWeight.w700)),
               SizedBox(
                 height: 50,

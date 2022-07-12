@@ -1,4 +1,3 @@
-import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:hive/hive.dart';
 part 'product_model.g.dart';
 

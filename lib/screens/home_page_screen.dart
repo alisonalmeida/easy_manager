@@ -2,13 +2,11 @@
 
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/central_grid_Button.dart';
-import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/screens/customer_screen.dart';
 import 'package:easy_manager/screens/product_screen.dart';
 import 'package:easy_manager/screens/provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

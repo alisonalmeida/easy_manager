@@ -64,7 +64,7 @@ class ShowListItemsProductProvider extends StatelessWidget {
 }
 
 class ShowListItemsProduct extends StatelessWidget {
-  ShowListItemsProduct({
+  const ShowListItemsProduct({
     Key? key,
     required this.box,
     required this.callback,

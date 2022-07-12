@@ -15,10 +15,10 @@ class CustomListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: ShapeDecoration(shadows: [
+      decoration: ShapeDecoration(shadows: const [
         BoxShadow(
           color: Colors.black,
-          offset: const Offset(
+          offset: Offset(
             0.0, // Move to right 10  horizontally
             4.0, // Move to bottom 5 Vertically
           ),
@@ -30,7 +30,7 @@ class CustomListTile extends StatelessWidget {
         onTap: callback,
         leading: Icon(icon, color: Colors.black),
         title: Text(text,
-            style: TextStyle(
+            style: const TextStyle(
                 fontFamily: 'JosefinsSans', fontWeight: FontWeight.w700)),
       ),
     );

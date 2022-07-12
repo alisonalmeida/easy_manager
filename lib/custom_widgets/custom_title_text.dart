@@ -10,7 +10,7 @@ class CustomTitleText extends StatelessWidget {
     return Text(
       textAlign: TextAlign.center,
       title,
-      style: TextStyle(
+      style: const TextStyle(
           fontSize: 25,
           fontFamily: 'JosefinsSans',
           fontWeight: FontWeight.w700),

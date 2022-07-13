@@ -7,7 +7,6 @@ import 'package:easy_manager/models/customer_model.dart';
 import 'package:easy_manager/screens/crud_customer_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 class CustomerScreen extends StatefulWidget {
   const CustomerScreen({Key? key}) : super(key: key);
@@ -17,11 +16,11 @@ class CustomerScreen extends StatefulWidget {
 }
 
 class _CustomerScreenState extends State<CustomerScreen> {
-  late final Box _customerBox;
+  // late final Box _customerBox;
 
   @override
   void initState() {
-    _customerBox = Hive.box(kCustomerBox);
+    //   _customerBox = Hive.box(kCustomerBox);
     super.initState();
   }
 
@@ -36,8 +35,9 @@ class _CustomerScreenState extends State<CustomerScreen> {
         backgroundColor: dandelion,
         appBar: CustomAppBar(title: 'Clientes', backgroundColor: dandelion),
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: ValueListenableBuilder(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child:
+                EmptyListWidget() /**ValueListenableBuilder(
               valueListenable: _customerBox.listenable(),
               builder: (context, Box box, widget) {
                 List<Customer> list = [];
@@ -77,8 +77,8 @@ class _CustomerScreenState extends State<CustomerScreen> {
                     },
                   );
                 }
-              }),
-        ),
+              }), */
+            ),
         persistentFooterButtons: [
           ElevatedButton(onPressed: () {}, child: Text('teste'))
         ],

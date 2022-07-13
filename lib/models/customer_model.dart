@@ -1,31 +1,28 @@
 import 'package:easy_manager/models/address_model.dart';
-import 'package:hive/hive.dart';
-part 'customer_model.g.dart';
+import 'package:objectbox/objectbox.dart';
 
 //flutter pub run build_runner build --delete-conflicting-outputs
-@HiveType(typeId: 1)
+
+@Entity()
+@Sync()
 class Customer {
+  int id;
+  final String name;
+  final String cpf;
+  var address = Address;
+  final String phoneNumber1;
+  final String phoneNumber2;
+  final String email;
+  final String observations;
+
   Customer({
+    this.id = 0,
     required this.name,
     required this.cpf,
-    required this.address,
+    this.address = Address,
     required this.phoneNumber1,
     required this.phoneNumber2,
     required this.email,
     required this.observations,
   });
-  @HiveField(0)
-  final String name;
-  @HiveField(1)
-  final String cpf;
-  @HiveField(2)
-  final Address address;
-  @HiveField(3)
-  final String phoneNumber1;
-  @HiveField(4)
-  final String phoneNumber2;
-  @HiveField(5)
-  final String email;
-  @HiveField(6)
-  final String observations;
 }

@@ -1,0 +1,223 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:147748851744285916",
+      "lastPropertyId": "8:8349903112215382073",
+      "name": "Address",
+      "flags": 2,
+      "properties": [
+        {
+          "id": "1:3574803265445957371",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:2345907980247639890",
+          "name": "cep",
+          "type": 9
+        },
+        {
+          "id": "3:8504505047603974446",
+          "name": "logradouro",
+          "type": 9
+        },
+        {
+          "id": "4:6083272483611805230",
+          "name": "complemento",
+          "type": 9
+        },
+        {
+          "id": "5:5571347426577005369",
+          "name": "bairro",
+          "type": 9
+        },
+        {
+          "id": "6:8822608181071875678",
+          "name": "localidade",
+          "type": 9
+        },
+        {
+          "id": "7:6547904009342316115",
+          "name": "uf",
+          "type": 9
+        },
+        {
+          "id": "8:8349903112215382073",
+          "name": "numero",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:6599012129572506194",
+      "lastPropertyId": "7:1653129191193306634",
+      "name": "Customer",
+      "flags": 2,
+      "properties": [
+        {
+          "id": "1:6361617769381076311",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:7189262802472662206",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:2679484048895871447",
+          "name": "cpf",
+          "type": 9
+        },
+        {
+          "id": "4:8994166054628989256",
+          "name": "phoneNumber1",
+          "type": 9
+        },
+        {
+          "id": "5:4955289679263165627",
+          "name": "phoneNumber2",
+          "type": 9
+        },
+        {
+          "id": "6:3750073309702030",
+          "name": "email",
+          "type": 9
+        },
+        {
+          "id": "7:1653129191193306634",
+          "name": "observations",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:5630586523992855594",
+      "lastPropertyId": "11:7664389535164658371",
+      "name": "Product",
+      "flags": 2,
+      "properties": [
+        {
+          "id": "1:2744609949234862806",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:1424439168835082565",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:8818664002513981931",
+          "name": "cod",
+          "type": 9
+        },
+        {
+          "id": "4:3451974139118546765",
+          "name": "productProviderDocument",
+          "type": 9
+        },
+        {
+          "id": "5:5424656533483962226",
+          "name": "costValue",
+          "type": 8
+        },
+        {
+          "id": "6:1630422467139705321",
+          "name": "saleValue",
+          "type": 8
+        },
+        {
+          "id": "7:3986614796603089958",
+          "name": "brand",
+          "type": 9
+        },
+        {
+          "id": "8:2930792789256341233",
+          "name": "categoryName",
+          "type": 9
+        },
+        {
+          "id": "9:1254975959262601771",
+          "name": "unitMeasurement",
+          "type": 9
+        },
+        {
+          "id": "10:2555202453079208525",
+          "name": "minQuantity",
+          "type": 6
+        },
+        {
+          "id": "11:7664389535164658371",
+          "name": "description",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "4:7608638318125712562",
+      "lastPropertyId": "7:4633314652390851934",
+      "name": "ProductProvider",
+      "flags": 2,
+      "properties": [
+        {
+          "id": "1:4401856319960587123",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:6870647981026284927",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:4666015417776582434",
+          "name": "document",
+          "type": 9
+        },
+        {
+          "id": "4:413565716045295625",
+          "name": "phoneNumber1",
+          "type": 9
+        },
+        {
+          "id": "5:6755035643818151844",
+          "name": "phoneNumber2",
+          "type": 9
+        },
+        {
+          "id": "6:8634081405606875175",
+          "name": "email",
+          "type": 9
+        },
+        {
+          "id": "7:4633314652390851934",
+          "name": "observations",
+          "type": 9
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "4:7608638318125712562",
+  "lastIndexId": "0:0",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

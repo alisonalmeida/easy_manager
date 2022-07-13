@@ -7,7 +7,6 @@ import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/screens/crud_product_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({Key? key}) : super(key: key);
@@ -17,11 +16,11 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
-  late final Box _productBox;
+  //late final Box _productBox;
 
   @override
   void initState() {
-    _productBox = Hive.box(kProductBox);
+    //  _productBox = Hive.box(kProductBox);
     super.initState();
   }
 
@@ -35,14 +34,16 @@ class _ProductsScreenState extends State<ProductsScreen> {
         ),
         body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: ShowListItemsProduct(
+            child: Text(
+                '1asdasdasd') /**ShowListItemsProduct(
                 box: _productBox,
                 callback: () => Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => CrudProductScreen(
                               isUpdate: true,
-                            ))))),
+                            )))) */
+            ),
         persistentFooterButtons: [
           ElevatedButton(onPressed: () {}, child: Text('teste'))
         ],

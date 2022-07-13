@@ -13,7 +13,6 @@ import 'package:easy_manager/utils/colors.dart';
 import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
 
 class CrudProviderScreen extends StatefulWidget {
   const CrudProviderScreen(
@@ -28,8 +27,7 @@ class CrudProviderScreen extends StatefulWidget {
 }
 
 class _CrudProviderScreenState extends State<CrudProviderScreen> {
-  late FocusNode _focusNode;
-  late Box _productProviderBox;
+  //late FocusNode _focusNode;
   late String keyToDelete;
 
   final _providerNameController = TextEditingController();
@@ -48,6 +46,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
 
   @override
   void initState() {
+    /*
     _productProviderBox = Hive.box(kProductProviderBox);
     _focusNode = FocusNode();
     if (widget.isUpdate) {
@@ -68,11 +67,12 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
       _districtController.text = productProvider.address.bairro;
       _complementController.text = productProvider.address.complemento;
       _observationsController.text = productProvider.observations;
-    }
+    }*/
     super.initState();
   }
 
   _addUpdate() async {
+    /*
     final Address address = Address(
         bairro: _districtController.text,
         cep: _cepController.text,
@@ -98,6 +98,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
       await _productProviderBox.put(_cpfCnpjController.text, productProvider);
       Navigator.pop(context);
     }
+    */
   }
 
   _getCep() async {
@@ -107,14 +108,14 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
       var r = await CepHelper.getData(
           _cepController.text.replaceAll(RegExp(r'[^0-9]'), ''));
       address = Address.fromJson(r);
-      _ufController.text = address.uf;
-      _cityController.text = address.localidade;
-      _streetController.text = address.logradouro;
-      _districtController.text = address.bairro;
+      _ufController.text = address.uf!;
+      _cityController.text = address.localidade!;
+      _streetController.text = address.logradouro!;
+      _districtController.text = address.bairro!;
 
       if (!mounted) return; //check if the data has come
       Navigator.pop(context);
-      _focusNode.requestFocus();
+      // _focusNode.requestFocus();
     } catch (e) {
       Navigator.pop(context);
       showGeneralDialogErrorMessage('Erro: $e', context);
@@ -123,7 +124,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
 
   @override
   void dispose() {
-    _focusNode.dispose();
+    // _focusNode.dispose();
     _providerNameController.dispose();
     _cpfCnpjController.dispose();
     _phoneNumberController1.dispose();
@@ -243,7 +244,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
                 textInputAction: TextInputAction.next),
             SizedBox(height: 5),
             CustomTextField(
-                focusNode: _focusNode,
+                //focusNode: _focusNode,
                 controller: _numberController,
                 name: 'Número',
                 textInputAction: TextInputAction.next),

@@ -13,7 +13,6 @@ import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
 
 class CrudCustomerScreen extends StatefulWidget {
   const CrudCustomerScreen({Key? key, required this.isUpdate, this.customerKey})
@@ -27,7 +26,7 @@ class CrudCustomerScreen extends StatefulWidget {
 
 class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
   late FocusNode _focusNode;
-  late Box _customerBox;
+
   late String keyToDelete;
   final _nameController = TextEditingController();
   final _cpfController = TextEditingController();
@@ -46,9 +45,10 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
   @override
   void initState() {
     _focusNode = FocusNode();
-    _customerBox = Hive.box(kCustomerBox);
+
     if (widget.isUpdate) {
       keyToDelete = widget.customerKey!;
+      /*
       Customer customer = _customerBox.get(widget.customerKey);
 
       _nameController.text = customer.name;
@@ -64,12 +64,14 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
       _districtController.text = customer.address.bairro;
       _complementController.text = customer.address.complemento;
       _observationsController.text = customer.observations;
+      */
     }
 
     super.initState();
   }
 
   _addUpdate() async {
+    /*
     Address address = Address(
         bairro: _districtController.text,
         cep: _cepController.text,
@@ -96,6 +98,7 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
       await _customerBox.put(_cpfController.text, customer);
       Navigator.pop(context);
     }
+    */
   }
 
   _getCep() async {
@@ -105,10 +108,10 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
       var r = await CepHelper.getData(
           _cepController.text.replaceAll(RegExp(r'[^0-9]'), ''));
       address = Address.fromJson(r);
-      _ufController.text = address.uf;
-      _cityController.text = address.localidade;
-      _streetController.text = address.logradouro;
-      _districtController.text = address.bairro;
+      _ufController.text = address.uf!;
+      _cityController.text = address.localidade!;
+      _streetController.text = address.logradouro!;
+      _districtController.text = address.bairro!;
 
       if (!mounted) return; //check if the data has come
       Navigator.pop(context);

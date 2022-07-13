@@ -1,26 +1,26 @@
 import 'package:easy_manager/custom_widgets/empty_widget.dart';
 import 'package:easy_manager/models/product_model.dart';
-import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/screens/crud_product_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 class ShowListItemsProductProvider extends StatelessWidget {
   ShowListItemsProductProvider({
     Key? key,
-    required this.box,
+    //required this.box,
     required dynamic type,
     required this.callback,
   }) : super(key: key);
 
-  final Box box;
+  //final Box box;
   final Function(String?) callback;
   late dynamic type;
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
+    return EmptyWidget();
+
+    /**ValueListenableBuilder(
         valueListenable: box.listenable(),
         builder: (context, Box box, widget) {
           List<ProductProvider> list = [];
@@ -59,23 +59,25 @@ class ShowListItemsProductProvider extends StatelessWidget {
               },
             );
           }
-        });
+        }); */
   }
 }
 
 class ShowListItemsProduct extends StatelessWidget {
   const ShowListItemsProduct({
     Key? key,
-    required this.box,
+    // required this.box,
     required this.callback,
   }) : super(key: key);
 
-  final Box box;
+  //final Box box;
   final VoidCallback callback;
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
+    return EmptyWidget();
+
+    /**ValueListenableBuilder(
         valueListenable: box.listenable(),
         builder: (context, Box box, widget) {
           List<Product> list = [];
@@ -115,6 +117,6 @@ class ShowListItemsProduct extends StatelessWidget {
               },
             );
           }
-        });
+        }); */
   }
 }

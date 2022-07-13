@@ -8,7 +8,6 @@ import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/screens/crud_provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 class ProvidersScreen extends StatefulWidget {
   const ProvidersScreen({Key? key}) : super(key: key);
@@ -18,11 +17,11 @@ class ProvidersScreen extends StatefulWidget {
 }
 
 class _ProvidersScreenState extends State<ProvidersScreen> {
-  late final Box _productProviderBox;
+  //late final Box _productProviderBox;
 
   @override
   void initState() {
-    _productProviderBox = Hive.box(kProductProviderBox);
+    // _productProviderBox = Hive.box(kProductProviderBox);
     super.initState();
   }
 
@@ -35,8 +34,10 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
           title: 'Fornecedores',
         ),
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: ValueListenableBuilder(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: EmptyWidget()
+            /*
+          ValueListenableBuilder(
               valueListenable: _productProviderBox.listenable(),
               builder: (context, Box box, widget) {
                 List<ProductProvider> list = [];
@@ -77,13 +78,11 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                   );
                 }
               }),
-        ),
+
+              */
+            ),
         persistentFooterButtons: [
-          ElevatedButton(
-              onPressed: () {
-                _productProviderBox.clear();
-              },
-              child: Text('Limpar Box'))
+          ElevatedButton(onPressed: () {}, child: Text('Limpar Box'))
         ],
         floatingActionButton: ButtonRoundWithShadow(
             size: 60,

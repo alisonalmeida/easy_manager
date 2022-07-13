@@ -13,7 +13,6 @@ import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/screens/crud_provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 class CrudProductScreen extends StatefulWidget {
   const CrudProductScreen({Key? key, required this.isUpdate, this.productkey})
@@ -27,10 +26,10 @@ class CrudProductScreen extends StatefulWidget {
 }
 
 class _CrudProductScreenState extends State<CrudProductScreen> {
-  late Box _productBox;
-  late String keyToChange;
-  late Box _providerBox;
-  late String choosedDocument;
+  // late Box _productBox;
+  //late String keyToChange;
+  //late Box _providerBox;
+  //late String choosedDocument;
 
   final _productCodeController = TextEditingController();
   final _productNameController = TextEditingController();
@@ -45,6 +44,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
 
   @override
   void initState() {
+    /**
     _productBox = Hive.box(kProductBox);
     _providerBox = Hive.box(kProductProviderBox);
     if (widget.isUpdate) {
@@ -59,12 +59,13 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
       _costValueController.text = product.costValue.toString();
       _saleValueController.text = product.saleValue.toString();
       _descriptionController.text = product.description;
-    }
+    } */
 
     super.initState();
   }
 
   _saveUpdate() async {
+    /**
     Product product = Product(
         cod: _productCodeController.text,
         name: _productNameController.text,
@@ -84,7 +85,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
     } else {
       await _productBox.put(_productCodeController.text, product);
       Navigator.pop(context);
-    }
+    } */
   }
 
   @override
@@ -136,7 +137,8 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                     controller: _productProviderController,
                     name: 'Fornecedor',
                     items: Expanded(
-                        child: ShowListItemsProductProvider(
+                        child: Text(
+                            'data') /**ShowListItemsProductProvider(
                             box: _providerBox,
                             type: ProductProvider,
                             callback: (v) {
@@ -145,7 +147,8 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                               _productProviderController.text =
                                   productProvider.name;
                               choosedDocument = productProvider.document;
-                            })),
+                            }) */
+                        ),
                   ),
                 ),
                 ButtonRoundWithShadow(

@@ -19,7 +19,7 @@ class Customer {
     this.id = 0,
     required this.name,
     required this.cpf,
-    this.address = Address,
+    //TODO handle address  this.address = Address,
     required this.phoneNumber1,
     required this.phoneNumber2,
     required this.email,

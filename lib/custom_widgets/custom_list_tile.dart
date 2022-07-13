@@ -3,14 +3,18 @@ import 'package:flutter/material.dart';
 class CustomListTile extends StatelessWidget {
   const CustomListTile(
       {Key? key,
-      required this.callback,
-      required this.text,
-      required this.icon})
+      required this.deleteCallback,
+      required this.editCallback,
+      required this.title,
+      required this.icon,
+      required this.subtitle})
       : super(key: key);
 
-  final VoidCallback callback;
-  final String text;
+  final VoidCallback editCallback;
+  final VoidCallback deleteCallback;
+  final String title;
   final IconData icon;
+  final String subtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -19,19 +23,25 @@ class CustomListTile extends StatelessWidget {
         BoxShadow(
           color: Colors.black,
           offset: Offset(
-            0.0, // Move to right 10  horizontally
-            4.0, // Move to bottom 5 Vertically
+            3.0,
+            4.0,
           ),
         )
-      ], color: Colors.white, shape: Border.all()
-          // CircleBorder(side: BorderSide(color: borderColor, width: 2)),
-          ),
+      ], color: Colors.white, shape: Border.all()),
       child: ListTile(
-        onTap: callback,
+        trailing: Wrap(
+          children: [
+            IconButton(icon: const Icon(Icons.edit), onPressed: editCallback),
+            const VerticalDivider(),
+            IconButton(
+                icon: const Icon(Icons.delete), onPressed: deleteCallback),
+          ],
+        ),
         leading: Icon(icon, color: Colors.black),
-        title: Text(text,
+        title: Text(title,
             style: const TextStyle(
                 fontFamily: 'JosefinsSans', fontWeight: FontWeight.w700)),
+        subtitle: Text(subtitle),
       ),
     );
   }

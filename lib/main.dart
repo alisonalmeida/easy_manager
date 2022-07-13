@@ -1,12 +1,12 @@
-import 'package:easy_manager/helper/object_box.dart';
+import 'package:easy_manager/helper/customer_box.dart';
 import 'package:easy_manager/screens/home_page_screen.dart';
 import 'package:flutter/material.dart';
 
-late ObjectBox objectBox;
+late CustomerBox customerBox;
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  objectBox = await ObjectBox.init();
+  customerBox = await CustomerBox.init();
   runApp(const MyApp());
 }
 

@@ -3,10 +3,10 @@ import 'package:easy_manager/objectbox.g.dart';
 
 class CustomerBox {
   late final Store _store;
-  late final Box<Customer> _customerBox;
+  late final Box<CustomerModel> _customerBox;
 
   CustomerBox._init(this._store) {
-    _customerBox = Box<Customer>(_store);
+    _customerBox = Box<CustomerModel>(_store);
   }
 
   static Future<CustomerBox> init() async {
@@ -20,12 +20,12 @@ class CustomerBox {
     return CustomerBox._init(store);
   }
 
-  Stream<List<Customer>> getCustomers() => _customerBox
+  Stream<List<CustomerModel>> getCustomers() => _customerBox
       .query()
       .watch(triggerImmediately: true)
       .map((query) => query.find());
-  Customer? getCustomer(int id) => _customerBox.get(id);
-  int insertCustomer(Customer customer) => _customerBox.put(customer);
+  CustomerModel? getCustomer(int id) => _customerBox.get(id);
+  int insertCustomer(CustomerModel customer) => _customerBox.put(customer);
   bool deleteCustomer(int id) => _customerBox.remove(id);
   int clearAllCustomers() => _customerBox.removeAll();
 }

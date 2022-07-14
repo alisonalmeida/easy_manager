@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:convert';
+
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/core/cep_network.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
@@ -49,22 +51,12 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
 
     if (widget.isUpdate) {
       keyToDelete = widget.customerKey!;
-
-      Customer? customer = customerBox.getCustomer(widget.customerKey!);
-
-      _nameController.text = customer!.name;
-      _cpfController.text = customer.cpf;
-      _phoneNumber1Controller.text = customer.phoneNumber1;
-      _phoneNumber2Controller.text = customer.phoneNumber2;
-      _emailController.text = customer.email;
-      /**_cepController.text = customer.address.cep;
-      _ufController.text = customer.address.uf;
-      _cityController.text = customer.address.localidade;
-      _streetController.text = customer.address.logradouro;
-      _numberController.text = customer.address.numero.toString();
-      _districtController.text = customer.address.bairro;
-      _complementController.text = customer.address.complemento; */
-      _observationsController.text = customer.observations;
+      CustomerModel? customer = customerBox.getCustomer(widget.customerKey!);
+      _nameController.text = customer!.name!;
+      _cpfController.text = customer.cpf!;
+      _phoneNumber1Controller.text = customer.phoneNumber1!;
+      _phoneNumber2Controller.text = customer.phoneNumber2!;
+      _emailController.text = customer.email!;
     }
 
     super.initState();
@@ -79,26 +71,18 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
         logradouro: _streetController.text,
         numero: _numberController.text,
         uf: _ufController.text);
-    Customer customer = Customer(
+    CustomerModel customer = CustomerModel(
         name: _nameController.text,
         cpf: _cpfController.text,
-        //address: address,
         phoneNumber1: _phoneNumber1Controller.text,
         phoneNumber2: _phoneNumber2Controller.text,
         email: _emailController.text,
         observations: _observationsController.text);
-
+    customer.setAddress(address);
+    print(customer.getAddress);
     customerBox.insertCustomer(customer);
+
     Navigator.pop(context);
-    /**if (widget.isUpdate) {
-      customerBox.deleteCustomer(0);
-    }
-    if (customerBox.(_cpfController.text)) {
-      showGeneralDialogErrorMessage('Este CPF já foi cadastrado!', context);
-    } else {
-       _customerBox.put(_cpfController.text, customer);
-      Navigator.pop(context);
-    } */
   }
 
   _getCep() async {

@@ -18,7 +18,7 @@ class CustomerScreen extends StatefulWidget {
 }
 
 class _CustomerScreenState extends State<CustomerScreen> {
-  late Stream<List<Customer>> streamCustomers;
+  late Stream<List<CustomerModel>> streamCustomers;
 
   @override
   void initState() {
@@ -44,7 +44,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                   if (!snapshot.hasData) {
                     return Center(child: const CircularProgressIndicator());
                   } else {
-                    final customers = snapshot.data as List<Customer>;
+                    final customers = snapshot.data as List<CustomerModel>;
                     if (customers.isEmpty) {
                       return Center(child: EmptyWidget());
                     } else {
@@ -52,6 +52,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                         itemCount: customers.length,
                         itemBuilder: (context, index) {
                           final customer = customers[index];
+
                           return CustomListTile(
                               deleteCallback: () =>
                                   customerBox.deleteCustomer(customer.id),
@@ -62,9 +63,9 @@ class _CustomerScreenState extends State<CustomerScreen> {
                                             isUpdate: true,
                                             customerKey: customer.id,
                                           ))),
-                              title: customer.name,
+                              title: customer.name!,
                               icon: Icons.person,
-                              subtitle: customer.cpf);
+                              subtitle: customer.cpf!);
                         },
                       );
                     }

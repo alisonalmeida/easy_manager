@@ -5,24 +5,30 @@ import 'package:objectbox/objectbox.dart';
 
 @Entity()
 @Sync()
-class Customer {
-  int id;
-  final String name;
-  final String cpf;
-  var address = Address;
-  final String phoneNumber1;
-  final String phoneNumber2;
-  final String email;
-  final String observations;
+class CustomerModel {
+  int id = 0;
+  final String? name;
+  final String? cpf;
+  String? _address;
+  final String? phoneNumber1;
+  final String? phoneNumber2;
+  final String? email;
+  final String? observations;
 
-  Customer({
-    this.id = 0,
+  CustomerModel({
     required this.name,
     required this.cpf,
-    //TODO handle address  this.address = Address,
     required this.phoneNumber1,
     required this.phoneNumber2,
     required this.email,
     required this.observations,
   });
+
+  setAddress(Address? address) {
+    _address = addressToJson(address!).toString();
+  }
+
+  String get getAddress {
+    return _address!;
+  }
 }

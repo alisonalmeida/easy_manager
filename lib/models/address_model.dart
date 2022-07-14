@@ -1,22 +1,11 @@
-import 'package:objectbox/objectbox.dart';
+import 'dart:convert';
 
-//flutter pub run build_runner build --delete-conflicting-outputs
+Address addressFromJson(String str) => Address.fromJson(json.decode(str));
 
-@Entity()
-@Sync()
+String addressToJson(Address data) => json.encode(data.toJson());
+
 class Address {
-  int id;
-
-  String? cep;
-  String? logradouro;
-  String? complemento;
-  String? bairro;
-  String? localidade;
-  String? uf;
-  String? numero;
-
   Address({
-    this.id = 0,
     this.cep,
     this.logradouro,
     this.complemento,
@@ -26,13 +15,31 @@ class Address {
     this.numero,
   });
 
-  factory Address.fromJson(Map<String, dynamic> json) {
-    return Address(
-        bairro: json['bairro'],
-        cep: json['cep'],
-        complemento: json['complemento'],
-        localidade: json['localidade'],
-        logradouro: json['logradouro'],
-        uf: json['uf']);
-  }
+  String? cep;
+  String? logradouro;
+  String? complemento;
+  String? bairro;
+  String? localidade;
+  String? uf;
+  String? numero;
+
+  factory Address.fromJson(Map<String, dynamic> json) => Address(
+        cep: json["cep"],
+        logradouro: json["logradouro"],
+        complemento: json["complemento"],
+        bairro: json["bairro"],
+        localidade: json["localidade"],
+        uf: json["uf"],
+        numero: json["numero"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "cep": cep,
+        "logradouro": logradouro,
+        "complemento": complemento,
+        "bairro": bairro,
+        "localidade": localidade,
+        "uf": uf,
+        "numero": numero,
+      };
 }

@@ -1,7 +1,5 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:convert';
-
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/core/cep_network.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
@@ -51,12 +49,22 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
 
     if (widget.isUpdate) {
       keyToDelete = widget.customerKey!;
+      Address address = Address();
       CustomerModel? customer = customerBox.getCustomer(widget.customerKey!);
       _nameController.text = customer!.name!;
       _cpfController.text = customer.cpf!;
       _phoneNumber1Controller.text = customer.phoneNumber1!;
       _phoneNumber2Controller.text = customer.phoneNumber2!;
       _emailController.text = customer.email!;
+
+      address = addressFromJson(customer.getAddress);
+      _cepController.text = address.cep!;
+      _districtController.text = address.bairro!;
+      _streetController.text = address.logradouro!;
+      _numberController.text = address.numero!;
+      _complementController.text = address.complemento!;
+      _ufController.text = address.uf!;
+      _cityController.text = address.localidade!;
     }
 
     super.initState();
@@ -74,12 +82,18 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
     CustomerModel customer = CustomerModel(
         name: _nameController.text,
         cpf: _cpfController.text,
+        address: addressToJson(address),
         phoneNumber1: _phoneNumber1Controller.text,
         phoneNumber2: _phoneNumber2Controller.text,
         email: _emailController.text,
         observations: _observationsController.text);
-    customer.setAddress(address);
-    print(customer.getAddress);
+
+    if (widget.isUpdate) {
+      keyToDelete = widget.customerKey!;
+
+      customerBox.deleteCustomer(keyToDelete);
+    }
+
     customerBox.insertCustomer(customer);
 
     Navigator.pop(context);

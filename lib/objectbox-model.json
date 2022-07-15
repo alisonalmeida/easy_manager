@@ -4,154 +4,49 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "1:6096745526676918888",
-      "lastPropertyId": "7:4424223396678540934",
+      "id": "1:2365236464968801082",
+      "lastPropertyId": "8:4600263567920326036",
       "name": "CustomerModel",
       "flags": 2,
       "properties": [
         {
-          "id": "1:2905278059935556278",
+          "id": "1:7387693164290253068",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "2:4308255842695407164",
+          "id": "2:2334349908535080129",
           "name": "name",
           "type": 9
         },
         {
-          "id": "3:7344863267148300617",
+          "id": "3:4646916574366634094",
           "name": "cpf",
           "type": 9
         },
         {
-          "id": "4:7750797284928702639",
+          "id": "4:3133613020234451435",
+          "name": "address",
+          "type": 9
+        },
+        {
+          "id": "5:1803342646050043060",
           "name": "phoneNumber1",
           "type": 9
         },
         {
-          "id": "5:3874780278597168301",
+          "id": "6:2674788447419926116",
           "name": "phoneNumber2",
           "type": 9
         },
         {
-          "id": "6:3204309303499994684",
+          "id": "7:4257358796482525620",
           "name": "email",
           "type": 9
         },
         {
-          "id": "7:4424223396678540934",
-          "name": "observations",
-          "type": 9
-        }
-      ],
-      "relations": []
-    },
-    {
-      "id": "2:8380036611178400582",
-      "lastPropertyId": "11:909406185116227943",
-      "name": "Product",
-      "flags": 2,
-      "properties": [
-        {
-          "id": "1:3634310660767420490",
-          "name": "id",
-          "type": 6,
-          "flags": 1
-        },
-        {
-          "id": "2:3161828027005894055",
-          "name": "name",
-          "type": 9
-        },
-        {
-          "id": "3:8795005333265386930",
-          "name": "cod",
-          "type": 9
-        },
-        {
-          "id": "4:4145531663805906188",
-          "name": "productProviderDocument",
-          "type": 9
-        },
-        {
-          "id": "5:7873407926317420495",
-          "name": "costValue",
-          "type": 8
-        },
-        {
-          "id": "6:2732359449565066400",
-          "name": "saleValue",
-          "type": 8
-        },
-        {
-          "id": "7:8693544200081200334",
-          "name": "brand",
-          "type": 9
-        },
-        {
-          "id": "8:5292428172125119137",
-          "name": "categoryName",
-          "type": 9
-        },
-        {
-          "id": "9:7889493180804346335",
-          "name": "unitMeasurement",
-          "type": 9
-        },
-        {
-          "id": "10:3883613023539087749",
-          "name": "minQuantity",
-          "type": 6
-        },
-        {
-          "id": "11:909406185116227943",
-          "name": "description",
-          "type": 9
-        }
-      ],
-      "relations": []
-    },
-    {
-      "id": "3:8938263830559719372",
-      "lastPropertyId": "7:6026878383761691778",
-      "name": "ProductProvider",
-      "flags": 2,
-      "properties": [
-        {
-          "id": "1:1466828455808098070",
-          "name": "id",
-          "type": 6,
-          "flags": 1
-        },
-        {
-          "id": "2:1637169941891762088",
-          "name": "name",
-          "type": 9
-        },
-        {
-          "id": "3:5541443896639696384",
-          "name": "document",
-          "type": 9
-        },
-        {
-          "id": "4:6235952779475568194",
-          "name": "phoneNumber1",
-          "type": 9
-        },
-        {
-          "id": "5:5270968492535395616",
-          "name": "phoneNumber2",
-          "type": 9
-        },
-        {
-          "id": "6:789607573461336477",
-          "name": "email",
-          "type": 9
-        },
-        {
-          "id": "7:6026878383761691778",
+          "id": "8:4600263567920326036",
           "name": "observations",
           "type": 9
         }
@@ -159,7 +54,7 @@
       "relations": []
     }
   ],
-  "lastEntityId": "3:8938263830559719372",
+  "lastEntityId": "1:2365236464968801082",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

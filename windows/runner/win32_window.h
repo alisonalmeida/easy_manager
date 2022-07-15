@@ -44,15 +44,15 @@ class Win32Window {
   // Inserts |content| into the window tree.
   void SetChildContent(HWND content);
 
-  // Returns the backing Window handle to enable Customers to set icon and other
+  // Returns the backing Window handle to enable clients to set icon and other
   // window properties. Returns nullptr if the window has been destroyed.
   HWND GetHandle();
 
   // If true, closing this window will quit the application.
   void SetQuitOnClose(bool quit_on_close);
 
-  // Return a RECT representing the bounds of the current Customer area.
-  RECT GetCustomerArea();
+  // Return a RECT representing the bounds of the current client area.
+  RECT GetClientArea();
 
  protected:
   // Processes and route salient window messages for mouse handling,
@@ -74,8 +74,8 @@ class Win32Window {
   friend class WindowClassRegistrar;
 
   // OS callback called by message pump. Handles the WM_NCCREATE message which
-  // is passed when the non-Customer area is being created and enables automatic
-  // non-Customer DPI scaling so that the non-Customer area automatically
+  // is passed when the non-client area is being created and enables automatic
+  // non-client DPI scaling so that the non-client area automatically
   // responsponds to changes in DPI. All other messages are handled by
   // MessageHandler.
   static LRESULT CALLBACK WndProc(HWND const window,

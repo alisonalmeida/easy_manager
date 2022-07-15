@@ -1,6 +1,9 @@
 import 'package:easy_manager/models/customer_model.dart';
 import 'package:easy_manager/objectbox.g.dart';
 
+
+
+
 class CustomerBox {
   late final Store _store;
   late final Box<CustomerModel> _customerBox;

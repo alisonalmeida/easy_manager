@@ -1,10 +1,9 @@
 import 'package:easy_manager/models/address_model.dart';
-import 'package:objectbox/objectbox.dart';
+
 
 //flutter pub run build_runner build --delete-conflicting-outputs
 
-@Entity()
-@Sync()
+
 class ProductProvider {
   int id;
 

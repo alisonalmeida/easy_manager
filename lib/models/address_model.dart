@@ -1,11 +1,8 @@
 import 'dart:convert';
 
-Address addressFromJson(String str) => Address.fromJson(json.decode(str));
-
-String addressToJson(Address data) => json.encode(data.toJson());
-
 class Address {
   Address({
+    int id = 0,
     this.cep,
     this.logradouro,
     this.complemento,
@@ -43,3 +40,7 @@ class Address {
         "numero": numero,
       };
 }
+
+Address addressFromJson(String str) => Address.fromJson(json.decode(str));
+
+String addressToJson(Address data) => json.encode(data.toJson());

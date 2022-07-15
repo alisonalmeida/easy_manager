@@ -1,5 +1,7 @@
 import 'package:easy_manager/models/address_model.dart';
-import 'package:objectbox/objectbox.dart';
+import 'package:easy_manager/objectbox.g.dart';
+
+
 
 //flutter pub run build_runner build --delete-conflicting-outputs
 
@@ -9,7 +11,7 @@ class CustomerModel {
   int id = 0;
   final String? name;
   final String? cpf;
-  String? _address;
+  String? address;
   final String? phoneNumber1;
   final String? phoneNumber2;
   final String? email;
@@ -18,6 +20,7 @@ class CustomerModel {
   CustomerModel({
     required this.name,
     required this.cpf,
+    this.address,
     required this.phoneNumber1,
     required this.phoneNumber2,
     required this.email,
@@ -25,10 +28,10 @@ class CustomerModel {
   });
 
   setAddress(Address? address) {
-    _address = addressToJson(address!).toString();
+    this.address = addressToJson(address!).toString();
   }
 
   String get getAddress {
-    return _address!;
+    return address!;
   }
 }

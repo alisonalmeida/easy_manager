@@ -1,8 +1,6 @@
 //flutter pub run build_runner build --delete-conflicting-outputs
-import 'package:objectbox/objectbox.dart';
 
-@Entity()
-@Sync()
+
 class Product {
   int id;
   final String name;

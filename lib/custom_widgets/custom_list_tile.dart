@@ -31,10 +31,19 @@ class CustomListTile extends StatelessWidget {
       child: ListTile(
         trailing: Wrap(
           children: [
-            IconButton(icon: const Icon(Icons.edit), onPressed: editCallback),
+            IconButton(
+                icon: const Icon(
+                  Icons.edit,
+                  color: Colors.blue,
+                ),
+                onPressed: editCallback),
             const VerticalDivider(),
             IconButton(
-                icon: const Icon(Icons.delete), onPressed: deleteCallback),
+                icon: const Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                ),
+                onPressed: deleteCallback),
           ],
         ),
         leading: Icon(icon, color: Colors.black),

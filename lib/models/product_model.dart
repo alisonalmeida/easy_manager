@@ -1,6 +1,11 @@
 //flutter pub run build_runner build --delete-conflicting-outputs
 
+import 'package:easy_manager/objectbox.g.dart';
 
+import 'db_model.dart';
+
+@Entity()
+@Sync()
 class Product {
   int id;
   final String name;
@@ -13,6 +18,8 @@ class Product {
   final String unitMeasurement;
   final int minQuantity;
   final String description;
+
+  final dbModel = ToOne<DbModelBox>();
 
   Product(
       {this.id = 0,

@@ -2,16 +2,20 @@ import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 
+typedef FutureCallback = Future Function();
+
 class CustomAppBar extends StatelessWidget implements PreferredSize {
   @override
   const CustomAppBar({
     Key? key,
     required this.title,
     required this.backgroundColor,
+    required this.callback,
   }) : super(key: key);
 
   final String title;
   final Color backgroundColor;
+  final FutureCallback callback;
 
   @override
   Size get preferredSize => const Size.fromHeight(100);
@@ -31,7 +35,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSize {
               size: 45,
               borderColor: woodSmoke,
               color: white,
-              callback: () => Navigator.pop(context),
+              callback: callback,
               shadowColor: woodSmoke,
               iconPath: 'lib/assets/svg/arrow_back.svg'),
           Expanded(

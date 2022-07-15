@@ -5,19 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CustomTextField extends StatelessWidget {
-  CustomTextField({
-    Key? key,
-    required this.controller,
-    required this.name,
-    required this.textInputAction,
-    this.callback,
-    this.textInputFormatterList,
-    this.textInputType,
-    this.prefixIcon,
-    this.minLines,
-    this.maxLines,
-    this.focusNode,
-  }) : super(key: key);
+  CustomTextField(
+      {Key? key,
+      required this.controller,
+      required this.name,
+      required this.textInputAction,
+      this.callback,
+      this.textInputFormatterList,
+      this.textInputType,
+      this.prefixIcon,
+      this.minLines,
+      this.maxLines,
+      this.focusNode,
+      this.maxLength})
+      : super(key: key);
 
   final List<TextInputFormatter>? textInputFormatterList;
   final TextInputType? textInputType;
@@ -29,10 +30,12 @@ class CustomTextField extends StatelessWidget {
   final int? minLines;
   final int? maxLines;
   final FocusNode? focusNode;
+  final int? maxLength;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      maxLength: maxLength,
       focusNode: focusNode,
       keyboardType: textInputType,
       inputFormatters: textInputFormatterList,
@@ -42,6 +45,7 @@ class CustomTextField extends StatelessWidget {
       minLines: minLines,
       maxLines: maxLines,
       decoration: InputDecoration(
+          counterText: '',
           prefixIcon: prefixIcon,
           fillColor: white,
           filled: true,

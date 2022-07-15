@@ -8,8 +8,7 @@ import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field_with_data.dart';
-import 'package:easy_manager/models/product_model.dart';
-import 'package:easy_manager/models/product_provider_model.dart';
+
 import 'package:easy_manager/screens/crud_provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -92,10 +91,10 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: pastelPink,
-      appBar: CustomAppBar(
+      /**appBar: CustomAppBar(
         backgroundColor: pastelPink,
         title: 'Cadastrar Produto',
-      ),
+      ), */
       body: Container(
         color: pastelPink,
         padding: EdgeInsets.symmetric(horizontal: 15),

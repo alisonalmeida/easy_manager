@@ -1,7 +1,6 @@
 import 'package:easy_manager/models/address_model.dart';
+import 'package:easy_manager/models/db_model.dart';
 import 'package:easy_manager/objectbox.g.dart';
-
-
 
 //flutter pub run build_runner build --delete-conflicting-outputs
 
@@ -17,14 +16,16 @@ class CustomerModel {
   final String? email;
   final String? observations;
 
+  final dbModel = ToOne<DbModelBox>();
+
   CustomerModel({
-    required this.name,
-    required this.cpf,
+    this.name,
+    this.cpf,
     this.address,
-    required this.phoneNumber1,
-    required this.phoneNumber2,
-    required this.email,
-    required this.observations,
+    this.phoneNumber1,
+    this.phoneNumber2,
+    this.email,
+    this.observations,
   });
 
   setAddress(Address? address) {

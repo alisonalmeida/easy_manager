@@ -1,23 +1,39 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
+
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/core/cep_network.dart';
+import 'package:easy_manager/core/upper_case_text_formatter.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
+import 'package:easy_manager/custom_widgets/custom_address_area.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
+import 'package:easy_manager/custom_widgets/custom_cancel_save_buttons.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/address_model.dart';
 import 'package:easy_manager/models/customer_model.dart';
+import 'package:easy_manager/models/db_model.dart';
+import 'package:easy_manager/models/product_model.dart';
+import 'package:easy_manager/objectbox.g.dart';
+
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/services.dart';
 
 class CrudCustomerScreen extends StatefulWidget {
-  const CrudCustomerScreen({Key? key, required this.isUpdate, this.customerKey})
+  const CrudCustomerScreen(
+      {Key? key,
+      required this.isUpdate,
+      this.customerKey,
+      required this.customerBox})
       : super(key: key);
+
+  final Box<CustomerModel> customerBox;
+
   final bool isUpdate;
   final int? customerKey;
 
@@ -27,8 +43,8 @@ class CrudCustomerScreen extends StatefulWidget {
 
 class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
   late FocusNode _focusNode;
-
   late int keyToDelete;
+
   final _nameController = TextEditingController();
   final _cpfController = TextEditingController();
   final _cepController = TextEditingController();
@@ -45,6 +61,7 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
 
   @override
   void initState() {
+    /*
     _focusNode = FocusNode();
 
     if (widget.isUpdate) {
@@ -66,7 +83,7 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
       _ufController.text = address.uf!;
       _cityController.text = address.localidade!;
     }
-
+*/
     super.initState();
   }
 
@@ -90,11 +107,12 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
 
     if (widget.isUpdate) {
       keyToDelete = widget.customerKey!;
+      widget.customerBox.put(customer);
 
-      customerBox.deleteCustomer(keyToDelete);
+      //customerBox.deleteCustomer(keyToDelete);
     }
 
-    customerBox.insertCustomer(customer);
+    //customerBox.insertCustomer(customer);
 
     Navigator.pop(context);
   }
@@ -104,12 +122,12 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
     try {
       final Address address;
       var r = await CepHelper.getData(
-          _cepController.text.replaceAll(RegExp(r'[^0-9]'), ''));
+          _cepController.text.replaceAll(RegExp(r'[^0-9]'), '').toUpperCase());
       address = Address.fromJson(r);
-      _ufController.text = address.uf!;
-      _cityController.text = address.localidade!;
-      _streetController.text = address.logradouro!;
-      _districtController.text = address.bairro!;
+      _ufController.text = address.uf!.toUpperCase();
+      _cityController.text = address.localidade!.toUpperCase();
+      _streetController.text = address.logradouro!.toUpperCase();
+      _districtController.text = address.bairro!.toUpperCase();
 
       if (!mounted) return; //check if the data has come
       Navigator.pop(context);
@@ -122,128 +140,93 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: dandelion,
-      appBar: CustomAppBar(
+    return WillPopScope(
+      onWillPop: () async {
+        final shouldPop = await _showConfirmationExitDialog();
+        return shouldPop ?? false;
+      },
+      child: Scaffold(
         backgroundColor: dandelion,
-        title: 'Cadastrar Cliente',
-      ),
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 15),
-        color: dandelion,
-        child: ListView(
-          children: [
-            SizedBox(height: 5),
-            CustomTextField(
-                textInputType: TextInputType.name,
-                controller: _nameController,
-                name: 'Nome',
-                textInputAction: TextInputAction.next),
-            SizedBox(height: 5),
-            CustomTextField(
-                textInputType: TextInputType.number,
-                textInputFormatterList: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  TextInputMask(mask: '999.999.999-99')
-                ],
-                controller: _cpfController,
-                name: 'CPF',
-                textInputAction: TextInputAction.next),
-            SizedBox(height: 5),
-            CustomTextField(
-                textInputType: TextInputType.emailAddress,
-                controller: _emailController,
-                name: 'Email',
-                textInputAction: TextInputAction.next),
-            SizedBox(height: 5),
-            Row(
-              children: [
-                Expanded(
-                    child: CustomTextField(
-                        textInputType: TextInputType.number,
-                        textInputFormatterList: [
-                          TextInputMask(mask: '99999-999')
-                        ],
-                        controller: _cepController,
-                        name: 'CEP',
-                        textInputAction: TextInputAction.done,
-                        callback: () => _getCep)),
-                ButtonRoundWithShadow(
-                    borderColor: woodSmoke,
-                    shadowColor: woodSmoke,
-                    color: white,
-                    iconPath: 'lib/assets/svg/refresh.svg',
-                    size: 50,
-                    callback: () => _getCep),
-              ],
-            ),
-            SizedBox(height: 5),
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: CustomTextField(
-                      controller: _ufController,
-                      name: 'UF',
-                      textInputAction: TextInputAction.next),
-                ),
-                Spacer(flex: 1),
-                Expanded(
-                  flex: 8,
-                  child: CustomTextField(
-                      controller: _cityController,
-                      name: 'Cidade',
-                      textInputAction: TextInputAction.next),
-                )
-              ],
-            ),
-            SizedBox(height: 5),
-            CustomTextField(
-                controller: _streetController,
-                name: 'Rua',
-                textInputAction: TextInputAction.next),
-            SizedBox(height: 5),
-            CustomTextField(
-                controller: _numberController,
-                name: 'Número',
-                textInputAction: TextInputAction.next),
-            SizedBox(height: 5),
-            CustomTextField(
-                controller: _districtController,
-                name: 'Bairro',
-                textInputAction: TextInputAction.next),
-            SizedBox(height: 5),
-            CustomTextField(
-                controller: _complementController,
-                name: 'Complemento',
-                textInputAction: TextInputAction.next),
-            SizedBox(height: 10),
-            CustomTextField(
-                controller: _observationsController,
-                name: 'Observações',
-                textInputAction: TextInputAction.next),
-            SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                    flex: 4,
-                    child: CustomButtonCancel(
-                        text: 'Cancelar',
-                        onTap: () {
-                          Navigator.pop(context);
-                        })),
-                Spacer(flex: 1),
-                Expanded(
-                    flex: 4,
-                    child: CustomButtonConfirm(
-                        text: 'Salvar', onTap: () => _addUpdate())),
-              ],
-            ),
-            SizedBox(height: 50),
-          ],
+        appBar: CustomAppBar(
+          callback: _showConfirmationExitDialog,
+          backgroundColor: dandelion,
+          title: 'Cadastrar Cliente',
+        ),
+        body: Container(
+          padding: EdgeInsets.symmetric(horizontal: 15),
+          color: dandelion,
+          child: ListView(
+            children: [
+              SizedBox(height: 5),
+              CustomTextField(
+                  textInputFormatterList: [UpperCaseTextFormatter()],
+                  textInputType: TextInputType.name,
+                  controller: _nameController,
+                  name: 'Nome',
+                  textInputAction: TextInputAction.next),
+              SizedBox(height: 5),
+              CustomTextField(
+                  textInputType: TextInputType.number,
+                  textInputFormatterList: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    TextInputMask(mask: '999.999.999-99')
+                  ],
+                  controller: _cpfController,
+                  name: 'CPF',
+                  textInputAction: TextInputAction.next),
+              SizedBox(height: 5),
+              CustomTextField(
+                  textInputType: TextInputType.emailAddress,
+                  controller: _emailController,
+                  name: 'Email',
+                  textInputAction: TextInputAction.next),
+              SizedBox(height: 5),
+              CustomAddressArea(
+                  cepController: _cepController,
+                  callback: _getCep,
+                  ufController: _ufController,
+                  cityController: _cityController,
+                  streetController: _streetController,
+                  districtController: _districtController,
+                  numberController: _numberController,
+                  complementController: _complementController,
+                  focusNode: _focusNode),
+              SizedBox(height: 10),
+              CustomTextField(
+                  minLines: 3,
+                  maxLines: 3,
+                  textInputFormatterList: [UpperCaseTextFormatter()],
+                  controller: _observationsController,
+                  name: 'Observações',
+                  textInputAction: TextInputAction.done),
+              SizedBox(height: 40),
+              CustomCancelSaveButtons(
+                  saveCallback: _addUpdate,
+                  cancelCallback: () {
+                    _showConfirmationExitDialog();
+                  }),
+              SizedBox(height: 50),
+            ],
+          ),
         ),
       ),
     );
   }
+
+  Future<bool?> _showConfirmationExitDialog() async => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: Text('O cadastro não foi salvo. Deseja realmente sair?'),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: Text('NÃO')),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                    Navigator.pop(context, true);
+                  },
+                  child: Text('SIM'))
+            ],
+          ));
 }

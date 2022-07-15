@@ -1,7 +1,11 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, avoid_print
 
+import 'dart:io';
+
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/central_grid_Button.dart';
+import 'package:easy_manager/models/db_model.dart';
+
 import 'package:easy_manager/screens/customer_screen.dart';
 import 'package:easy_manager/screens/product_screen.dart';
 import 'package:easy_manager/screens/provider_screen.dart';
@@ -99,13 +103,15 @@ class _HomePageState extends State<HomePage> {
                 iconPath: kpathSvgPdv,
                 callback: () {}),
             CentralGridButton(
-                title: 'Gráficos',
+                //title: 'Gráficos',
+                title: 'TESTE',
                 backgroundColor: blueBlue,
                 borderColor: blueBlueShadow,
                 shadowColor: blueBlueShadow,
                 color: white,
                 iconPath: kpathSvgChart,
-                callback: () {}),
+                callback: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => TextPage()))),
             CentralGridButton(
                 title: 'Entrada e Saída',
                 backgroundColor: grey,
@@ -117,6 +123,25 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class TextPage extends StatefulWidget {
+  const TextPage({Key? key}) : super(key: key);
+
+  @override
+  State<TextPage> createState() => _TextPageState();
+}
+
+class _TextPageState extends State<TextPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text('data'),
+      ),
+      floatingActionButton: FloatingActionButton(onPressed: () {}),
     );
   }
 }

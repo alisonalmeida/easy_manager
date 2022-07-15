@@ -29,10 +29,10 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: carribeanGreen,
-        appBar: CustomAppBar(
+        /**appBar: CustomAppBar(
           backgroundColor: carribeanGreen,
           title: 'Fornecedores',
-        ),
+        ), */
         body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5),
             child: EmptyWidget()

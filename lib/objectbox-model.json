@@ -4,58 +4,159 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "1:2365236464968801082",
-      "lastPropertyId": "8:4600263567920326036",
+      "id": "1:1399651156766670846",
+      "lastPropertyId": "9:6566206054860769635",
       "name": "CustomerModel",
       "flags": 2,
       "properties": [
         {
-          "id": "1:7387693164290253068",
+          "id": "1:738306332474448156",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "2:2334349908535080129",
+          "id": "2:4168192243499101408",
           "name": "name",
           "type": 9
         },
         {
-          "id": "3:4646916574366634094",
+          "id": "3:5376071269721554467",
           "name": "cpf",
           "type": 9
         },
         {
-          "id": "4:3133613020234451435",
+          "id": "4:3913787341413083196",
           "name": "address",
           "type": 9
         },
         {
-          "id": "5:1803342646050043060",
+          "id": "5:7850642742363070500",
           "name": "phoneNumber1",
           "type": 9
         },
         {
-          "id": "6:2674788447419926116",
+          "id": "6:3434417282956572904",
           "name": "phoneNumber2",
           "type": 9
         },
         {
-          "id": "7:4257358796482525620",
+          "id": "7:5748268620982214667",
           "name": "email",
           "type": 9
         },
         {
-          "id": "8:4600263567920326036",
+          "id": "8:2556416742415726205",
           "name": "observations",
           "type": 9
+        },
+        {
+          "id": "9:6566206054860769635",
+          "name": "dbModelId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "1:4060896562095469232",
+          "relationTarget": "DbModelBox"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:2710106255024945083",
+      "lastPropertyId": "2:7169493009711651190",
+      "name": "DbModelBox",
+      "flags": 2,
+      "properties": [
+        {
+          "id": "1:4734107737592164032",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:7169493009711651190",
+          "name": "name",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:1838691287266921897",
+      "lastPropertyId": "12:7270855345971225577",
+      "name": "Product",
+      "flags": 2,
+      "properties": [
+        {
+          "id": "1:753790713790212773",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:691724664658707299",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:427613546754370745",
+          "name": "cod",
+          "type": 9
+        },
+        {
+          "id": "4:7016646232445078794",
+          "name": "productProviderDocument",
+          "type": 9
+        },
+        {
+          "id": "5:3838245072502330342",
+          "name": "costValue",
+          "type": 8
+        },
+        {
+          "id": "6:9141532895154074082",
+          "name": "saleValue",
+          "type": 8
+        },
+        {
+          "id": "7:2608728835041020836",
+          "name": "brand",
+          "type": 9
+        },
+        {
+          "id": "8:3059304262195738341",
+          "name": "categoryName",
+          "type": 9
+        },
+        {
+          "id": "9:7079535850861730337",
+          "name": "unitMeasurement",
+          "type": 9
+        },
+        {
+          "id": "10:6047007386077162034",
+          "name": "minQuantity",
+          "type": 6
+        },
+        {
+          "id": "11:1894959835434290737",
+          "name": "description",
+          "type": 9
+        },
+        {
+          "id": "12:7270855345971225577",
+          "name": "dbModelId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "2:8452940926833556567",
+          "relationTarget": "DbModelBox"
         }
       ],
       "relations": []
     }
   ],
-  "lastEntityId": "1:2365236464968801082",
-  "lastIndexId": "0:0",
+  "lastEntityId": "3:1838691287266921897",
+  "lastIndexId": "2:8452940926833556567",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

@@ -28,10 +28,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: pastelPink,
-        appBar: CustomAppBar(
+        /**appBar: CustomAppBar(
           backgroundColor: pastelPink,
           title: 'Produtos',
-        ),
+        ), */
         body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5),
             child: Text(

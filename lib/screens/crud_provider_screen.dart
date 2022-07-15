@@ -27,7 +27,7 @@ class CrudProviderScreen extends StatefulWidget {
 }
 
 class _CrudProviderScreenState extends State<CrudProviderScreen> {
-  //late FocusNode _focusNode;
+  late FocusNode _focusNode;
   late String keyToDelete;
 
   final _providerNameController = TextEditingController();
@@ -115,7 +115,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
 
       if (!mounted) return; //check if the data has come
       Navigator.pop(context);
-      // _focusNode.requestFocus();
+      _focusNode.requestFocus();
     } catch (e) {
       Navigator.pop(context);
       showGeneralDialogErrorMessage('Erro: $e', context);
@@ -146,8 +146,8 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: carribeanGreen,
-      appBar: CustomAppBar(
-          title: 'Cadastrar Fornecedor', backgroundColor: carribeanGreen),
+      /**appBar: CustomAppBar(
+          title: 'Cadastrar Fornecedor', backgroundColor: carribeanGreen), */
       body: Container(
         color: carribeanGreen,
         padding: EdgeInsets.symmetric(horizontal: 15),

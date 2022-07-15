@@ -1,8 +1,8 @@
-import 'package:easy_manager/models/customer_model.dart';
-import 'package:easy_manager/objectbox.g.dart';
 
 
 
+/**import 'package:easy_manager/models/customer_model.dart';
+import 'package:objectbox/objectbox.dart';
 
 class CustomerBox {
   late final Store _store;
@@ -15,8 +15,8 @@ class CustomerBox {
   static Future<CustomerBox> init() async {
     final store = await openStore();
     if (Sync.isAvailable()) {
-      final syncClient =
-          Sync.client(store, 'ws://0.0.0.0:9999', SyncCredentials.none());
+      final syncClient = //'ws://0.0.0.0:9999'
+          Sync.client(store, '', SyncCredentials.none());
       syncClient.start();
     }
 
@@ -32,3 +32,4 @@ class CustomerBox {
   bool deleteCustomer(int id) => _customerBox.remove(id);
   int clearAllCustomers() => _customerBox.removeAll();
 }
+ */

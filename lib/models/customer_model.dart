@@ -1,13 +1,13 @@
 import 'package:easy_manager/models/address_model.dart';
-import 'package:easy_manager/models/db_model.dart';
-import 'package:easy_manager/objectbox.g.dart';
+import 'package:easy_manager/models/company_model.dart';
+import 'package:objectbox/objectbox.dart';
 
 //flutter pub run build_runner build --delete-conflicting-outputs
 
 @Entity()
 @Sync()
 class CustomerModel {
-  int id = 0;
+  int id;
   final String? name;
   final String? cpf;
   String? address;
@@ -16,9 +16,10 @@ class CustomerModel {
   final String? email;
   final String? observations;
 
-  final dbModel = ToOne<DbModelBox>();
+  final dbModel = ToOne<CompanyModel>();
 
   CustomerModel({
+    this.id = 0,
     this.name,
     this.cpf,
     this.address,

@@ -1,35 +1,29 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:easy_manager/consts.dart';
-import 'package:easy_manager/core/show_list_items.dart';
+
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field_with_data.dart';
+import 'package:easy_manager/main.dart';
+import 'package:easy_manager/models/product_model.dart';
 
 import 'package:easy_manager/screens/crud_provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class CrudProductScreen extends StatefulWidget {
-  const CrudProductScreen({Key? key, required this.isUpdate, this.productkey})
-      : super(key: key);
-
-  final bool isUpdate;
-  final String? productkey;
+  const CrudProductScreen({Key? key, this.productkey}) : super(key: key);
+  final int? productkey;
 
   @override
   State<CrudProductScreen> createState() => _CrudProductScreenState();
 }
 
 class _CrudProductScreenState extends State<CrudProductScreen> {
-  // late Box _productBox;
-  //late String keyToChange;
-  //late Box _providerBox;
-  //late String choosedDocument;
-
   final _productCodeController = TextEditingController();
   final _productNameController = TextEditingController();
   final _productProviderController = TextEditingController();
@@ -43,12 +37,9 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
 
   @override
   void initState() {
-    /**
-    _productBox = Hive.box(kProductBox);
-    _providerBox = Hive.box(kProductProviderBox);
-    if (widget.isUpdate) {
-      keyToChange = widget.productkey!;
-      final Product product = _productBox.get(keyToChange);
+    if (widget.productkey != null) {
+      final Product product = companyDB.getProduct(widget.productkey!)!;
+
       _productCodeController.text = product.cod;
       _productNameController.text = product.name;
       _productProviderController.text = product.productProviderDocument;
@@ -58,13 +49,12 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
       _costValueController.text = product.costValue.toString();
       _saleValueController.text = product.saleValue.toString();
       _descriptionController.text = product.description;
-    } */
+    }
 
     super.initState();
   }
 
-  _saveUpdate() async {
-    /**
+  _saveUpdate() {
     Product product = Product(
         cod: _productCodeController.text,
         name: _productNameController.text,
@@ -76,15 +66,9 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
         saleValue: double.parse(_saleValueController.text),
         minQuantity: int.parse(_minQuantityController.text),
         description: _descriptionController.text);
-    if (widget.isUpdate) {
-      await _productBox.delete(keyToChange);
-    }
-    if (_productBox.containsKey(_productCodeController.text)) {
-      showGeneralDialogErrorMessage('Este Código já foi cadastrado!', context);
-    } else {
-      await _productBox.put(_productCodeController.text, product);
-      Navigator.pop(context);
-    } */
+
+    companyDB.insertProduct(product);
+    Navigator.pop(context);
   }
 
   @override

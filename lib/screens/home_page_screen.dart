@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/central_grid_Button.dart';
-import 'package:easy_manager/models/db_model.dart';
+import 'package:easy_manager/models/company_model.dart';
 
 import 'package:easy_manager/screens/customer_screen.dart';
 import 'package:easy_manager/screens/product_screen.dart';

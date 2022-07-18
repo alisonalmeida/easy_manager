@@ -4,159 +4,154 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "1:1399651156766670846",
-      "lastPropertyId": "9:6566206054860769635",
+      "id": "1:2900324613353458353",
+      "lastPropertyId": "1:6515085215665968209",
+      "name": "CompanyModel",
+      "flags": 2,
+      "properties": [
+        {
+          "id": "1:6515085215665968209",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:3724661364271312780",
+      "lastPropertyId": "9:6481658844250504681",
       "name": "CustomerModel",
       "flags": 2,
       "properties": [
         {
-          "id": "1:738306332474448156",
+          "id": "1:618518267773695169",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "2:4168192243499101408",
+          "id": "2:2643728079121771193",
           "name": "name",
           "type": 9
         },
         {
-          "id": "3:5376071269721554467",
+          "id": "3:8225875551790968890",
           "name": "cpf",
           "type": 9
         },
         {
-          "id": "4:3913787341413083196",
+          "id": "4:9154378374120270675",
           "name": "address",
           "type": 9
         },
         {
-          "id": "5:7850642742363070500",
+          "id": "5:2883703553797511985",
           "name": "phoneNumber1",
           "type": 9
         },
         {
-          "id": "6:3434417282956572904",
+          "id": "6:1131031808488983874",
           "name": "phoneNumber2",
           "type": 9
         },
         {
-          "id": "7:5748268620982214667",
+          "id": "7:7636464957137760181",
           "name": "email",
           "type": 9
         },
         {
-          "id": "8:2556416742415726205",
+          "id": "8:4446009006854109512",
           "name": "observations",
           "type": 9
         },
         {
-          "id": "9:6566206054860769635",
+          "id": "9:6481658844250504681",
           "name": "dbModelId",
           "type": 11,
           "flags": 520,
-          "indexId": "1:4060896562095469232",
-          "relationTarget": "DbModelBox"
+          "indexId": "1:3837024491013073644",
+          "relationTarget": "CompanyModel"
         }
       ],
       "relations": []
     },
     {
-      "id": "2:2710106255024945083",
-      "lastPropertyId": "2:7169493009711651190",
-      "name": "DbModelBox",
-      "flags": 2,
-      "properties": [
-        {
-          "id": "1:4734107737592164032",
-          "name": "id",
-          "type": 6,
-          "flags": 1
-        },
-        {
-          "id": "2:7169493009711651190",
-          "name": "name",
-          "type": 9
-        }
-      ],
-      "relations": []
-    },
-    {
-      "id": "3:1838691287266921897",
-      "lastPropertyId": "12:7270855345971225577",
+      "id": "3:4724080572996396165",
+      "lastPropertyId": "12:5194393799315910983",
       "name": "Product",
       "flags": 2,
       "properties": [
         {
-          "id": "1:753790713790212773",
+          "id": "1:2366657580083728251",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "2:691724664658707299",
+          "id": "2:2443184290920863378",
           "name": "name",
           "type": 9
         },
         {
-          "id": "3:427613546754370745",
+          "id": "3:7920969372438584518",
           "name": "cod",
           "type": 9
         },
         {
-          "id": "4:7016646232445078794",
+          "id": "4:3096602043368090748",
           "name": "productProviderDocument",
           "type": 9
         },
         {
-          "id": "5:3838245072502330342",
+          "id": "5:8943226927139563229",
           "name": "costValue",
           "type": 8
         },
         {
-          "id": "6:9141532895154074082",
+          "id": "6:816972371483088797",
           "name": "saleValue",
           "type": 8
         },
         {
-          "id": "7:2608728835041020836",
+          "id": "7:1237694140961722442",
           "name": "brand",
           "type": 9
         },
         {
-          "id": "8:3059304262195738341",
+          "id": "8:5857001277010237823",
           "name": "categoryName",
           "type": 9
         },
         {
-          "id": "9:7079535850861730337",
+          "id": "9:495163170294020611",
           "name": "unitMeasurement",
           "type": 9
         },
         {
-          "id": "10:6047007386077162034",
+          "id": "10:4775057042693920361",
           "name": "minQuantity",
           "type": 6
         },
         {
-          "id": "11:1894959835434290737",
+          "id": "11:896752969512077727",
           "name": "description",
           "type": 9
         },
         {
-          "id": "12:7270855345971225577",
+          "id": "12:5194393799315910983",
           "name": "dbModelId",
           "type": 11,
           "flags": 520,
-          "indexId": "2:8452940926833556567",
-          "relationTarget": "DbModelBox"
+          "indexId": "2:3192283760878127987",
+          "relationTarget": "CompanyModel"
         }
       ],
       "relations": []
     }
   ],
-  "lastEntityId": "3:1838691287266921897",
-  "lastIndexId": "2:8452940926833556567",
+  "lastEntityId": "3:4724080572996396165",
+  "lastIndexId": "2:3192283760878127987",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

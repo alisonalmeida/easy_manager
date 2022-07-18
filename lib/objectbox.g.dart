@@ -13,85 +13,24 @@ import 'package:objectbox/internal.dart'; // generated code can access "internal
 import 'package:objectbox/objectbox.dart';
 import 'package:objectbox_sync_flutter_libs/objectbox_sync_flutter_libs.dart';
 
+import 'models/company_model.dart';
 import 'models/customer_model.dart';
-import 'models/db_model.dart';
 import 'models/product_model.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
 final _entities = <ModelEntity>[
   ModelEntity(
-      id: const IdUid(1, 1399651156766670846),
-      name: 'CustomerModel',
-      lastPropertyId: const IdUid(9, 6566206054860769635),
+      id: const IdUid(1, 2900324613353458353),
+      name: 'CompanyModel',
+      lastPropertyId: const IdUid(1, 6515085215665968209),
       flags: 2,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 738306332474448156),
+            id: const IdUid(1, 6515085215665968209),
             name: 'id',
             type: 6,
-            flags: 1),
-        ModelProperty(
-            id: const IdUid(2, 4168192243499101408),
-            name: 'name',
-            type: 9,
-            flags: 0),
-        ModelProperty(
-            id: const IdUid(3, 5376071269721554467),
-            name: 'cpf',
-            type: 9,
-            flags: 0),
-        ModelProperty(
-            id: const IdUid(4, 3913787341413083196),
-            name: 'address',
-            type: 9,
-            flags: 0),
-        ModelProperty(
-            id: const IdUid(5, 7850642742363070500),
-            name: 'phoneNumber1',
-            type: 9,
-            flags: 0),
-        ModelProperty(
-            id: const IdUid(6, 3434417282956572904),
-            name: 'phoneNumber2',
-            type: 9,
-            flags: 0),
-        ModelProperty(
-            id: const IdUid(7, 5748268620982214667),
-            name: 'email',
-            type: 9,
-            flags: 0),
-        ModelProperty(
-            id: const IdUid(8, 2556416742415726205),
-            name: 'observations',
-            type: 9,
-            flags: 0),
-        ModelProperty(
-            id: const IdUid(9, 6566206054860769635),
-            name: 'dbModelId',
-            type: 11,
-            flags: 520,
-            indexId: const IdUid(1, 4060896562095469232),
-            relationTarget: 'DbModelBox')
-      ],
-      relations: <ModelRelation>[],
-      backlinks: <ModelBacklink>[]),
-  ModelEntity(
-      id: const IdUid(2, 2710106255024945083),
-      name: 'DbModelBox',
-      lastPropertyId: const IdUid(2, 7169493009711651190),
-      flags: 2,
-      properties: <ModelProperty>[
-        ModelProperty(
-            id: const IdUid(1, 4734107737592164032),
-            name: 'id',
-            type: 6,
-            flags: 1),
-        ModelProperty(
-            id: const IdUid(2, 7169493009711651190),
-            name: 'name',
-            type: 9,
-            flags: 0)
+            flags: 1)
       ],
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[
@@ -100,73 +39,129 @@ final _entities = <ModelEntity>[
         ModelBacklink(name: 'products', srcEntity: 'Product', srcField: '')
       ]),
   ModelEntity(
-      id: const IdUid(3, 1838691287266921897),
-      name: 'Product',
-      lastPropertyId: const IdUid(12, 7270855345971225577),
+      id: const IdUid(2, 3724661364271312780),
+      name: 'CustomerModel',
+      lastPropertyId: const IdUid(9, 6481658844250504681),
       flags: 2,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 753790713790212773),
+            id: const IdUid(1, 618518267773695169),
             name: 'id',
             type: 6,
             flags: 1),
         ModelProperty(
-            id: const IdUid(2, 691724664658707299),
+            id: const IdUid(2, 2643728079121771193),
             name: 'name',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(3, 427613546754370745),
+            id: const IdUid(3, 8225875551790968890),
+            name: 'cpf',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(4, 9154378374120270675),
+            name: 'address',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(5, 2883703553797511985),
+            name: 'phoneNumber1',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(6, 1131031808488983874),
+            name: 'phoneNumber2',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(7, 7636464957137760181),
+            name: 'email',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(8, 4446009006854109512),
+            name: 'observations',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(9, 6481658844250504681),
+            name: 'dbModelId',
+            type: 11,
+            flags: 520,
+            indexId: const IdUid(1, 3837024491013073644),
+            relationTarget: 'CompanyModel')
+      ],
+      relations: <ModelRelation>[],
+      backlinks: <ModelBacklink>[]),
+  ModelEntity(
+      id: const IdUid(3, 4724080572996396165),
+      name: 'Product',
+      lastPropertyId: const IdUid(12, 5194393799315910983),
+      flags: 2,
+      properties: <ModelProperty>[
+        ModelProperty(
+            id: const IdUid(1, 2366657580083728251),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        ModelProperty(
+            id: const IdUid(2, 2443184290920863378),
+            name: 'name',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(3, 7920969372438584518),
             name: 'cod',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(4, 7016646232445078794),
+            id: const IdUid(4, 3096602043368090748),
             name: 'productProviderDocument',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(5, 3838245072502330342),
+            id: const IdUid(5, 8943226927139563229),
             name: 'costValue',
             type: 8,
             flags: 0),
         ModelProperty(
-            id: const IdUid(6, 9141532895154074082),
+            id: const IdUid(6, 816972371483088797),
             name: 'saleValue',
             type: 8,
             flags: 0),
         ModelProperty(
-            id: const IdUid(7, 2608728835041020836),
+            id: const IdUid(7, 1237694140961722442),
             name: 'brand',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(8, 3059304262195738341),
+            id: const IdUid(8, 5857001277010237823),
             name: 'categoryName',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(9, 7079535850861730337),
+            id: const IdUid(9, 495163170294020611),
             name: 'unitMeasurement',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(10, 6047007386077162034),
+            id: const IdUid(10, 4775057042693920361),
             name: 'minQuantity',
             type: 6,
             flags: 0),
         ModelProperty(
-            id: const IdUid(11, 1894959835434290737),
+            id: const IdUid(11, 896752969512077727),
             name: 'description',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(12, 7270855345971225577),
+            id: const IdUid(12, 5194393799315910983),
             name: 'dbModelId',
             type: 11,
             flags: 520,
-            indexId: const IdUid(2, 8452940926833556567),
-            relationTarget: 'DbModelBox')
+            indexId: const IdUid(2, 3192283760878127987),
+            relationTarget: 'CompanyModel')
       ],
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[])
@@ -192,8 +187,8 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(3, 1838691287266921897),
-      lastIndexId: const IdUid(2, 8452940926833556567),
+      lastEntityId: const IdUid(3, 4724080572996396165),
+      lastIndexId: const IdUid(2, 3192283760878127987),
       lastRelationId: const IdUid(0, 0),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [],
@@ -205,8 +200,49 @@ ModelDefinition getObjectBoxModel() {
       version: 1);
 
   final bindings = <Type, EntityDefinition>{
-    CustomerModel: EntityDefinition<CustomerModel>(
+    CompanyModel: EntityDefinition<CompanyModel>(
         model: _entities[0],
+        toOneRelations: (CompanyModel object) => [],
+        toManyRelations: (CompanyModel object) => {
+              RelInfo<CustomerModel>.toOneBacklink(9, object.id,
+                      (CustomerModel srcObject) => srcObject.dbModel):
+                  object.costumers,
+              RelInfo<Product>.toOneBacklink(
+                      12, object.id, (Product srcObject) => srcObject.dbModel):
+                  object.products
+            },
+        getId: (CompanyModel object) => object.id,
+        setId: (CompanyModel object, int id) {
+          object.id = id;
+        },
+        objectToFB: (CompanyModel object, fb.Builder fbb) {
+          fbb.startTable(2);
+          fbb.addInt64(0, object.id);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+
+          final object = CompanyModel(
+              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0));
+          InternalToManyAccess.setRelInfo(
+              object.costumers,
+              store,
+              RelInfo<CustomerModel>.toOneBacklink(
+                  9, object.id, (CustomerModel srcObject) => srcObject.dbModel),
+              store.box<CompanyModel>());
+          InternalToManyAccess.setRelInfo(
+              object.products,
+              store,
+              RelInfo<Product>.toOneBacklink(
+                  12, object.id, (Product srcObject) => srcObject.dbModel),
+              store.box<CompanyModel>());
+          return object;
+        }),
+    CustomerModel: EntityDefinition<CustomerModel>(
+        model: _entities[1],
         toOneRelations: (CustomerModel object) => [object.dbModel],
         toManyRelations: (CustomerModel object) => {},
         getId: (CustomerModel object) => object.id,
@@ -249,6 +285,7 @@ ModelDefinition getObjectBoxModel() {
           final rootOffset = buffer.derefObject(0);
 
           final object = CustomerModel(
+              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
               name: const fb.StringReader(asciiOptimization: true)
                   .vTableGetNullable(buffer, rootOffset, 6),
               cpf: const fb.StringReader(asciiOptimization: true)
@@ -262,57 +299,10 @@ ModelDefinition getObjectBoxModel() {
               email: const fb.StringReader(asciiOptimization: true)
                   .vTableGetNullable(buffer, rootOffset, 16),
               observations: const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 18))
-            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+                  .vTableGetNullable(buffer, rootOffset, 18));
           object.dbModel.targetId =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 20, 0);
           object.dbModel.attach(store);
-          return object;
-        }),
-    DbModelBox: EntityDefinition<DbModelBox>(
-        model: _entities[1],
-        toOneRelations: (DbModelBox object) => [],
-        toManyRelations: (DbModelBox object) => {
-              RelInfo<CustomerModel>.toOneBacklink(9, object.id,
-                      (CustomerModel srcObject) => srcObject.dbModel):
-                  object.costumers,
-              RelInfo<Product>.toOneBacklink(
-                      12, object.id, (Product srcObject) => srcObject.dbModel):
-                  object.products
-            },
-        getId: (DbModelBox object) => object.id,
-        setId: (DbModelBox object, int id) {
-          object.id = id;
-        },
-        objectToFB: (DbModelBox object, fb.Builder fbb) {
-          final nameOffset =
-              object.name == null ? null : fbb.writeString(object.name!);
-          fbb.startTable(3);
-          fbb.addInt64(0, object.id);
-          fbb.addOffset(1, nameOffset);
-          fbb.finish(fbb.endTable());
-          return object.id;
-        },
-        objectFromFB: (Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-
-          final object = DbModelBox()
-            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0)
-            ..name = const fb.StringReader(asciiOptimization: true)
-                .vTableGetNullable(buffer, rootOffset, 6);
-          InternalToManyAccess.setRelInfo(
-              object.costumers,
-              store,
-              RelInfo<CustomerModel>.toOneBacklink(
-                  9, object.id, (CustomerModel srcObject) => srcObject.dbModel),
-              store.box<DbModelBox>());
-          InternalToManyAccess.setRelInfo(
-              object.products,
-              store,
-              RelInfo<Product>.toOneBacklink(
-                  12, object.id, (Product srcObject) => srcObject.dbModel),
-              store.box<DbModelBox>());
           return object;
         }),
     Product: EntityDefinition<Product>(
@@ -383,54 +373,50 @@ ModelDefinition getObjectBoxModel() {
   return ModelDefinition(model, bindings);
 }
 
+/// [CompanyModel] entity fields to define ObjectBox queries.
+class CompanyModel_ {
+  /// see [CompanyModel.id]
+  static final id =
+      QueryIntegerProperty<CompanyModel>(_entities[0].properties[0]);
+}
+
 /// [CustomerModel] entity fields to define ObjectBox queries.
 class CustomerModel_ {
   /// see [CustomerModel.id]
   static final id =
-      QueryIntegerProperty<CustomerModel>(_entities[0].properties[0]);
+      QueryIntegerProperty<CustomerModel>(_entities[1].properties[0]);
 
   /// see [CustomerModel.name]
   static final name =
-      QueryStringProperty<CustomerModel>(_entities[0].properties[1]);
+      QueryStringProperty<CustomerModel>(_entities[1].properties[1]);
 
   /// see [CustomerModel.cpf]
   static final cpf =
-      QueryStringProperty<CustomerModel>(_entities[0].properties[2]);
+      QueryStringProperty<CustomerModel>(_entities[1].properties[2]);
 
   /// see [CustomerModel.address]
   static final address =
-      QueryStringProperty<CustomerModel>(_entities[0].properties[3]);
+      QueryStringProperty<CustomerModel>(_entities[1].properties[3]);
 
   /// see [CustomerModel.phoneNumber1]
   static final phoneNumber1 =
-      QueryStringProperty<CustomerModel>(_entities[0].properties[4]);
+      QueryStringProperty<CustomerModel>(_entities[1].properties[4]);
 
   /// see [CustomerModel.phoneNumber2]
   static final phoneNumber2 =
-      QueryStringProperty<CustomerModel>(_entities[0].properties[5]);
+      QueryStringProperty<CustomerModel>(_entities[1].properties[5]);
 
   /// see [CustomerModel.email]
   static final email =
-      QueryStringProperty<CustomerModel>(_entities[0].properties[6]);
+      QueryStringProperty<CustomerModel>(_entities[1].properties[6]);
 
   /// see [CustomerModel.observations]
   static final observations =
-      QueryStringProperty<CustomerModel>(_entities[0].properties[7]);
+      QueryStringProperty<CustomerModel>(_entities[1].properties[7]);
 
   /// see [CustomerModel.dbModel]
-  static final dbModel =
-      QueryRelationToOne<CustomerModel, DbModelBox>(_entities[0].properties[8]);
-}
-
-/// [DbModelBox] entity fields to define ObjectBox queries.
-class DbModelBox_ {
-  /// see [DbModelBox.id]
-  static final id =
-      QueryIntegerProperty<DbModelBox>(_entities[1].properties[0]);
-
-  /// see [DbModelBox.name]
-  static final name =
-      QueryStringProperty<DbModelBox>(_entities[1].properties[1]);
+  static final dbModel = QueryRelationToOne<CustomerModel, CompanyModel>(
+      _entities[1].properties[8]);
 }
 
 /// [Product] entity fields to define ObjectBox queries.
@@ -477,5 +463,5 @@ class Product_ {
 
   /// see [Product.dbModel]
   static final dbModel =
-      QueryRelationToOne<Product, DbModelBox>(_entities[2].properties[11]);
+      QueryRelationToOne<Product, CompanyModel>(_entities[2].properties[11]);
 }

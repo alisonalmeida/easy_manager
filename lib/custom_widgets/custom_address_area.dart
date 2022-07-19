@@ -5,6 +5,8 @@ import 'package:easy_manager/utils/colors.dart';
 import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/material.dart';
 
+import '../core/filter_text.dart';
+
 class CustomAddressArea extends StatelessWidget {
   const CustomAddressArea(
       {Key? key,
@@ -61,14 +63,33 @@ class CustomAddressArea extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 flex: 2,
-                child: CustomTextField(
+                child: TextFormField(
+                    decoration: const InputDecoration(
+                      labelStyle: TextStyle(color: black),
+                      fillColor: white,
+                      filled: true,
+                      focusColor: white,
+                      hoverColor: white,
+                      hintText: 'UF',
+                      labelText: 'UF',
+                      counterText: '',
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 2, color: black),
+                          borderRadius: BorderRadius.all(Radius.circular(16))),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 4, color: black),
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
+                    ),
+                    inputFormatters: [
+                      UpperCaseTextFormatter(),
+                      filterOnlyChars
+                    ],
                     maxLength: 2,
-                    textInputFormatterList: [UpperCaseTextFormatter()],
                     controller: ufController,
-                    name: 'UF',
                     textInputAction: TextInputAction.next),
               ),
               const Spacer(flex: 1),

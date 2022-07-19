@@ -13,6 +13,8 @@ import 'package:easy_manager/screens/crud_customer_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 
+import '../consts.dart';
+
 class CustomerScreen extends StatefulWidget {
   const CustomerScreen({Key? key}) : super(key: key);
 
@@ -21,20 +23,62 @@ class CustomerScreen extends StatefulWidget {
 }
 
 class _CustomerScreenState extends State<CustomerScreen> {
-  late Box<CustomerModel>? _customerBox;
+  late Stream<List<Customer>> streamCustomers;
+
+  @override
+  void initState() {
+    streamCustomers = companyDB.getCustomers();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: dandelion,
         appBar: CustomAppBar(
+            heroAnimation: 'Clientes',
+            svgImage: kpathSvgPerson,
             title: 'Clientes',
             backgroundColor: dandelion,
-            callback: () async {}),
+            callback: () async => Navigator.pop(context)),
         body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5),
             child: Center(
-              child: Text('data'),
+              child: StreamBuilder<List<Customer>>(
+                  stream: streamCustomers,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    }
+
+                    final customers = snapshot.data;
+                    if (customers!.isEmpty) {
+                      return EmptyWidget();
+                    }
+
+                    return ListView.builder(
+                      itemCount: customers.length,
+                      itemBuilder: (context, index) {
+                        return CustomListTile(
+                            deleteCallback: () => _showDeleteAlertDialog(
+                                context,
+                                customers[index].id,
+                                customers[index].name!),
+                            editCallback: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) {
+                                  return CrudCustomerScreen(
+                                    customerKey: customers[index].id,
+                                  );
+                                },
+                              ));
+                            },
+                            title: customers[index].name!,
+                            icon: Icons.person,
+                            subtitle: customers[index].cpf!);
+                      },
+                    );
+                  }),
             )),
         persistentFooterButtons: [
           ElevatedButton(onPressed: () {}, child: Text('teste'))
@@ -47,12 +91,45 @@ class _CustomerScreenState extends State<CustomerScreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => CrudCustomerScreen(
-                            isUpdate: false,
-                            customerBox: _customerBox!,
-                          )));
+                      builder: (context) => CrudCustomerScreen()));
             },
             shadowColor: woodSmoke,
             iconPath: 'lib/assets/svg/plus.svg'));
+  }
+
+  _showDeleteAlertDialog(context, int index, String name) {
+    // set up the buttons
+
+    Widget cancelButton = TextButton(
+      child: Text("Cancelar"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Confirmar"),
+      onPressed: () {
+        companyDB.deleteCustomer(index);
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(name),
+      content: Text("Confirma a exclusão do cadastro?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return alert;
+      },
+    );
   }
 }

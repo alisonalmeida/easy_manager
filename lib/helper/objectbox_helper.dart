@@ -1,20 +1,23 @@
+import 'dart:io';
+
 import 'package:easy_manager/models/customer_model.dart';
 import 'package:easy_manager/models/product_model.dart';
 import 'package:path_provider/path_provider.dart';
-import '../objectbox.g.dart';
+import 'package:easy_manager/objectbox.g.dart';
 
 class ObjectBox {
   late final Store _store;
-  late final Box<CustomerModel> _customerBox;
+  late final Box<Customer> _customerBox;
   late final Box<Product> _productBox;
 
   ObjectBox._init(this._store) {
-    _customerBox = Box<CustomerModel>(_store);
+    _customerBox = Box<Customer>(_store);
     _productBox = Box<Product>(_store);
   }
 
   static Future<ObjectBox> init() async {
-    final store = await openStore();
+    final Directory dir = await getApplicationDocumentsDirectory();
+    final store = await openStore(directory: '${dir.path}/objectbox/');
     if (Sync.isAvailable()) {
       final syncClient =
           Sync.client(store, 'ws://10.0.2.2:9999', SyncCredentials.none());
@@ -24,11 +27,11 @@ class ObjectBox {
     return ObjectBox._init(store);
   }
 
-  CustomerModel? getCustomer(int id) => _customerBox.get(id);
-  int insertCustomer(CustomerModel customer) => _customerBox.put(customer);
+  Customer? getCustomer(int id) => _customerBox.get(id);
+  int insertCustomer(Customer customer) => _customerBox.put(customer);
   bool deleteCustomer(int id) => _customerBox.remove(id);
 
-  Stream<List<CustomerModel>> getCustomers() => _customerBox
+  Stream<List<Customer>> getCustomers() => _customerBox
       .query()
       .watch(triggerImmediately: true)
       .map((event) => event.find());

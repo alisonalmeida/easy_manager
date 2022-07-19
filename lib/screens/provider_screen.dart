@@ -29,60 +29,17 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: carribeanGreen,
-        /**appBar: CustomAppBar(
-          backgroundColor: carribeanGreen,
-          title: 'Fornecedores',
-        ), */
+        appBar: CustomAppBar(
+            title: 'Fornecedores',
+            backgroundColor: carribeanGreen,
+            callback: () async => Navigator.pop(context),
+            svgImage: kpathSvgFactory,
+            heroAnimation: 'Fornecedores'),
         body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: EmptyWidget()
-            /*
-          ValueListenableBuilder(
-              valueListenable: _productProviderBox.listenable(),
-              builder: (context, Box box, widget) {
-                List<ProductProvider> list = [];
-                box.toMap().forEach((key, value) {
-                  list.add(value);
-                });
-                if (box.isEmpty) {
-                  return EmptyWidget();
-                } else {
-                  return ListView.builder(
-                    itemCount: list.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CrudProviderScreen(
-                                    isUpdate: true,
-                                    productProviderKey: list[index].document))),
-                        child: Container(
-                          margin: EdgeInsets.only(bottom: 5),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: white,
-                              border: Border.all(),
-                              boxShadow: const [
-                                BoxShadow(
-                                    offset: Offset(3, 2), color: Colors.black)
-                              ]),
-                          child: ListTile(
-                            leading: Text(index.toString()),
-                            title: Text(list[index].name),
-                            subtitle: Text(list[index].document),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                }
-              }),
-
-              */
-            ),
+            child: EmptyWidget()),
         persistentFooterButtons: [
-          ElevatedButton(onPressed: () {}, child: Text('Limpar Box'))
+          ElevatedButton(onPressed: () {}, child: Text('Teste'))
         ],
         floatingActionButton: ButtonRoundWithShadow(
             size: 60,

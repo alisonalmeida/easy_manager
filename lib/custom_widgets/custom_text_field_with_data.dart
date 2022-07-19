@@ -5,28 +5,36 @@ import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextFieldWithData extends StatelessWidget {
-  CustomTextFieldWithData({
-    Key? key,
-    required this.controller,
-    required this.name,
-    required this.items,
-    this.callback,
-  }) : super(key: key);
+  CustomTextFieldWithData(
+      {Key? key,
+      required this.controller,
+      required this.name,
+      required this.items,
+      this.callback,
+      this.validator})
+      : super(key: key);
 
   final TextEditingController controller;
   final String name;
   final Widget items;
   final VoidCallback? callback;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      onTap: () {
-        customModalBottomSheet(context, 'Selecione um fornecedor', items);
-      },
+      validator: validator,
+      onTap: () =>
+          customModalBottomSheet(context, 'Selecione um fornecedor', items),
       readOnly: true,
       controller: controller,
       decoration: InputDecoration(
+          errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 2, color: flamingo),
+              borderRadius: BorderRadius.all(Radius.circular(16))),
+          focusedErrorBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 4, color: flamingo),
+              borderRadius: BorderRadius.all(Radius.circular(5))),
           fillColor: white,
           filled: true,
           focusColor: white,

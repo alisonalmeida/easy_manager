@@ -2,6 +2,7 @@
 
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
+import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_list_tile.dart';
 import 'package:easy_manager/custom_widgets/empty_widget.dart';
 import 'package:easy_manager/main.dart';
@@ -30,10 +31,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: pastelPink,
-        /**appBar: CustomAppBar(
+        appBar: CustomAppBar(
+          heroAnimation: 'Produtos',
+          svgImage: kpathSvgProduct,
+          callback: () async => Navigator.pop(context),
           backgroundColor: pastelPink,
           title: 'Produtos',
-        ), */
+        ),
         body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5),
             child: Center(
@@ -73,15 +77,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   }),
             )),
         persistentFooterButtons: [
-          ElevatedButton(
-              onPressed: () {
-                companyDB.getProducts().forEach((element) {
-                  element.forEach((element) {
-                    print(element.name);
-                  });
-                });
-              },
-              child: Text('teste'))
+          ElevatedButton(onPressed: () {}, child: Text('teste'))
         ],
         floatingActionButton: ButtonRoundWithShadow(
             size: 60,

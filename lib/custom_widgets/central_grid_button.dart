@@ -1,3 +1,4 @@
+import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -9,17 +10,19 @@ class CentralGridButton extends StatelessWidget {
   final Color backgroundColor;
   final VoidCallback callback;
   final String title;
+  final String hero;
 
-  const CentralGridButton(
-      {Key? key,
-      required this.borderColor,
-      required this.shadowColor,
-      required this.color,
-      required this.iconPath,
-      required this.backgroundColor,
-      required this.callback,
-      required this.title})
-      : super(key: key);
+  const CentralGridButton({
+    Key? key,
+    required this.borderColor,
+    required this.shadowColor,
+    required this.color,
+    required this.iconPath,
+    required this.backgroundColor,
+    required this.callback,
+    required this.title,
+    required this.hero,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +38,7 @@ class CentralGridButton extends StatelessWidget {
               2.0, // Move Vertically
             ),
           )
-        ], color: color, shape: Border.all(color: borderColor)
-            // CircleBorder(side: BorderSide(color: borderColor, width: 2)),
-            ),
+        ], color: color, shape: Border.all(color: borderColor)),
         child: Container(
           color: backgroundColor,
           child: Column(
@@ -49,8 +50,11 @@ class CentralGridButton extends StatelessWidget {
               SizedBox(
                 height: 50,
                 width: 50,
-                child: SvgPicture.asset(
-                  iconPath,
+                child: Hero(
+                  tag: hero,
+                  child: SvgPicture.asset(
+                    iconPath,
+                  ),
                 ),
               ),
             ],

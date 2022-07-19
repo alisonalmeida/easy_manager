@@ -6,7 +6,7 @@ import 'package:objectbox/objectbox.dart';
 
 @Entity()
 @Sync()
-class CustomerModel {
+class Customer {
   int id;
   final String? name;
   final String? cpf;
@@ -18,7 +18,7 @@ class CustomerModel {
 
   final dbModel = ToOne<CompanyModel>();
 
-  CustomerModel({
+  Customer({
     this.id = 0,
     this.name,
     this.cpf,

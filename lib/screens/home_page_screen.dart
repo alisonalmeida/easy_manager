@@ -1,16 +1,13 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, avoid_print
 
-import 'dart:io';
-
 import 'package:easy_manager/consts.dart';
-import 'package:easy_manager/custom_widgets/central_grid_Button.dart';
-import 'package:easy_manager/models/company_model.dart';
-
+import 'package:easy_manager/custom_widgets/central_grid_button.dart';
 import 'package:easy_manager/screens/customer_screen.dart';
 import 'package:easy_manager/screens/product_screen.dart';
 import 'package:easy_manager/screens/provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
+import '../custom_widgets/custom_home_app_bar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -19,34 +16,43 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _animationController;
+  bool checked = true;
+
+  @override
+  void initState() {
+    _animationController =
+        AnimationController(duration: Duration(milliseconds: 500), vsync: this);
+    _animationController.forward();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void changeAnimationCheck() => checked
+      ? {
+          _animationController.forward(),
+          checked = !checked,
+        }
+      : {
+          _animationController.reverse(),
+          checked = !checked,
+        };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: selago,
-      /*appBar: CustomAppBar(
-          height: 100,
-          childAppbar: SafeArea(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                    height: 50,
-                    width: 50,
-                    child: SvgPicture.asset('lib/assets/svg/check-mark.svg')),
-                Text(
-                  textAlign: TextAlign.center,
-                  'Easy Manager App',
-                  style: TextStyle(
-                      fontSize: 30,
-                      fontFamily: 'JosefinsSans',
-                      fontWeight: FontWeight.w700),
-                )
-              ],
-            ),
-          )),
-
-          */
+      appBar: CustomHomeAppBar(
+          controller: _animationController,
+          title: 'Easy Manager',
+          callback: changeAnimationCheck),
       body: Container(
         color: selago,
         padding: EdgeInsets.all(5),
@@ -56,6 +62,7 @@ class _HomePageState extends State<HomePage> {
               crossAxisCount: 3),
           children: [
             CentralGridButton(
+              hero: 'Produtos',
               title: 'Produtos',
               backgroundColor: pastelPink,
               borderColor: pinkSalomn,
@@ -69,6 +76,7 @@ class _HomePageState extends State<HomePage> {
                   )),
             ),
             CentralGridButton(
+              hero: 'Clientes',
               title: 'Clientes',
               backgroundColor: dandelion,
               borderColor: dandelionShadow,
@@ -82,6 +90,7 @@ class _HomePageState extends State<HomePage> {
                   )),
             ),
             CentralGridButton(
+              hero: 'Fornecedores',
               title: 'Fornecedores',
               backgroundColor: carribeanGreen,
               borderColor: carribeanGreenShadow,
@@ -95,6 +104,7 @@ class _HomePageState extends State<HomePage> {
                   )),
             ),
             CentralGridButton(
+                hero: 'PDV',
                 title: 'PDV',
                 backgroundColor: purple,
                 borderColor: purpleShadow,
@@ -103,6 +113,7 @@ class _HomePageState extends State<HomePage> {
                 iconPath: kpathSvgPdv,
                 callback: () {}),
             CentralGridButton(
+                hero: 'Gráficos',
                 //title: 'Gráficos',
                 title: 'TESTE',
                 backgroundColor: blueBlue,
@@ -113,6 +124,7 @@ class _HomePageState extends State<HomePage> {
                 callback: () => Navigator.push(context,
                     MaterialPageRoute(builder: (context) => TextPage()))),
             CentralGridButton(
+                hero: 'Entrada e Saída',
                 title: 'Entrada e Saída',
                 backgroundColor: grey,
                 borderColor: greyShadow,

@@ -2,7 +2,7 @@
 
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/core/cep_network.dart';
-import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
+import 'package:easy_manager/custom_widgets/custom_address_area.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
@@ -46,6 +46,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
 
   @override
   void initState() {
+    _focusNode = FocusNode();
     /*
     _productProviderBox = Hive.box(kProductProviderBox);
     _focusNode = FocusNode();
@@ -144,149 +145,129 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: carribeanGreen,
-      /**appBar: CustomAppBar(
-          title: 'Cadastrar Fornecedor', backgroundColor: carribeanGreen), */
-      body: Container(
-        color: carribeanGreen,
-        padding: EdgeInsets.symmetric(horizontal: 15),
-        child: ListView(
-          children: [
-            SizedBox(height: 5),
-            CustomTextField(
-                controller: _providerNameController,
-                name: 'Nome do Fornecedor',
-                textInputAction: TextInputAction.next),
-            SizedBox(height: 5),
-            CustomTextField(
-                textInputType: TextInputType.number,
-                textInputFormatterList: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  TextInputMask(mask: ['999.999.999-99', '99.999.999/9999-99'])
-                ],
-                controller: _cpfCnpjController,
-                name: 'CPF/CNPJ',
-                textInputAction: TextInputAction.next),
-            SizedBox(height: 5),
-            CustomTextField(
-              textInputType: TextInputType.number,
-              textInputFormatterList: [
-                FilteringTextInputFormatter.digitsOnly,
-                TextInputMask(mask: ['(99) 9 9999-9999)'])
-              ],
-              controller: _phoneNumberController1,
-              name: 'Telefone 1',
-              textInputAction: TextInputAction.next,
-            ),
-            CustomTextField(
-              textInputType: TextInputType.number,
-              textInputFormatterList: [
-                FilteringTextInputFormatter.digitsOnly,
-                TextInputMask(mask: ['(99) 9 9999-9999)'])
-              ],
-              controller: _phoneNumberController2,
-              name: 'Telefone 2',
-              textInputAction: TextInputAction.next,
-            ),
-            SizedBox(height: 5),
-            CustomTextField(
-                textInputType: TextInputType.emailAddress,
-                controller: _emailController,
-                name: 'E-mail',
-                textInputAction: TextInputAction.next),
-            SizedBox(height: 5),
-            Row(
+    return WillPopScope(
+      onWillPop: () async {
+        final shouldPop = await _showConfirmationExitDialog();
+        return shouldPop ?? false;
+      },
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Scaffold(
+          backgroundColor: carribeanGreen,
+          appBar: CustomAppBar(
+              callback: () async => showGeneralConfirmationExitDialog(context),
+              heroAnimation: '',
+              svgImage: kpathSvgFactory,
+              title: 'Cadastrar Fornecedor',
+              backgroundColor: carribeanGreen),
+          body: Container(
+            color: carribeanGreen,
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: ListView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               children: [
-                Expanded(
-                    child: CustomTextField(
-                        textInputType: TextInputType.number,
-                        textInputFormatterList: [
-                          TextInputMask(mask: '99999-999')
-                        ],
-                        controller: _cepController,
-                        name: 'CEP',
-                        textInputAction: TextInputAction.done,
-                        callback: () => _getCep())),
-                ButtonRoundWithShadow(
-                    borderColor: woodSmoke,
-                    shadowColor: woodSmoke,
-                    color: white,
-                    iconPath: kpathSvgRefresh,
-                    size: 50,
-                    callback: () => _getCep()),
-              ],
-            ),
-            SizedBox(height: 5),
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: CustomTextField(
-                      controller: _ufController,
-                      name: 'UF',
-                      textInputAction: TextInputAction.next),
+                SizedBox(height: 5),
+                CustomTextField(
+                    controller: _providerNameController,
+                    name: 'Nome do Fornecedor',
+                    textInputAction: TextInputAction.next),
+                SizedBox(height: 5),
+                CustomTextField(
+                    textInputType: TextInputType.number,
+                    textInputFormatterList: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      TextInputMask(
+                          mask: ['999.999.999-99', '99.999.999/9999-99'])
+                    ],
+                    controller: _cpfCnpjController,
+                    name: 'CPF/CNPJ',
+                    textInputAction: TextInputAction.next),
+                SizedBox(height: 5),
+                CustomTextField(
+                  textInputType: TextInputType.number,
+                  textInputFormatterList: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    TextInputMask(mask: ['(99) 9 9999-9999)'])
+                  ],
+                  controller: _phoneNumberController1,
+                  name: 'Telefone 1',
+                  textInputAction: TextInputAction.next,
                 ),
-                Spacer(flex: 1),
-                Expanded(
-                  flex: 8,
-                  child: CustomTextField(
-                      controller: _cityController,
-                      name: 'Cidade',
-                      textInputAction: TextInputAction.next),
-                )
+                CustomTextField(
+                  textInputType: TextInputType.number,
+                  textInputFormatterList: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    TextInputMask(mask: ['(99) 9 9999-9999)'])
+                  ],
+                  controller: _phoneNumberController2,
+                  name: 'Telefone 2',
+                  textInputAction: TextInputAction.next,
+                ),
+                SizedBox(height: 5),
+                CustomTextField(
+                    textInputType: TextInputType.emailAddress,
+                    controller: _emailController,
+                    name: 'E-mail',
+                    textInputAction: TextInputAction.next),
+                SizedBox(height: 5),
+                CustomAddressArea(
+                    cepController: _cepController,
+                    callback: _getCep,
+                    ufController: _ufController,
+                    cityController: _cityController,
+                    streetController: _streetController,
+                    districtController: _districtController,
+                    numberController: _numberController,
+                    complementController: _complementController,
+                    focusNode: _focusNode),
+                SizedBox(height: 5),
+                CustomTextField(
+                    minLines: 3,
+                    maxLines: 6,
+                    controller: _observationsController,
+                    name: 'Observações',
+                    textInputAction: TextInputAction.done),
+                SizedBox(height: 40),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                        flex: 4,
+                        child: CustomButtonCancel(
+                            text: 'Cancelar',
+                            onTap: () {
+                              Navigator.pop(context);
+                            })),
+                    Spacer(flex: 1),
+                    Expanded(
+                        flex: 4,
+                        child: CustomButtonConfirm(
+                            text: 'Salvar', onTap: () => _addUpdate()))
+                  ],
+                ),
+                SizedBox(height: 40),
               ],
             ),
-            SizedBox(height: 5),
-            CustomTextField(
-                controller: _streetController,
-                name: 'Rua',
-                textInputAction: TextInputAction.next),
-            SizedBox(height: 5),
-            CustomTextField(
-                //focusNode: _focusNode,
-                controller: _numberController,
-                name: 'Número',
-                textInputAction: TextInputAction.next),
-            SizedBox(height: 5),
-            CustomTextField(
-                controller: _districtController,
-                name: 'Bairro',
-                textInputAction: TextInputAction.next),
-            SizedBox(height: 5),
-            CustomTextField(
-                controller: _complementController,
-                name: 'Complemento',
-                textInputAction: TextInputAction.next),
-            SizedBox(height: 5),
-            CustomTextField(
-                minLines: 3,
-                maxLines: 6,
-                controller: _observationsController,
-                name: 'Observações',
-                textInputAction: TextInputAction.done),
-            SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                    flex: 4,
-                    child: CustomButtonCancel(
-                        text: 'Cancelar',
-                        onTap: () {
-                          Navigator.pop(context);
-                        })),
-                Spacer(flex: 1),
-                Expanded(
-                    flex: 4,
-                    child: CustomButtonConfirm(
-                        text: 'Salvar', onTap: () => _addUpdate()))
-              ],
-            ),
-            SizedBox(height: 40),
-          ],
+          ),
         ),
       ),
     );
   }
+
+  Future<bool?> _showConfirmationExitDialog() async => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: Text('O cadastro não foi salvo. Deseja realmente sair?'),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: Text('NÃO')),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                    Navigator.pop(context, true);
+                  },
+                  child: Text('SIM'))
+            ],
+          ));
 }

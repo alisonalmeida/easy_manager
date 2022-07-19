@@ -17,7 +17,8 @@ class CustomTextField extends StatelessWidget {
       this.minLines,
       this.maxLines,
       this.focusNode,
-      this.maxLength})
+      this.maxLength,
+      this.validator})
       : super(key: key);
 
   final List<TextInputFormatter>? textInputFormatterList;
@@ -31,10 +32,12 @@ class CustomTextField extends StatelessWidget {
   final int? maxLines;
   final FocusNode? focusNode;
   final int? maxLength;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      validator: validator,
       maxLength: maxLength,
       focusNode: focusNode,
       keyboardType: textInputType,
@@ -45,7 +48,12 @@ class CustomTextField extends StatelessWidget {
       minLines: minLines,
       maxLines: maxLines,
       decoration: InputDecoration(
-          counterText: '',
+          errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 2, color: flamingo),
+              borderRadius: BorderRadius.all(Radius.circular(16))),
+          focusedErrorBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 4, color: flamingo),
+              borderRadius: BorderRadius.all(Radius.circular(5))),
           prefixIcon: prefixIcon,
           fillColor: white,
           filled: true,

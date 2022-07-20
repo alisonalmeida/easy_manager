@@ -40,6 +40,16 @@ class ObjectBox {
   int insertProduct(Product product) => _productBox.put(product);
   bool deleteProduct(int id) => _productBox.remove(id);
 
+  bool containsProductCod(String string) {
+    List<Product> list = _productBox.getAll();
+    for (var element in list) {
+      if (element.cod == string) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   Stream<List<Product>> getProducts() => _productBox
       .query()
       .watch(triggerImmediately: true)

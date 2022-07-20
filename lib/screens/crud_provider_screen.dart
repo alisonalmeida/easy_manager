@@ -29,6 +29,7 @@ class CrudProviderScreen extends StatefulWidget {
 class _CrudProviderScreenState extends State<CrudProviderScreen> {
   late FocusNode _focusNode;
   late String keyToDelete;
+  final bool _isEnabled = false;
 
   final _providerNameController = TextEditingController();
   final _cpfCnpjController = TextEditingController();
@@ -119,7 +120,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
       _focusNode.requestFocus();
     } catch (e) {
       Navigator.pop(context);
-      showGeneralDialogErrorMessage('Erro: $e', context);
+      showGeneralInformationDialogErrorMessage('Erro: $e', context);
     }
   }
 
@@ -242,7 +243,11 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
                     Expanded(
                         flex: 4,
                         child: CustomButtonConfirm(
-                            text: 'Salvar', onTap: () => _addUpdate()))
+                          isEnabled: _isEnabled,
+                          text: 'Salvar',
+                          onTapValid: () => _addUpdate(),
+                          onTapInValid: () {},
+                        ))
                   ],
                 ),
                 SizedBox(height: 40),

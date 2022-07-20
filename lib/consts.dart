@@ -15,7 +15,7 @@ const String kpathSvgShuffle = 'lib/assets/svg/shuffle.svg';
 
 const String kpathLottieCheck = 'lib/assets/animations/home_page_check.json';
 
-showGeneralDialogErrorMessage(String message, BuildContext context) {
+showGeneralInformationDialogErrorMessage(String message, BuildContext context) {
   showDialog(
       context: context,
       builder: (context) {

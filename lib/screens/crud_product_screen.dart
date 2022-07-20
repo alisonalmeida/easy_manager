@@ -33,12 +33,14 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
   final _costValueController = TextEditingController();
   final _saleValueController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final bool _isEnabled = true;
+  int productId = 0;
 
   @override
   void initState() {
     if (widget.productkey != null) {
       final Product product = companyDB.getProduct(widget.productkey!)!;
-
+      productId = product.id;
       _productCodeController.text = product.cod;
       _productNameController.text = product.name;
       _productProviderController.text = product.productProviderDocument;
@@ -55,6 +57,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
 
   _saveUpdate() {
     Product product = Product(
+        id: productId,
         cod: _productCodeController.text,
         name: _productNameController.text,
         productProviderDocument: _productProviderController.text,
@@ -66,11 +69,23 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
         minQuantity: int.parse(_minQuantityController.text),
         description: _descriptionController.text);
 
-    if (widget.productkey != null) {
-      companyDB.deleteProduct(widget.productkey!);
+    bool checkExistCod =
+        companyDB.containsProductCod(_productCodeController.text);
+
+    //add new product
+    if (widget.productkey == null) {
+      if (checkExistCod) {
+        showGeneralInformationDialogErrorMessage(
+            'Já existe um produto com esse código, por favor, informe outro! ',
+            context);
+      } else {
+        companyDB.insertProduct(product);
+      }
+
+      //update product
+    } else {
+      companyDB.insertProduct(product);
     }
-    companyDB.insertProduct(product);
-    Navigator.pop(context);
   }
 
   String? validatorCode(String? s) {
@@ -120,6 +135,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                     children: [
                       Expanded(
                         child: CustomTextField(
+                            isEnabled: widget.productkey == null,
                             validator: (String? s) =>
                                 validatorEmpty(s, 'Código'),
                             prefixIcon: GestureDetector(
@@ -140,14 +156,14 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                           })
                     ],
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 5),
                   CustomTextField(
                       validator: (String? s) =>
                           validatorEmpty(s, 'Nome do Produto'),
                       controller: _productNameController,
                       name: 'Nome do Produto',
                       textInputAction: TextInputAction.next),
-                  SizedBox(height: 10),
+                  SizedBox(height: 5),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -243,7 +259,11 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                       Expanded(
                           flex: 4,
                           child: CustomButtonConfirm(
-                              text: 'Salvar', onTap: () async => _saveUpdate()))
+                            isEnabled: _isEnabled,
+                            text: 'Salvar',
+                            onTapValid: () async => _saveUpdate(),
+                            onTapInValid: () {},
+                          ))
                     ],
                   ),
                   SizedBox(height: 40),

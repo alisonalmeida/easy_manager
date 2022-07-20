@@ -5,7 +5,8 @@ import 'package:easy_manager/core/cep_network.dart';
 import 'package:easy_manager/core/upper_case_text_formatter.dart';
 import 'package:easy_manager/custom_widgets/custom_address_area.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
-import 'package:easy_manager/custom_widgets/custom_cancel_save_buttons.dart';
+import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
+import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/address_model.dart';
@@ -26,6 +27,7 @@ class CrudCustomerScreen extends StatefulWidget {
 
 class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
   late FocusNode _focusNode;
+  bool _isEnabled = true;
 
   final _nameController = TextEditingController();
   final _cpfController = TextEditingController();
@@ -44,8 +46,8 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
   @override
   void initState() {
     _focusNode = FocusNode();
+    //update
     if (widget.customerKey != null) {
-      //to update
       final Customer customer = companyDB.getCustomer(widget.customerKey!)!;
       Address address = Address();
       _nameController.text = customer.name!;
@@ -61,6 +63,7 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
       _complementController.text = address.complemento!;
       _ufController.text = address.uf!;
       _cityController.text = address.localidade!;
+      _observationsController.text = customer.observations!;
     }
 
     super.initState();
@@ -107,7 +110,7 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
       _focusNode.requestFocus();
     } catch (e) {
       Navigator.pop(context);
-      showGeneralDialogErrorMessage('Erro: $e', context);
+      showGeneralInformationDialogErrorMessage('Erro: $e', context);
     }
   }
 
@@ -178,11 +181,28 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
                     name: 'Observações',
                     textInputAction: TextInputAction.done),
                 SizedBox(height: 40),
-                CustomCancelSaveButtons(
-                    saveCallback: _saveUpdate,
-                    cancelCallback: () {
-                      _showConfirmationExitDialog();
-                    }),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                        flex: 4,
+                        child: CustomButtonCancel(
+                            text: 'Cancelar',
+                            onTap: () => Navigator.pop(context))),
+                    Spacer(flex: 1),
+                    Expanded(
+                        flex: 4,
+                        child: CustomButtonConfirm(
+                          isEnabled: _isEnabled,
+                          text: 'Salvar',
+                          onTapValid: () => _saveUpdate(),
+                          onTapInValid: () =>
+                              showGeneralInformationDialogErrorMessage(
+                                  'Por favor, preencha todos os campos obrigatórios!',
+                                  context),
+                        ))
+                  ],
+                ),
                 SizedBox(height: 50),
               ],
             ),

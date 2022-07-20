@@ -71,7 +71,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                             },
                             title: products[index].name,
                             icon: Icons.person,
-                            subtitle: products[index].id.toString());
+                            subtitle:
+                                'R\$ ${products[index].saleValue.toString()}');
                       },
                     );
                   }),

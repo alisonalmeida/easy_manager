@@ -19,7 +19,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
-  bool _checked = true;
+  late bool _checked;
 
   @override
   void initState() {
@@ -35,18 +35,21 @@ class _HomePageState extends State<HomePage>
     super.dispose();
   }
 
-  void changeAnimation() => _checked
-      ? {
-          _animationController.forward(),
-          _checked = !_checked,
-        }
-      : {
-          _animationController.reverse(),
-          _checked = !_checked,
-        };
+  void changeAnimation() {
+    print(_checked);
+    if (_checked) {
+      _animationController.forward();
+      _checked = !_checked;
+    } else {
+      _animationController.reverse();
+      _checked = !_checked;
+    }
+    print(_checked);
+  }
 
   @override
   Widget build(BuildContext context) {
+    _checked = true;
     return Scaffold(
       backgroundColor: selago,
       appBar: CustomHomeAppBar(

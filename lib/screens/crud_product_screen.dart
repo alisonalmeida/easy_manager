@@ -12,7 +12,11 @@ import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/screens/crud_provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
+import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../core/upper_case_text_formatter.dart';
 
 class CrudProductScreen extends StatefulWidget {
   const CrudProductScreen({Key? key, this.productkey}) : super(key: key);
@@ -158,6 +162,8 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                   ),
                   SizedBox(height: 5),
                   CustomTextField(
+                      textInputFormatterList: [UpperCaseTextFormatter()],
+                      textInputType: TextInputType.name,
                       validator: (String? s) =>
                           validatorEmpty(s, 'Nome do Produto'),
                       controller: _productNameController,
@@ -197,27 +203,35 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                           callback: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      CrudProviderScreen(isUpdate: false))))
+                                  builder: (context) => CrudProviderScreen())))
                     ],
                   ),
                   SizedBox(height: 5),
                   CustomTextField(
+                      textInputFormatterList: [UpperCaseTextFormatter()],
+                      textInputType: TextInputType.name,
                       controller: _productBrandController,
                       name: 'Marca',
                       textInputAction: TextInputAction.next),
                   SizedBox(height: 5),
                   CustomTextField(
+                      textInputFormatterList: [UpperCaseTextFormatter()],
+                      textInputType: TextInputType.name,
                       controller: _productCategoryController,
                       name: 'Categoria',
                       textInputAction: TextInputAction.next),
                   SizedBox(height: 5),
                   CustomTextField(
+                      textInputFormatterList: [UpperCaseTextFormatter()],
+                      textInputType: TextInputType.name,
                       controller: _unitMeasurementController,
                       name: 'Unidade de Medição',
                       textInputAction: TextInputAction.next),
                   SizedBox(height: 5),
                   CustomTextField(
+                      textInputFormatterList: [
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
                       validator: (String? s) =>
                           validatorEmpty(s, 'Quantidade Mínima'),
                       controller: _minQuantityController,
@@ -225,6 +239,12 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                       textInputAction: TextInputAction.next),
                   SizedBox(height: 5),
                   CustomTextField(
+                      textInputType: TextInputType.number,
+                      textInputFormatterList: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        TextInputMask(
+                            mask: ['R!\$! !999,99', 'R!\$! 999.999,99'])
+                      ],
                       validator: (String? s) =>
                           validatorEmpty(s, 'Valor de Custo'),
                       controller: _costValueController,
@@ -232,6 +252,12 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                       textInputAction: TextInputAction.next),
                   SizedBox(height: 5),
                   CustomTextField(
+                      textInputType: TextInputType.number,
+                      textInputFormatterList: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        TextInputMask(
+                            mask: ['R!\$! !999,99', 'R!\$! 999.999,99'])
+                      ],
                       validator: (String? s) =>
                           validatorEmpty(s, 'Valor de Venda'),
                       controller: _saleValueController,
@@ -262,7 +288,10 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                             isEnabled: _isEnabled,
                             text: 'Salvar',
                             onTapValid: () async => _saveUpdate(),
-                            onTapInValid: () {},
+                            onTapInValid: () {
+                              showGeneralInformationDialogErrorMessage(
+                                  'message', context);
+                            },
                           ))
                     ],
                   ),

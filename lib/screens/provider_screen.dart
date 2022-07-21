@@ -17,11 +17,8 @@ class ProvidersScreen extends StatefulWidget {
 }
 
 class _ProvidersScreenState extends State<ProvidersScreen> {
-  //late final Box _productProviderBox;
-
   @override
   void initState() {
-    // _productProviderBox = Hive.box(kProductProviderBox);
     super.initState();
   }
 
@@ -45,10 +42,8 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
             size: 60,
             borderColor: woodSmoke,
             color: white,
-            callback: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CrudProviderScreen(isUpdate: false))),
+            callback: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => CrudProviderScreen())),
             shadowColor: woodSmoke,
             iconPath: kpathSvgPlus));
   }

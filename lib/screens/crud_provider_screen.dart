@@ -7,6 +7,7 @@ import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
+import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/address_model.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/utils/colors.dart';
@@ -15,11 +16,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CrudProviderScreen extends StatefulWidget {
-  const CrudProviderScreen(
-      {Key? key, required this.isUpdate, this.productProviderKey})
+  const CrudProviderScreen({Key? key, this.productProviderKey})
       : super(key: key);
 
-  final bool isUpdate;
   final String? productProviderKey;
 
   @override
@@ -28,8 +27,8 @@ class CrudProviderScreen extends StatefulWidget {
 
 class _CrudProviderScreenState extends State<CrudProviderScreen> {
   late FocusNode _focusNode;
-  late String keyToDelete;
-  final bool _isEnabled = false;
+
+  bool _isEnabled = false;
 
   final _providerNameController = TextEditingController();
   final _cpfCnpjController = TextEditingController();
@@ -48,14 +47,10 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
   @override
   void initState() {
     _focusNode = FocusNode();
-    /*
-    _productProviderBox = Hive.box(kProductProviderBox);
-    _focusNode = FocusNode();
-    if (widget.isUpdate) {
-      keyToDelete = widget.productProviderKey!;
-      final ProductProvider productProvider =
-          _productProviderBox.get(widget.productProviderKey);
-
+    //update
+    if (widget.productProviderKey != null) {
+      /*
+      
       _providerNameController.text = productProvider.name;
       _cpfCnpjController.text = productProvider.document;
       _phoneNumberController1.text = productProvider.phoneNumber1;
@@ -69,7 +64,8 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
       _districtController.text = productProvider.address.bairro;
       _complementController.text = productProvider.address.complemento;
       _observationsController.text = productProvider.observations;
-    }*/
+      */
+    }
     super.initState();
   }
 

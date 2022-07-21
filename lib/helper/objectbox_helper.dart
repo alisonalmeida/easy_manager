@@ -16,11 +16,17 @@ class ObjectBox {
   }
 
   static Future<ObjectBox> init() async {
+    final String syncServerIp;
+
     final Directory dir = await getApplicationDocumentsDirectory();
     final store = await openStore(directory: '${dir.path}/objectbox/');
+
+    Platform.isAndroid
+        ? syncServerIp = 'server address'
+        : syncServerIp = '127.0.0.1';
     if (Sync.isAvailable()) {
-      final syncClient =
-          Sync.client(store, 'ws://10.0.2.2:9999', SyncCredentials.none());
+      final syncClient = Sync.client(
+          store, 'ws://$syncServerIp/objectbox/:9999', SyncCredentials.none());
       syncClient.start();
     }
 

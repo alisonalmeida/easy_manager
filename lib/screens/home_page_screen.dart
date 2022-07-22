@@ -19,7 +19,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
-  late bool _checked;
+   bool _checked=true;
 
   @override
   void initState() {
@@ -44,18 +44,18 @@ class _HomePageState extends State<HomePage>
       _animationController.reverse();
       _checked = !_checked;
     }
-    print(_checked);
+  
   }
 
   @override
   Widget build(BuildContext context) {
-    _checked = true;
+    
     return Scaffold(
       backgroundColor: selago,
       appBar: CustomHomeAppBar(
           controller: _animationController,
           title: 'Easy Manager',
-          callback: changeAnimation),
+          callback: ()=>changeAnimation()),
       body: Container(
         color: selago,
         padding: EdgeInsets.all(5),

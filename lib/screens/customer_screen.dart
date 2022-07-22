@@ -23,11 +23,11 @@ class CustomerScreen extends StatefulWidget {
 }
 
 class _CustomerScreenState extends State<CustomerScreen> {
+  //late Stream<List<Customer>> streamCustomers;
   late Stream<List<Customer>> streamCustomers;
-
   @override
   void initState() {
-    streamCustomers = companyDB.getCustomers();
+    streamCustomers = companyDB.getCustomers() as Stream<List<Customer>>;
     super.initState();
   }
 

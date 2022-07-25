@@ -1,12 +1,19 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, avoid_print
 
+import 'dart:io';
+
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/central_grid_button.dart';
+import 'package:easy_manager/models/company_model.dart';
+import 'package:easy_manager/models/customer_model.dart';
+import 'package:easy_manager/models/product_model.dart';
+import 'package:easy_manager/objectbox.g.dart';
 import 'package:easy_manager/screens/customer_screen.dart';
 import 'package:easy_manager/screens/product_screen.dart';
 import 'package:easy_manager/screens/provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import '../custom_widgets/custom_home_app_bar.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,19 +25,24 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
+  Store? _store;
+  Box<CompanyModel>? _companyBox;
   late final AnimationController _animationController;
-   bool _checked=true;
+  bool _checked = true;
 
   @override
-  void initState() {
+  initState() {
+    initDB();
     _animationController =
         AnimationController(duration: Duration(milliseconds: 500), vsync: this);
     _animationController.forward();
     super.initState();
   }
 
+//https://youtu.be/r9Lc2r22KBk?t=938 TODO: CONTINUAR DAQUI
   @override
   void dispose() {
+    _store?.close();
     _animationController.dispose();
     super.dispose();
   }
@@ -44,18 +56,33 @@ class _HomePageState extends State<HomePage>
       _animationController.reverse();
       _checked = !_checked;
     }
-  
+  }
+
+  void initDB() async {
+    final Directory dir = await getApplicationDocumentsDirectory();
+    openStore(directory: '${dir.path}/objectbox/').then((Store store) {
+      _store = store;
+      final String syncServerIp;
+      Platform.isAndroid
+          ? syncServerIp = '10.0.2.2'
+          : syncServerIp = '127.0.0.1';
+      Sync.client(
+        store,
+        'ws://$syncServerIp/objectbox/:9999',
+        SyncCredentials.none(),
+      );
+      _companyBox = store.box<CompanyModel>();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       backgroundColor: selago,
       appBar: CustomHomeAppBar(
           controller: _animationController,
           title: 'Easy Manager',
-          callback: ()=>changeAnimation()),
+          callback: () => changeAnimation()),
       body: Container(
         color: selago,
         padding: EdgeInsets.all(5),

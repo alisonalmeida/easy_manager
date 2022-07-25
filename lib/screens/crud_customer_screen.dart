@@ -16,6 +16,8 @@ import 'package:flutter/material.dart';
 import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/services.dart';
 
+import '../helper/objectbox_helper.dart';
+
 class CrudCustomerScreen extends StatefulWidget {
   const CrudCustomerScreen({Key? key, this.customerKey}) : super(key: key);
 
@@ -26,6 +28,7 @@ class CrudCustomerScreen extends StatefulWidget {
 }
 
 class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
+  late ObjectBox _companyDB;
   late FocusNode _focusNode;
   bool _isEnabled = true;
 
@@ -45,10 +48,12 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
 
   @override
   void initState() {
+    _initDb;
     _focusNode = FocusNode();
     //update
     if (widget.customerKey != null) {
-      final Customer customer = companyDB.getCustomer(widget.customerKey!)!;
+      final Customer customer = Customer();
+      // _companyDB.getCustomer(widget.customerKey!)!;
       Address address = Address();
       _nameController.text = customer.name!;
       _cpfController.text = customer.cpf!;
@@ -87,9 +92,9 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
         email: _emailController.text,
         observations: _observationsController.text);
     if (widget.customerKey != null) {
-      companyDB.deleteCustomer(widget.customerKey!);
+      // companyDB.deleteCustomer(widget.customerKey!);
     }
-    companyDB.insertCustomer(customer);
+    // companyDB.insertCustomer(customer);
     Navigator.pop(context);
   }
 
@@ -112,6 +117,16 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
       Navigator.pop(context);
       showGeneralInformationDialogErrorMessage('Erro: $e', context);
     }
+  }
+
+  _initDb() async {
+    _companyDB = await ObjectBox.init();
+  }
+
+  @override
+  void dispose() {
+    _companyDB.close();
+    super.dispose();
   }
 
   @override

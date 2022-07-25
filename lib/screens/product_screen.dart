@@ -23,7 +23,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   @override
   void initState() {
-    streamProducts = companyDB.getProducts();
+    // streamProducts = companyDB.getProducts();
     super.initState();
   }
 
@@ -58,7 +58,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       itemBuilder: (context, index) {
                         return CustomListTile(
                             deleteCallback: () {
-                              companyDB.deleteProduct(products[index].id);
+                              //    companyDB.deleteProduct(products[index].id);
                             },
                             editCallback: () {
                               Navigator.push(context, MaterialPageRoute(

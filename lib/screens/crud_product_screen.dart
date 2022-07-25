@@ -43,7 +43,18 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
   @override
   void initState() {
     if (widget.productkey != null) {
-      final Product product = companyDB.getProduct(widget.productkey!)!;
+      final Product product = Product(
+          cod: 'cod',
+          name: 'name',
+          productProviderDocument: 'productProviderDocument',
+          brand: 'brand',
+          categoryName: 'categoryName',
+          unitMeasurement: 'unitMeasurement',
+          costValue: 0,
+          saleValue: 0,
+          minQuantity: 0,
+          description: 'description');
+      //companyDB.getProduct(widget.productkey!)!;
       productId = product.id;
       _productCodeController.text = product.cod;
       _productNameController.text = product.name;
@@ -72,7 +83,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
         saleValue: double.parse(_saleValueController.text),
         minQuantity: int.parse(_minQuantityController.text),
         description: _descriptionController.text);
-
+/**
     bool checkExistCod =
         companyDB.containsProductCod(_productCodeController.text);
 
@@ -89,7 +100,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
       //update product
     } else {
       companyDB.insertProduct(product);
-    }
+    } */
   }
 
   String? validatorCode(String? s) {

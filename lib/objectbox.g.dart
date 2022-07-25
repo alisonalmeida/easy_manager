@@ -22,13 +22,13 @@ export 'package:objectbox/objectbox.dart'; // so that callers only have to impor
 
 final _entities = <ModelEntity>[
   ModelEntity(
-      id: const IdUid(1, 7712454605906709043),
+      id: const IdUid(1, 5463579012935817184),
       name: 'CompanyModel',
-      lastPropertyId: const IdUid(1, 4837122769183608203),
+      lastPropertyId: const IdUid(1, 4703023321913533326),
       flags: 2,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 4837122769183608203),
+            id: const IdUid(1, 4703023321913533326),
             name: 'id',
             type: 6,
             flags: 1)
@@ -41,184 +41,184 @@ final _entities = <ModelEntity>[
             name: 'providers', srcEntity: 'ProductProvider', srcField: '')
       ]),
   ModelEntity(
-      id: const IdUid(2, 6947127485198892695),
+      id: const IdUid(2, 8820484367074485462),
       name: 'Customer',
-      lastPropertyId: const IdUid(9, 6065652611473973595),
+      lastPropertyId: const IdUid(9, 5162368302528333667),
       flags: 2,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 7346815422642481421),
+            id: const IdUid(1, 8243299610050040476),
             name: 'id',
             type: 6,
             flags: 1),
         ModelProperty(
-            id: const IdUid(2, 5324133215930219323),
+            id: const IdUid(2, 4352879079295237305),
             name: 'name',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(3, 6452756757136246026),
+            id: const IdUid(3, 7504789888863389416),
             name: 'cpf',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(4, 766440764905954235),
+            id: const IdUid(4, 8875682626921946174),
             name: 'address',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(5, 7356282252130642130),
+            id: const IdUid(5, 8529808974134033250),
             name: 'phoneNumber1',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(6, 4918862023564284088),
+            id: const IdUid(6, 7675207072557326770),
             name: 'phoneNumber2',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(7, 2826986636815428162),
+            id: const IdUid(7, 3899266281975842049),
             name: 'email',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(8, 5534679181252480553),
+            id: const IdUid(8, 2650791592218272155),
             name: 'observations',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(9, 6065652611473973595),
+            id: const IdUid(9, 5162368302528333667),
             name: 'dbModelId',
             type: 11,
             flags: 520,
-            indexId: const IdUid(1, 3535543309078817657),
+            indexId: const IdUid(1, 7499422510775991034),
             relationTarget: 'CompanyModel')
       ],
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[]),
   ModelEntity(
-      id: const IdUid(3, 1417331802748432418),
+      id: const IdUid(3, 4904316099294591961),
       name: 'Product',
-      lastPropertyId: const IdUid(12, 4673239780333028483),
+      lastPropertyId: const IdUid(12, 7866254947640694500),
       flags: 2,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 7519202524191541135),
+            id: const IdUid(1, 850851500710235096),
             name: 'id',
             type: 6,
             flags: 1),
         ModelProperty(
-            id: const IdUid(2, 6194347705255070070),
+            id: const IdUid(2, 7234586053937796899),
             name: 'name',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(3, 3068049518020053347),
+            id: const IdUid(3, 4803318705932067431),
             name: 'cod',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(4, 5150336504733884372),
+            id: const IdUid(4, 7489684483166139415),
             name: 'productProviderDocument',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(5, 4844834368023320536),
+            id: const IdUid(5, 6123993166957582053),
             name: 'costValue',
             type: 8,
             flags: 0),
         ModelProperty(
-            id: const IdUid(6, 9087161916612931886),
+            id: const IdUid(6, 4664858484599130079),
             name: 'saleValue',
             type: 8,
             flags: 0),
         ModelProperty(
-            id: const IdUid(7, 8642532962182705374),
+            id: const IdUid(7, 9219642014939235897),
             name: 'brand',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(8, 3565917986575397784),
+            id: const IdUid(8, 6733111936576073739),
             name: 'categoryName',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(9, 7972479611331192358),
+            id: const IdUid(9, 1654787533216116379),
             name: 'unitMeasurement',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(10, 7813980687870392854),
+            id: const IdUid(10, 5525610289544025141),
             name: 'minQuantity',
             type: 6,
             flags: 0),
         ModelProperty(
-            id: const IdUid(11, 4424963682661795264),
+            id: const IdUid(11, 8063275579816512806),
             name: 'description',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(12, 4673239780333028483),
+            id: const IdUid(12, 7866254947640694500),
             name: 'dbModelId',
             type: 11,
             flags: 520,
-            indexId: const IdUid(2, 704047497809199117),
+            indexId: const IdUid(2, 7071377280175833286),
             relationTarget: 'CompanyModel')
       ],
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[]),
   ModelEntity(
-      id: const IdUid(4, 8312430246112723313),
+      id: const IdUid(4, 8238452823228411886),
       name: 'ProductProvider',
-      lastPropertyId: const IdUid(9, 3115366520109720853),
+      lastPropertyId: const IdUid(9, 7359975911946653570),
       flags: 2,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 6142255519184622672),
+            id: const IdUid(1, 5478845100405282780),
             name: 'id',
             type: 6,
             flags: 1),
         ModelProperty(
-            id: const IdUid(2, 3741500779267080310),
+            id: const IdUid(2, 6494061209052479616),
             name: 'name',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(3, 1249755577209738841),
+            id: const IdUid(3, 5213024281811599873),
             name: 'document',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(4, 2571568278575268592),
+            id: const IdUid(4, 4721879238675706777),
             name: 'phoneNumber1',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(5, 5740368716558642822),
+            id: const IdUid(5, 7259875069780323998),
             name: 'phoneNumber2',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(6, 609907450505783997),
+            id: const IdUid(6, 8748167960426978788),
             name: 'address',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(7, 2485033206733926767),
+            id: const IdUid(7, 5304039918728791604),
             name: 'email',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(8, 9089605226220248182),
+            id: const IdUid(8, 6005183947765977027),
             name: 'observations',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(9, 3115366520109720853),
+            id: const IdUid(9, 7359975911946653570),
             name: 'dbModelId',
             type: 11,
             flags: 520,
-            indexId: const IdUid(3, 2877116034213532020),
+            indexId: const IdUid(3, 7820354820842491682),
             relationTarget: 'CompanyModel')
       ],
       relations: <ModelRelation>[],
@@ -245,8 +245,8 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(4, 8312430246112723313),
-      lastIndexId: const IdUid(3, 2877116034213532020),
+      lastEntityId: const IdUid(4, 8238452823228411886),
+      lastIndexId: const IdUid(3, 7820354820842491682),
       lastRelationId: const IdUid(0, 0),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [],

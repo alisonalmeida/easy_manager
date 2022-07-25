@@ -4,16 +4,14 @@ import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_list_tile.dart';
 import 'package:easy_manager/custom_widgets/empty_widget.dart';
-import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/customer_model.dart';
 import 'package:easy_manager/models/company_model.dart';
-import 'package:objectbox/objectbox.dart';
-
 import 'package:easy_manager/screens/crud_customer_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 import '../consts.dart';
+import '../helper/objectbox_helper.dart';
 
 class CustomerScreen extends StatefulWidget {
   const CustomerScreen({Key? key}) : super(key: key);
@@ -23,13 +21,7 @@ class CustomerScreen extends StatefulWidget {
 }
 
 class _CustomerScreenState extends State<CustomerScreen> {
-  //late Stream<List<Customer>> streamCustomers;
   late Stream<List<Customer>> streamCustomers;
-  @override
-  void initState() {
-    streamCustomers = companyDB.getCustomers() as Stream<List<Customer>>;
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +101,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
     Widget continueButton = TextButton(
       child: Text("Confirmar"),
       onPressed: () {
-        companyDB.deleteCustomer(index);
+        //companyDB.deleteCustomer(index);
         Navigator.of(context).pop();
       },
     );

@@ -1,12 +1,8 @@
-import 'package:easy_manager/helper/objectbox_helper.dart';
 import 'package:easy_manager/screens/home_page_screen.dart';
 import 'package:flutter/material.dart';
 
-late ObjectBox companyDB;
-
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  companyDB = await ObjectBox.init();
 
   runApp(const MyApp());
 }

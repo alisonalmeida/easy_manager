@@ -36,4 +36,8 @@ class Customer {
   String get getAddress {
     return address!;
   }
+
+  teste() {
+    Customer customer = Customer();
+  }
 }

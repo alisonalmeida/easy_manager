@@ -13,7 +13,6 @@ import 'package:easy_manager/screens/product_screen.dart';
 import 'package:easy_manager/screens/provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import '../custom_widgets/custom_home_app_bar.dart';
 
 class HomePage extends StatefulWidget {
@@ -26,23 +25,31 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   Store? _store;
-  Box<CompanyModel>? _companyBox;
+  Box<Customer>? customerBox;
+
+  final syncServerIp = Platform.isAndroid ? '10.0.2.2' : '127.0.0.1';
   late final AnimationController _animationController;
   bool _checked = true;
 
   @override
   initState() {
-    initDB();
+    openStore().then((Store store) {
+      _store = store;
+      Sync.client(
+        store,
+        'ws://$syncServerIp:9999', // wss for SSL, ws for unencrypted traffic
+        SyncCredentials.none(),
+      ).start();
+      customerBox = store.box<Customer>();
+    });
     _animationController =
         AnimationController(duration: Duration(milliseconds: 500), vsync: this);
     _animationController.forward();
     super.initState();
   }
 
-//https://youtu.be/r9Lc2r22KBk?t=938 TODO: CONTINUAR DAQUI
   @override
-  void dispose() {
-    _store?.close();
+  void dispose() {_store?.close();
     _animationController.dispose();
     super.dispose();
   }
@@ -56,23 +63,6 @@ class _HomePageState extends State<HomePage>
       _animationController.reverse();
       _checked = !_checked;
     }
-  }
-
-  void initDB() async {
-    final Directory dir = await getApplicationDocumentsDirectory();
-    openStore(directory: '${dir.path}/objectbox/').then((Store store) {
-      _store = store;
-      final String syncServerIp;
-      Platform.isAndroid
-          ? syncServerIp = '10.0.2.2'
-          : syncServerIp = '127.0.0.1';
-      Sync.client(
-        store,
-        'ws://$syncServerIp/objectbox/:9999',
-        SyncCredentials.none(),
-      );
-      _companyBox = store.box<CompanyModel>();
-    });
   }
 
   @override

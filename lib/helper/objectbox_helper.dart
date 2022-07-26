@@ -17,14 +17,11 @@ class ObjectBox {
     final Directory dir = await getApplicationDocumentsDirectory();
     final store = await openStore(directory: '${dir.path}/objectbox/');
 
-    Platform.isAndroid
-        ? syncServerIp = 'server address'
-        : syncServerIp = '127.0.0.1';
+    Platform.isAndroid ? syncServerIp = '10.0.2.2' : syncServerIp = '127.0.0.1';
     if (Sync.isAvailable()) {
       final syncClient = Sync.client(
           store, 'ws://$syncServerIp/objectbox/:9999', SyncCredentials.none());
       syncClient.start();
-      print('sync avaliable');
     }
 
     return ObjectBox._init(store);
@@ -33,6 +30,9 @@ class ObjectBox {
   void close() {
     _store.close();
   }
+
+}
+
 /**
   Customer? getCustomer(int id) => _customerBox.get(id);
   int insertCustomer(Customer customer) => _customerBox.put(customer);
@@ -61,4 +61,6 @@ class ObjectBox {
       .query()
       .watch(triggerImmediately: true)
       .map((event) => event.find()); */
-}
+
+
+

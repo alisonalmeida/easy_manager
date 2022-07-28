@@ -12,7 +12,7 @@ import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class ProductsScreen extends StatefulWidget {
-  const ProductsScreen({Key? key}) : super(key: key);
+   ProductsScreen({Key? key}) : super(key: key);
 
   @override
   State<ProductsScreen> createState() => _ProductsScreenState();
@@ -23,7 +23,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   @override
   void initState() {
-    // streamProducts = companyDB.getProducts();
+    streamProducts = companyBox.getProducts();
     super.initState();
   }
 
@@ -58,7 +58,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       itemBuilder: (context, index) {
                         return CustomListTile(
                             deleteCallback: () {
-                              //    companyDB.deleteProduct(products[index].id);
+                              companyBox.deleteProduct(products[index].id);
                             },
                             editCallback: () {
                               Navigator.push(context, MaterialPageRoute(

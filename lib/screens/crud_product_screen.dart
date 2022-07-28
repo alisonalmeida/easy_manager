@@ -6,8 +6,10 @@ import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
+import 'package:easy_manager/custom_widgets/custom_modal_bottom_sheet_provider.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field_with_data.dart';
+import 'package:easy_manager/custom_widgets/empty_widget.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/screens/crud_provider_screen.dart';
@@ -17,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../core/upper_case_text_formatter.dart';
+import '../models/product_provider_model.dart';
 
 class CrudProductScreen extends StatefulWidget {
   const CrudProductScreen({Key? key, this.productkey}) : super(key: key);
@@ -37,25 +40,25 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
   final _costValueController = TextEditingController();
   final _saleValueController = TextEditingController();
   final _descriptionController = TextEditingController();
-  final bool _isEnabled = true;
-  int productId = 0;
+  late bool isUpdate;
+  late bool isSaveButtonEnabled = false;
+  final Map<String, bool> _checkTextFields = {
+    'Código': false,
+    'Fornecedor': false,
+    'Quantidade Mínima': false,
+    'Valor de Custo': false,
+    'Valor de Venda': false
+  };
+  final formKey = GlobalKey<FormState>();
+  late Stream<List<ProductProvider>> streamProviders;
 
   @override
   void initState() {
-    if (widget.productkey != null) {
-      final Product product = Product(
-          cod: 'cod',
-          name: 'name',
-          productProviderDocument: 'productProviderDocument',
-          brand: 'brand',
-          categoryName: 'categoryName',
-          unitMeasurement: 'unitMeasurement',
-          costValue: 0,
-          saleValue: 0,
-          minQuantity: 0,
-          description: 'description');
-      //companyDB.getProduct(widget.productkey!)!;
-      productId = product.id;
+    streamProviders = companyBox.getProviders();
+    isUpdate = widget.productkey == null ? false : true;
+    if (isUpdate) {
+      isSaveButtonEnabled = true;
+      Product product = companyBox.getProduct(widget.productkey!)!;
       _productCodeController.text = product.cod;
       _productNameController.text = product.name;
       _productProviderController.text = product.productProviderDocument;
@@ -72,7 +75,6 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
 
   _saveUpdate() {
     Product product = Product(
-        id: productId,
         cod: _productCodeController.text,
         name: _productNameController.text,
         productProviderDocument: _productProviderController.text,
@@ -83,38 +85,45 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
         saleValue: double.parse(_saleValueController.text),
         minQuantity: int.parse(_minQuantityController.text),
         description: _descriptionController.text);
-/**
-    bool checkExistCod =
-        companyDB.containsProductCod(_productCodeController.text);
-
-    //add new product
-    if (widget.productkey == null) {
-      if (checkExistCod) {
-        showGeneralInformationDialogErrorMessage(
-            'Já existe um produto com esse código, por favor, informe outro! ',
-            context);
-      } else {
-        companyDB.insertProduct(product);
-      }
-
-      //update product
-    } else {
-      companyDB.insertProduct(product);
-    } */
-  }
-
-  String? validatorCode(String? s) {
-    if (s!.isEmpty) {
-      return 'Campo não pode estar vazio';
+    if (isUpdate) {
+      product.id = widget.productkey!;
     }
-    return null;
+
+    if (companyBox.checkProductCode(product.cod) && !isUpdate) {
+      showGeneralInformationDialogErrorMessage(
+          'O código ja foi cadastrado, por favor, verifique!', context);
+    } else {
+      companyBox.insertProduct(product);
+      Navigator.pop(context);
+    }
   }
 
   String? validatorEmpty(String? s, String message) {
     if (s!.isEmpty) {
+      _checkTextFields.keys.contains(message)
+          ? _checkTextFields.update(message, (value) => value = false)
+          : null;
       return '$message não pode estar vazio';
     }
+    !_checkTextFields.keys.contains(message)
+        ? _checkTextFields.update(message, (value) => value = true)
+        : null;
     return null;
+  }
+
+  @override
+  void dispose() {
+    _productCodeController.dispose();
+    _productNameController.dispose();
+    _productProviderController.dispose();
+    _productBrandController.dispose();
+    _productCategoryController.dispose();
+    _unitMeasurementController.dispose();
+    _minQuantityController.dispose();
+    _costValueController.dispose();
+    _saleValueController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
   }
 
   @override
@@ -139,6 +148,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
             color: pastelPink,
             padding: EdgeInsets.symmetric(horizontal: 15),
             child: Form(
+              key: formKey,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               child: ListView(
                 keyboardDismissBehavior:
@@ -150,7 +160,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                     children: [
                       Expanded(
                         child: CustomTextField(
-                            isEnabled: widget.productkey == null,
+                            isEnabled: !isUpdate,
                             validator: (String? s) =>
                                 validatorEmpty(s, 'Código'),
                             prefixIcon: GestureDetector(
@@ -175,8 +185,6 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                   CustomTextField(
                       textInputFormatterList: [UpperCaseTextFormatter()],
                       textInputType: TextInputType.name,
-                      validator: (String? s) =>
-                          validatorEmpty(s, 'Nome do Produto'),
                       controller: _productNameController,
                       name: 'Nome do Produto',
                       textInputAction: TextInputAction.next),
@@ -186,23 +194,18 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                     children: [
                       Expanded(
                         child: CustomTextFieldWithData(
+                          callback: () {
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return CustomModalBottomSheetProvider();
+                                });
+                          },
                           validator: (String? s) =>
                               validatorEmpty(s, 'Fornecedor'),
                           controller: _productProviderController,
                           name: 'Fornecedor',
-                          items: Expanded(
-                              child: Text(
-                                  'data') /**ShowListItemsProductProvider(
-                                  box: _providerBox,
-                                  type: ProductProvider,
-                                  callback: (v) {
-                                    ProductProvider productProvider =
-                                        _providerBox.get(v);
-                                    _productProviderController.text =
-                                        productProvider.name;
-                                    choosedDocument = productProvider.document;
-                                  }) */
-                              ),
+                          items: Expanded(child: Text('data')),
                         ),
                       ),
                       ButtonRoundWithShadow(
@@ -214,7 +217,8 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                           callback: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => CrudProviderScreen())))
+                                builder: (context) => CrudProviderScreen(),
+                              )))
                     ],
                   ),
                   SizedBox(height: 5),
@@ -296,13 +300,9 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                       Expanded(
                           flex: 4,
                           child: CustomButtonConfirm(
-                            isEnabled: _isEnabled,
+                            isEnabled: isSaveButtonEnabled,
                             text: 'Salvar',
-                            onTapValid: () async => _saveUpdate(),
-                            onTapInValid: () {
-                              showGeneralInformationDialogErrorMessage(
-                                  'message', context);
-                            },
+                            onTap: isSaveButtonEnabled ? () {} : () {},
                           ))
                     ],
                   ),
@@ -314,5 +314,36 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
         ),
       ),
     );
+  }
+
+  String _showModalBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Expanded(
+          child: StreamBuilder<List<ProductProvider>>(
+            stream: streamProviders,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return EmptyWidget();
+              } else {
+                final providers = snapshot.data;
+                if (providers!.isEmpty) {
+                  return EmptyWidget();
+                }
+
+                return ListView.builder(
+                    itemCount: providers.length,
+                    itemBuilder: (context, index) {
+                      final provider = providers[index];
+                      return Center();
+                    });
+              }
+            },
+          ),
+        );
+      },
+    );
+    return '';
   }
 }

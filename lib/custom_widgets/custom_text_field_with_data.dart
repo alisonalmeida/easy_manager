@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors
 
-import 'package:easy_manager/custom_widgets/custom_modal_bottom_sheet.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -17,15 +16,15 @@ class CustomTextFieldWithData extends StatelessWidget {
   final TextEditingController controller;
   final String name;
   final Widget items;
-  final VoidCallback? callback;
   final String? Function(String?)? validator;
+  final VoidCallback? callback;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       validator: validator,
-      onTap: () =>
-          customModalBottomSheet(context, 'Selecione um fornecedor', items),
+      onSaved: (newValue) {},
+      onTap: callback,
       readOnly: true,
       controller: controller,
       decoration: InputDecoration(

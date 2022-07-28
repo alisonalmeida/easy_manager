@@ -3,16 +3,11 @@ import 'package:flutter/material.dart';
 
 class CustomButtonConfirm extends StatelessWidget {
   final String text;
-  final VoidCallback onTapValid;
-  final VoidCallback onTapInValid;
   final bool isEnabled;
+  final VoidCallback? onTap;
 
   const CustomButtonConfirm(
-      {Key? key,
-      required this.text,
-      required this.onTapValid,
-      required this.onTapInValid,
-      required this.isEnabled})
+      {Key? key, required this.text, required this.isEnabled, this.onTap})
       : super(key: key);
 
   @override
@@ -24,7 +19,7 @@ class CustomButtonConfirm extends StatelessWidget {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
           padding: const EdgeInsets.all(16),
           primary: isEnabled ? woodSmoke : Colors.grey),
-      onPressed: isEnabled ? onTapValid : onTapInValid,
+      onPressed: onTap,
       child: Text(
         text,
         maxLines: 1,

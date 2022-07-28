@@ -8,13 +8,14 @@ class CustomHomeAppBar extends StatelessWidget implements PreferredSize {
       {Key? key,
       required this.title,
       required this.callback,
-      required this.controller})
+      required this.controller,
+      required this.lottie})
       : super(key: key);
 
   final String title;
   final VoidCallback callback;
   final AnimationController controller;
-
+  final String lottie;
   @override
   Size get preferredSize => const Size.fromHeight(100);
 
@@ -34,10 +35,8 @@ class CustomHomeAppBar extends StatelessWidget implements PreferredSize {
             SizedBox(
                 height: 50,
                 width: 50,
-                child: Lottie.network(
-                    controller: controller,
-                    repeat: false,
-                    'https://assets3.lottiefiles.com/packages/lf20_kgffl5cr.json')),
+                child: Lottie.asset(
+                    controller: controller, lottie, repeat: false)),
             Expanded(
               child: Text(
                 title,

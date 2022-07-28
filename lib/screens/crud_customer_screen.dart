@@ -16,21 +16,19 @@ import 'package:flutter/material.dart';
 import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/services.dart';
 
-import '../helper/objectbox_helper.dart';
-
 class CrudCustomerScreen extends StatefulWidget {
-  const CrudCustomerScreen({Key? key, this.customerKey}) : super(key: key);
+  const CrudCustomerScreen({Key? key, this.customerId}) : super(key: key);
 
-  final int? customerKey;
+  final int? customerId;
 
   @override
   State<CrudCustomerScreen> createState() => _CrudCustomerScreenState();
 }
 
 class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
-  late ObjectBox _companyDB;
   late FocusNode _focusNode;
   bool _isEnabled = true;
+  late bool isUpdate;
 
   final _nameController = TextEditingController();
   final _cpfController = TextEditingController();
@@ -48,12 +46,12 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
 
   @override
   void initState() {
-    _initDb;
     _focusNode = FocusNode();
+    isUpdate = widget.customerId == null ? false : true;
     //update
-    if (widget.customerKey != null) {
-      final Customer customer = Customer();
-      // _companyDB.getCustomer(widget.customerKey!)!;
+
+    if (isUpdate) {
+      Customer customer = companyBox.getCustomer(widget.customerId!)!;
       Address address = Address();
       _nameController.text = customer.name!;
       _cpfController.text = customer.cpf!;
@@ -70,7 +68,6 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
       _cityController.text = address.localidade!;
       _observationsController.text = customer.observations!;
     }
-
     super.initState();
   }
 
@@ -91,11 +88,17 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
         phoneNumber2: _phoneNumber2Controller.text,
         email: _emailController.text,
         observations: _observationsController.text);
-    if (widget.customerKey != null) {
-      // companyDB.deleteCustomer(widget.customerKey!);
+    if (isUpdate) {
+      customer.id = widget.customerId!;
     }
-    // companyDB.insertCustomer(customer);
-    Navigator.pop(context);
+
+    if (companyBox.checkCustomerCpf(customer.cpf!) && !isUpdate) {
+      showGeneralInformationDialogErrorMessage(
+          'O CPF já está cadastrado, por favor verifique!', context);
+    } else {
+      companyBox.insertCustomer(customer);
+      Navigator.pop(context);
+    }
   }
 
   _getCep() async {
@@ -112,20 +115,29 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
 
       if (!mounted) return; //check if the data has come
       Navigator.pop(context);
-      _focusNode.requestFocus();
+      _focusNode.requestFocus(); //send focus to number address textfield
     } catch (e) {
       Navigator.pop(context);
       showGeneralInformationDialogErrorMessage('Erro: $e', context);
     }
   }
 
-  _initDb() async {
-    _companyDB = await ObjectBox.init();
-  }
-
   @override
   void dispose() {
-    _companyDB.close();
+    _focusNode.dispose();
+    _nameController.dispose();
+    _cpfController.dispose();
+    _cepController.dispose();
+    _streetController.dispose();
+    _districtController.dispose();
+    _numberController.dispose();
+    _complementController.dispose();
+    _ufController.dispose();
+    _cityController.dispose();
+    _phoneNumber1Controller.dispose();
+    _phoneNumber2Controller.dispose();
+    _emailController.dispose();
+    _observationsController.dispose();
     super.dispose();
   }
 
@@ -190,7 +202,7 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
                 SizedBox(height: 10),
                 CustomTextField(
                     minLines: 3,
-                    maxLines: 3,
+                    maxLines: 6,
                     textInputFormatterList: [UpperCaseTextFormatter()],
                     controller: _observationsController,
                     name: 'Observações',
@@ -210,16 +222,13 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
                         child: CustomButtonConfirm(
                           isEnabled: _isEnabled,
                           text: 'Salvar',
-                          onTapValid: () => _saveUpdate(),
-                          onTapInValid: () =>
-                              showGeneralInformationDialogErrorMessage(
-                                  'Por favor, preencha todos os campos obrigatórios!',
-                                  context),
+                          onTap: _saveUpdate,
                         ))
                   ],
                 ),
                 SizedBox(height: 50),
               ],
+              
             ),
           ),
         ),

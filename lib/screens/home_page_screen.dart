@@ -1,13 +1,7 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, avoid_print
-
-import 'dart:io';
-
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/central_grid_button.dart';
-import 'package:easy_manager/models/company_model.dart';
-import 'package:easy_manager/models/customer_model.dart';
-import 'package:easy_manager/models/product_model.dart';
-import 'package:easy_manager/objectbox.g.dart';
+import 'package:easy_manager/helper/objectbox_helper.dart';
+import 'package:easy_manager/screens/crud_customer_screen.dart';
 import 'package:easy_manager/screens/customer_screen.dart';
 import 'package:easy_manager/screens/product_screen.dart';
 import 'package:easy_manager/screens/provider_screen.dart';
@@ -24,45 +18,27 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  Store? _store;
-  Box<Customer>? customerBox;
-
-  final syncServerIp = Platform.isAndroid ? '10.0.2.2' : '127.0.0.1';
   late final AnimationController _animationController;
-  bool _checked = true;
+  late bool _checked;
 
   @override
   initState() {
-    openStore().then((Store store) {
-      _store = store;
-      Sync.client(
-        store,
-        'ws://$syncServerIp:9999', // wss for SSL, ws for unencrypted traffic
-        SyncCredentials.none(),
-      ).start();
-      customerBox = store.box<Customer>();
-    });
     _animationController =
-        AnimationController(duration: Duration(milliseconds: 500), vsync: this);
+        AnimationController(duration: const Duration(seconds: 1), vsync: this);
+    _checked = true;
     _animationController.forward();
     super.initState();
   }
 
   @override
-  void dispose() {_store?.close();
+  void dispose() {
     _animationController.dispose();
     super.dispose();
   }
 
   void changeAnimation() {
-    print(_checked);
-    if (_checked) {
-      _animationController.forward();
-      _checked = !_checked;
-    } else {
-      _animationController.reverse();
-      _checked = !_checked;
-    }
+    _checked = !_checked;
+    _checked ? _animationController.forward() : _animationController.reverse();
   }
 
   @override
@@ -70,12 +46,14 @@ class _HomePageState extends State<HomePage>
     return Scaffold(
       backgroundColor: selago,
       appBar: CustomHomeAppBar(
-          controller: _animationController,
-          title: 'Easy Manager',
-          callback: () => changeAnimation()),
+        callback: changeAnimation,
+        controller: _animationController,
+        title: 'Easy Manager',
+        lottie: 'lib/assets/animations/home_page_check.json',
+      ),
       body: Container(
         color: selago,
-        padding: EdgeInsets.all(5),
+        padding: const EdgeInsets.all(5),
         child: GridView(
           padding: const EdgeInsets.all(8.0),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -103,11 +81,13 @@ class _HomePageState extends State<HomePage>
               shadowColor: dandelionShadow,
               color: white,
               iconPath: kpathSvgPerson,
-              callback: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CustomerScreen(),
-                  )),
+              callback: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CustomerScreen(),
+                    ));
+              },
             ),
             CentralGridButton(
               hero: 'Fornecedores',
@@ -141,8 +121,10 @@ class _HomePageState extends State<HomePage>
                 shadowColor: blueBlueShadow,
                 color: white,
                 iconPath: kpathSvgChart,
-                callback: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => TextPage()))),
+                callback: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CrudCustomerScreen()))),
             CentralGridButton(
                 hero: 'Entrada e Saída',
                 title: 'Entrada e Saída',
@@ -169,7 +151,7 @@ class TextPage extends StatefulWidget {
 class _TextPageState extends State<TextPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(appBar: AppBar(),
       body: Center(
         child: Text('data'),
       ),

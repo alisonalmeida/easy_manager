@@ -2,6 +2,7 @@
 
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/core/cep_network.dart';
+import 'package:easy_manager/core/upper_case_text_formatter.dart';
 import 'package:easy_manager/custom_widgets/custom_address_area.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
@@ -19,7 +20,7 @@ class CrudProviderScreen extends StatefulWidget {
   const CrudProviderScreen({Key? key, this.productProviderKey})
       : super(key: key);
 
-  final String? productProviderKey;
+  final int? productProviderKey;
 
   @override
   State<CrudProviderScreen> createState() => _CrudProviderScreenState();
@@ -28,7 +29,8 @@ class CrudProviderScreen extends StatefulWidget {
 class _CrudProviderScreenState extends State<CrudProviderScreen> {
   late FocusNode _focusNode;
 
-  bool _isEnabled = false;
+  bool _isEnabled = true;
+  late bool isUpdate;
 
   final _providerNameController = TextEditingController();
   final _cpfCnpjController = TextEditingController();
@@ -47,31 +49,32 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
   @override
   void initState() {
     _focusNode = FocusNode();
+    isUpdate = widget.productProviderKey == null ? false : true;
     //update
-    if (widget.productProviderKey != null) {
-      /*
-      
-      _providerNameController.text = productProvider.name;
-      _cpfCnpjController.text = productProvider.document;
-      _phoneNumberController1.text = productProvider.phoneNumber1;
-      _phoneNumberController2.text = productProvider.phoneNumber2;
-      _emailController.text = productProvider.email;
-      _cepController.text = productProvider.address.cep;
-      _ufController.text = productProvider.address.uf;
-      _cityController.text = productProvider.address.localidade;
-      _streetController.text = productProvider.address.logradouro;
-      _numberController.text = productProvider.address.numero.toString();
-      _districtController.text = productProvider.address.bairro;
-      _complementController.text = productProvider.address.complemento;
-      _observationsController.text = productProvider.observations;
-      */
+    if (isUpdate) {
+      ProductProvider? productProvider =
+          companyBox.getProvider(widget.productProviderKey!);
+      Address address = Address();
+      _providerNameController.text = productProvider!.name!;
+      _cpfCnpjController.text = productProvider.document!;
+      _phoneNumberController1.text = productProvider.phoneNumber1!;
+      _phoneNumberController2.text = productProvider.phoneNumber2!;
+      _emailController.text = productProvider.email!;
+      address = addressFromJson(productProvider.getAddress);
+      _cepController.text = address.cep!;
+      _ufController.text = address.uf!;
+      _cityController.text = address.localidade!;
+      _streetController.text = address.logradouro!;
+      _numberController.text = address.numero.toString();
+      _districtController.text = address.bairro!;
+      _complementController.text = address.complemento!;
+      _observationsController.text = productProvider.observations!;
     }
     super.initState();
   }
 
-  _addUpdate() async {
-    /*
-    final Address address = Address(
+  _saveUpdate() async {
+    Address address = Address(
         bairro: _districtController.text,
         cep: _cepController.text,
         complemento: _complementController.text,
@@ -79,24 +82,28 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
         logradouro: _streetController.text,
         numero: _numberController.text,
         uf: _ufController.text);
-    final ProductProvider productProvider = ProductProvider(
+    ProductProvider productProvider = ProductProvider(
         name: _providerNameController.text,
         document: _cpfCnpjController.text,
         phoneNumber1: _phoneNumberController1.text,
         phoneNumber2: _phoneNumberController2.text,
-        address: address,
+        address: addressToJson(address),
         email: _emailController.text,
         observations: _observationsController.text);
-    if (widget.isUpdate) {
-      await _productProviderBox.delete(keyToDelete);
+
+    if (isUpdate) {
+      productProvider.id = widget.productProviderKey!;
     }
-    if (_productProviderBox.containsKey(_cpfCnpjController.text)) {
-      showGeneralDialogErrorMessage('Este CNPJ já foi cadastrado!', context);
+
+    if (companyBox.checkProviderDocument(productProvider.document!) &&
+        !isUpdate) {
+      showGeneralInformationDialogErrorMessage(
+          'O CPF/CNPJ já está cadastrado. Edite o antigo ou escolha outro documento!',
+          context);
     } else {
-      await _productProviderBox.put(_cpfCnpjController.text, productProvider);
+      companyBox.insertProvider(productProvider);
       Navigator.pop(context);
     }
-    */
   }
 
   _getCep() async {
@@ -113,7 +120,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
 
       if (!mounted) return; //check if the data has come
       Navigator.pop(context);
-      _focusNode.requestFocus();
+      _focusNode.requestFocus(); //send focus to number address textfield
     } catch (e) {
       Navigator.pop(context);
       showGeneralInformationDialogErrorMessage('Erro: $e', context);
@@ -122,7 +129,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
 
   @override
   void dispose() {
-    // _focusNode.dispose();
+    _focusNode.dispose();
     _providerNameController.dispose();
     _cpfCnpjController.dispose();
     _phoneNumberController1.dispose();
@@ -165,6 +172,8 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
               children: [
                 SizedBox(height: 5),
                 CustomTextField(
+                    textInputFormatterList: [UpperCaseTextFormatter()],
+                    textInputType: TextInputType.name,
                     controller: _providerNameController,
                     name: 'Nome do Fornecedor',
                     textInputAction: TextInputAction.next),
@@ -221,6 +230,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
                 CustomTextField(
                     minLines: 3,
                     maxLines: 6,
+                    textInputFormatterList: [UpperCaseTextFormatter()],
                     controller: _observationsController,
                     name: 'Observações',
                     textInputAction: TextInputAction.done),
@@ -241,8 +251,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
                         child: CustomButtonConfirm(
                           isEnabled: _isEnabled,
                           text: 'Salvar',
-                          onTapValid: () => _addUpdate(),
-                          onTapInValid: () {},
+                          onTap: _saveUpdate,
                         ))
                   ],
                 ),

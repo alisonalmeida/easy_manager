@@ -33,6 +33,7 @@ flutter:
   uses-material-design: true
   assets:
     - lib/assets/svg/
+    - lib/assets/animations/
   fonts:
     - family: JosefinSans
       fonts:

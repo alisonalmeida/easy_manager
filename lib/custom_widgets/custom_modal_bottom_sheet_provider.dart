@@ -4,68 +4,85 @@ import 'package:easy_manager/custom_widgets/custom_list_tile_check.dart';
 import 'package:easy_manager/custom_widgets/empty_widget.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
+import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 
-class CustomModalBottomSheetProvider extends StatefulWidget {
-  CustomModalBottomSheetProvider({Key? key}) : super(key: key);
-
-  @override
-  State<CustomModalBottomSheetProvider> createState() =>
-      _CustomModalBottomSheetProviderState();
-}
-
-class _CustomModalBottomSheetProviderState
-    extends State<CustomModalBottomSheetProvider> {
+Future<String> showProviderChoiceDialog(BuildContext context) async {
   late Stream<List<ProductProvider>> streamProviders;
+  DraggableScrollableController controller = DraggableScrollableController();
 
-  @override
-  Widget build(BuildContext context) {
-    streamProviders = companyBox.getProviders();
-    return StreamBuilder<List<ProductProvider>>(
-      stream: streamProviders,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return EmptyWidget();
-        } else {
-          final providers = snapshot.data;
-          if (providers!.isEmpty) {
-            return EmptyWidget();
-          }
+  streamProviders = companyBox.getProviders();
+  String returnedValue = '';
+  await showModalBottomSheet(
+    enableDrag: true,
+    backgroundColor: Colors.transparent,
+    isScrollControlled: true,
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+    context: context,
+    builder: (context) {
+      return DraggableScrollableSheet(
+        controller: controller,
+        initialChildSize: 0.9,
+        minChildSize: 0.5,
+        maxChildSize: 0.9,
+        builder: (context, scrollController) {
+          return StreamBuilder<List<ProductProvider>>(
+              stream: streamProviders,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return EmptyWidget();
+                } else {
+                  final providers = snapshot.data;
+                  if (providers!.isEmpty) {
+                    return EmptyWidget();
+                  }
 
-          return Container(
-            margin: EdgeInsets.symmetric(vertical: 10),
-            decoration: BoxDecoration(
-                border: Border.all(),
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(20),
-                    topLeft: Radius.circular(20))),
-            child: Padding(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 10),
-                    height: 5,
-                    width: 50,
-                    decoration: BoxDecoration(color: Colors.grey),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                        itemCount: providers.length,
-                        itemBuilder: (context, index) {
-                          final provider = providers[index];
-                          return CustomListTileCheck(
-                              title: provider.name!,
-                              icon: Icons.add_box,
-                              subtitle: provider.document!);
-                        }),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
-      },
-    );
-  }
+                  return Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        border: Border.all(),
+                        color: white,
+                        borderRadius: BorderRadius.horizontal(
+                          left: Radius.circular(20),
+                          right: Radius.circular(20),
+                        )),
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 4,
+                          width: 50,
+                          color: Colors.grey,
+                        ),
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 30),
+                          child: Text('Escolha um Fornecedor'),
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                              itemCount: providers.length,
+                              itemBuilder: (context, index) {
+                                final provider = providers[index];
+                                return CustomListTileCheck(
+                                  callback: () {
+                                    returnedValue = provider.document!;
+                                    Navigator.pop(context);
+                                  },
+                                  subtitle: provider.document!,
+                                  icon: Icons.data_array,
+                                  title: provider.name!,
+                                );
+                              }),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              });
+        },
+      );
+    },
+  );
+  return returnedValue;
 }

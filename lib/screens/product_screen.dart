@@ -12,7 +12,7 @@ import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class ProductsScreen extends StatefulWidget {
-   ProductsScreen({Key? key}) : super(key: key);
+  ProductsScreen({Key? key}) : super(key: key);
 
   @override
   State<ProductsScreen> createState() => _ProductsScreenState();
@@ -30,12 +30,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: pastelPink,
+        backgroundColor: productBackgroundColor,
         appBar: CustomAppBar(
           heroAnimation: 'Produtos',
           svgImage: kpathSvgProduct,
           callback: () async => Navigator.pop(context),
-          backgroundColor: pastelPink,
+          backgroundColor: productBackgroundColor,
           title: 'Produtos',
         ),
         body: Padding(

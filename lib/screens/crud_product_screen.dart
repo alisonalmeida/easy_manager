@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, sort_child_properties_last
 
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/core/generate_random_string.dart';
@@ -6,6 +6,7 @@ import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
+import 'package:easy_manager/custom_widgets/custom_list_tile_check.dart';
 import 'package:easy_manager/custom_widgets/custom_modal_bottom_sheet_provider.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field_with_data.dart';
@@ -17,6 +18,7 @@ import 'package:easy_manager/utils/colors.dart';
 import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 import '../core/upper_case_text_formatter.dart';
 import '../models/product_provider_model.dart';
@@ -81,9 +83,12 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
         brand: _productBrandController.text,
         categoryName: _productCategoryController.text,
         unitMeasurement: _unitMeasurementController.text,
-        costValue: double.parse(_costValueController.text),
-        saleValue: double.parse(_saleValueController.text),
-        minQuantity: int.parse(_minQuantityController.text),
+        costValue: double.parse(
+            _costValueController.text.replaceAll(RegExp(r'[^0-9\.]'), '')),
+        saleValue: double.parse(
+            _saleValueController.text.replaceAll(RegExp(r'[^0-9\.]'), '')),
+        minQuantity: int.parse(
+            _minQuantityController.text.replaceAll(RegExp(r'[^0-9\.]'), '')),
         description: _descriptionController.text);
     if (isUpdate) {
       product.id = widget.productkey!;
@@ -100,14 +105,24 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
 
   String? validatorEmpty(String? s, String message) {
     if (s!.isEmpty) {
-      _checkTextFields.keys.contains(message)
-          ? _checkTextFields.update(message, (value) => value = false)
-          : null;
       return '$message não pode estar vazio';
     }
-    !_checkTextFields.keys.contains(message)
-        ? _checkTextFields.update(message, (value) => value = true)
-        : null;
+
+    if (_checkTextFields.keys.contains(message)) {
+      _checkTextFields.update(message, (value) => value = true);
+    }
+    var list = [];
+    _checkTextFields.forEach((key, value) {
+      list.add(value);
+    });
+    for (var element in list) {
+      if (!element) {
+        isSaveButtonEnabled = false;
+        break;
+      }
+      isSaveButtonEnabled = true;
+    }
+
     return null;
   }
 
@@ -128,6 +143,8 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
 
   @override
   Widget build(BuildContext context) {
+    NumberFormat formatter = NumberFormat.simpleCurrency(locale: 'pt_BR');
+
     return WillPopScope(
       onWillPop: () async {
         final shouldPop = await showGeneralConfirmationExitDialog(context);
@@ -136,16 +153,16 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
-          backgroundColor: pastelPink,
+          backgroundColor: productBackgroundColor,
           appBar: CustomAppBar(
             heroAnimation: '',
             svgImage: kpathSvgProduct,
             callback: () async => showGeneralConfirmationExitDialog(context),
-            backgroundColor: pastelPink,
+            backgroundColor: productBackgroundColor,
             title: 'Produtos',
           ),
           body: Container(
-            color: pastelPink,
+            color: productBackgroundColor,
             padding: EdgeInsets.symmetric(horizontal: 15),
             child: Form(
               key: formKey,
@@ -194,13 +211,8 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                     children: [
                       Expanded(
                         child: CustomTextFieldWithData(
-                          callback: () {
-                            showModalBottomSheet(
-                                context: context,
-                                builder: (context) {
-                                  return CustomModalBottomSheetProvider();
-                                });
-                          },
+                          callback: () async => _productProviderController
+                              .text = await showProviderChoiceDialog(context),
                           validator: (String? s) =>
                               validatorEmpty(s, 'Fornecedor'),
                           controller: _productProviderController,
@@ -217,8 +229,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                           callback: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => CrudProviderScreen(),
-                              )))
+                                  builder: (context) => CrudProviderScreen())))
                     ],
                   ),
                   SizedBox(height: 5),
@@ -244,6 +255,11 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                       textInputAction: TextInputAction.next),
                   SizedBox(height: 5),
                   CustomTextField(
+                      onChanged: () {
+                        print(formatter.format(_minQuantityController.text
+                            .replaceAll(RegExp(r'[^0-9\.]'), '')));
+                      },
+                      textInputType: TextInputType.number,
                       textInputFormatterList: [
                         FilteringTextInputFormatter.digitsOnly
                       ],
@@ -257,8 +273,6 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                       textInputType: TextInputType.number,
                       textInputFormatterList: [
                         FilteringTextInputFormatter.digitsOnly,
-                        TextInputMask(
-                            mask: ['R!\$! !999,99', 'R!\$! 999.999,99'])
                       ],
                       validator: (String? s) =>
                           validatorEmpty(s, 'Valor de Custo'),
@@ -280,8 +294,9 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                       textInputAction: TextInputAction.next),
                   SizedBox(height: 5),
                   CustomTextField(
-                      maxLines: 5,
-                      minLines: 2,
+                      minLines: 3,
+                      maxLines: 6,
+                      textInputFormatterList: [UpperCaseTextFormatter()],
                       controller: _descriptionController,
                       name: 'Descrição',
                       textInputAction: TextInputAction.next),
@@ -302,7 +317,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                           child: CustomButtonConfirm(
                             isEnabled: isSaveButtonEnabled,
                             text: 'Salvar',
-                            onTap: isSaveButtonEnabled ? () {} : () {},
+                            onTap: isSaveButtonEnabled ? _saveUpdate : () {},
                           ))
                     ],
                   ),
@@ -314,36 +329,5 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
         ),
       ),
     );
-  }
-
-  String _showModalBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Expanded(
-          child: StreamBuilder<List<ProductProvider>>(
-            stream: streamProviders,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return EmptyWidget();
-              } else {
-                final providers = snapshot.data;
-                if (providers!.isEmpty) {
-                  return EmptyWidget();
-                }
-
-                return ListView.builder(
-                    itemCount: providers.length,
-                    itemBuilder: (context, index) {
-                      final provider = providers[index];
-                      return Center();
-                    });
-              }
-            },
-          ),
-        );
-      },
-    );
-    return '';
   }
 }

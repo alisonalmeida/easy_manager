@@ -35,10 +35,10 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: carribeanGreen,
+        backgroundColor: providerBackgroundColor,
         appBar: CustomAppBar(
             title: 'Fornecedores',
-            backgroundColor: carribeanGreen,
+            backgroundColor: providerBackgroundColor,
             callback: () async => Navigator.pop(context),
             svgImage: kpathSvgFactory,
             heroAnimation: 'Fornecedores'),
@@ -48,8 +48,6 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
               child: StreamBuilder<List<ProductProvider>>(
                 stream: streamProviders,
                 builder: (context, snapshot) {
-
-
                   if (!snapshot.hasData) {
                     return EmptyWidget();
                   } else {

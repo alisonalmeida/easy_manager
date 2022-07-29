@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage>
             CentralGridButton(
               hero: 'Produtos',
               title: 'Produtos',
-              backgroundColor: pastelPink,
+              backgroundColor: productBackgroundColor,
               borderColor: pinkSalomn,
               shadowColor: pinkSalomn,
               color: white,
@@ -76,9 +76,9 @@ class _HomePageState extends State<HomePage>
             CentralGridButton(
               hero: 'Clientes',
               title: 'Clientes',
-              backgroundColor: dandelion,
-              borderColor: dandelionShadow,
-              shadowColor: dandelionShadow,
+              backgroundColor: customerBackgroundColor,
+              borderColor: customerBackgroundColorShadow,
+              shadowColor: customerBackgroundColorShadow,
               color: white,
               iconPath: kpathSvgPerson,
               callback: () {
@@ -92,9 +92,9 @@ class _HomePageState extends State<HomePage>
             CentralGridButton(
               hero: 'Fornecedores',
               title: 'Fornecedores',
-              backgroundColor: carribeanGreen,
-              borderColor: carribeanGreenShadow,
-              shadowColor: carribeanGreenShadow,
+              backgroundColor: providerBackgroundColor,
+              borderColor: providerBackgroundColorShadow,
+              shadowColor: providerBackgroundColorShadow,
               color: white,
               iconPath: kpathSvgFactory,
               callback: () => Navigator.push(
@@ -151,7 +151,8 @@ class TextPage extends StatefulWidget {
 class _TextPageState extends State<TextPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(),
+    return Scaffold(
+      appBar: AppBar(),
       body: Center(
         child: Text('data'),
       ),

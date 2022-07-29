@@ -36,12 +36,12 @@ class _CustomerScreenState extends State<CustomerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: dandelion,
+        backgroundColor: customerBackgroundColor,
         appBar: CustomAppBar(
             heroAnimation: 'Clientes',
             svgImage: kpathSvgPerson,
             title: 'Clientes',
-            backgroundColor: dandelion,
+            backgroundColor: customerBackgroundColor,
             callback: () async => Navigator.pop(context)),
         body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5),

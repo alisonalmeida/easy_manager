@@ -157,15 +157,15 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
-          backgroundColor: carribeanGreen,
+          backgroundColor: providerBackgroundColor,
           appBar: CustomAppBar(
               callback: () async => showGeneralConfirmationExitDialog(context),
               heroAnimation: '',
               svgImage: kpathSvgFactory,
               title: 'Cadastrar Fornecedor',
-              backgroundColor: carribeanGreen),
+              backgroundColor: providerBackgroundColor),
           body: Container(
-            color: carribeanGreen,
+            color: providerBackgroundColor,
             padding: EdgeInsets.symmetric(horizontal: 15),
             child: ListView(
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,

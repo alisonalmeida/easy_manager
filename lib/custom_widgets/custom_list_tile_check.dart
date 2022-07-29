@@ -8,12 +8,14 @@ class CustomListTileCheck extends StatelessWidget {
       {Key? key,
       required this.title,
       required this.icon,
-      required this.subtitle})
+      required this.subtitle,
+      this.callback})
       : super(key: key);
 
   final String title;
   final IconData icon;
   final String subtitle;
+  final VoidCallback? callback;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class CustomListTileCheck extends StatelessWidget {
             color: white,
             iconPath: kpathSvgCheck,
             size: 50,
-            callback: () {}),
+            callback: callback!),
         leading: Icon(icon, color: Colors.black),
         title: Text(title,
             style: const TextStyle(

@@ -19,7 +19,8 @@ class CustomTextField extends StatelessWidget {
       this.focusNode,
       this.maxLength,
       this.validator,
-      this.isEnabled})
+      this.isEnabled,
+      this.onChanged})
       : super(key: key);
 
   final List<TextInputFormatter>? textInputFormatterList;
@@ -35,10 +36,14 @@ class CustomTextField extends StatelessWidget {
   final int? maxLength;
   final String? Function(String?)? validator;
   final bool? isEnabled;
+  final VoidCallback? onChanged;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onChanged: (v) {
+        onChanged;
+      },
       enabled: isEnabled,
       validator: validator,
       maxLength: maxLength,

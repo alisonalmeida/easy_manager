@@ -151,17 +151,17 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
-          backgroundColor: dandelion,
+          backgroundColor: customerBackgroundColor,
           appBar: CustomAppBar(
             heroAnimation: '',
             svgImage: kpathSvgPerson,
             callback: () async => showGeneralConfirmationExitDialog(context),
-            backgroundColor: dandelion,
+            backgroundColor: customerBackgroundColor,
             title: 'Cadastrar Cliente',
           ),
           body: Container(
             padding: EdgeInsets.symmetric(horizontal: 15),
-            color: dandelion,
+            color: customerBackgroundColor,
             child: ListView(
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               children: [
@@ -228,7 +228,6 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
                 ),
                 SizedBox(height: 50),
               ],
-              
             ),
           ),
         ),

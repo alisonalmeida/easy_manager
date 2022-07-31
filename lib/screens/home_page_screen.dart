@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage>
         callback: changeAnimation,
         controller: _animationController,
         title: 'Easy Manager',
-        lottie: 'lib/assets/animations/home_page_check.json',
+        lottie: kpathLottieCheck,
       ),
       body: Container(
         color: selago,
@@ -137,26 +137,6 @@ class _HomePageState extends State<HomePage>
           ],
         ),
       ),
-    );
-  }
-}
-
-class TextPage extends StatefulWidget {
-  const TextPage({Key? key}) : super(key: key);
-
-  @override
-  State<TextPage> createState() => _TextPageState();
-}
-
-class _TextPageState extends State<TextPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: Text('data'),
-      ),
-      floatingActionButton: FloatingActionButton(onPressed: () {}),
     );
   }
 }

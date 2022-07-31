@@ -6,11 +6,9 @@ import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
-import 'package:easy_manager/custom_widgets/custom_list_tile_check.dart';
 import 'package:easy_manager/custom_widgets/custom_modal_bottom_sheet_provider.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field_with_data.dart';
-import 'package:easy_manager/custom_widgets/empty_widget.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/screens/crud_provider_screen.dart';
@@ -165,7 +163,6 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
             color: productBackgroundColor,
             padding: EdgeInsets.symmetric(horizontal: 15),
             child: Form(
-              key: formKey,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               child: ListView(
                 keyboardDismissBehavior:
@@ -308,17 +305,22 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                           flex: 4,
                           child: CustomButtonCancel(
                               text: 'Cancelar',
-                              onTap: () {
-                                Navigator.pop(context);
-                              })),
+                              onTap: () =>
+                                Navigator.pop(context)
+                              )),
                       Spacer(flex: 1),
                       Expanded(
                           flex: 4,
                           child: CustomButtonConfirm(
-                            isEnabled: isSaveButtonEnabled,
-                            text: 'Salvar',
-                            onTap: isSaveButtonEnabled ? _saveUpdate : () {},
-                          ))
+                              isEnabled: isSaveButtonEnabled,
+                              text: 'Salvar',
+                              onTap: isSaveButtonEnabled
+                                  ? _saveUpdate
+                                  : () {
+                                      showGeneralInformationDialogErrorMessage(
+                                          'Voce precisa preencher todos os campos obrigatórios!',
+                                          context);
+                                    }))
                     ],
                   ),
                   SizedBox(height: 40),

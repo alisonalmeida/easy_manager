@@ -242,9 +242,9 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
                         flex: 4,
                         child: CustomButtonCancel(
                             text: 'Cancelar',
-                            onTap: () {
-                              Navigator.pop(context);
-                            })),
+                            onTap: () =>
+                              Navigator.pop(context)
+                            )),
                     Spacer(flex: 1),
                     Expanded(
                         flex: 4,

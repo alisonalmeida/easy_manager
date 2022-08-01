@@ -12,11 +12,13 @@ import 'package:easy_manager/custom_widgets/custom_text_field_with_data.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/screens/crud_provider_screen.dart';
+import 'package:easy_manager/screens/qr_Scan_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import '../core/upper_case_text_formatter.dart';
 import '../models/product_provider_model.dart';
@@ -30,6 +32,7 @@ class CrudProductScreen extends StatefulWidget {
 }
 
 class _CrudProductScreenState extends State<CrudProductScreen> {
+  final _qrController = TextEditingController();
   final _productCodeController = TextEditingController();
   final _productNameController = TextEditingController();
   final _productProviderController = TextEditingController();
@@ -178,6 +181,13 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                             validator: (String? s) =>
                                 validatorEmpty(s, 'Código'),
                             prefixIcon: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return QrScanPage();
+                                    },
+                                  ));
+                                },
                                 child: Icon(Icons.qr_code_scanner)),
                             controller: _productCodeController,
                             name: 'Código',
@@ -305,9 +315,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                           flex: 4,
                           child: CustomButtonCancel(
                               text: 'Cancelar',
-                              onTap: () =>
-                                Navigator.pop(context)
-                              )),
+                              onTap: () => Navigator.pop(context))),
                       Spacer(flex: 1),
                       Expanded(
                           flex: 4,

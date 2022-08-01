@@ -12,13 +12,11 @@ import 'package:easy_manager/custom_widgets/custom_text_field_with_data.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/screens/crud_provider_screen.dart';
-import 'package:easy_manager/screens/qr_Scan_screen.dart';
+import 'package:easy_manager/screens/qr_scan_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
-import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 import '../core/upper_case_text_formatter.dart';
 import '../models/product_provider_model.dart';
@@ -32,7 +30,6 @@ class CrudProductScreen extends StatefulWidget {
 }
 
 class _CrudProductScreenState extends State<CrudProductScreen> {
-  final _qrController = TextEditingController();
   final _productCodeController = TextEditingController();
   final _productNameController = TextEditingController();
   final _productProviderController = TextEditingController();
@@ -45,8 +42,9 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
   final _descriptionController = TextEditingController();
   late bool isUpdate;
   late bool isSaveButtonEnabled = false;
-  final Map<String, bool> _checkTextFields = {
+  final Map<String, bool> _textFields = {
     'Código': false,
+    'Nome do Produto': false,
     'Fornecedor': false,
     'Quantidade Mínima': false,
     'Valor de Custo': false,
@@ -104,27 +102,21 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
     }
   }
 
-  String? validatorEmpty(String? s, String message) {
-    if (s!.isEmpty) {
-      return '$message não pode estar vazio';
-    }
+  void _checkEmptyController() {
+    _textFields['Código'] = _productCodeController.text.isNotEmpty;
+    _textFields['Nome do Produto'] = _productNameController.text.isNotEmpty;
+    _textFields['Fornecedor'] = _productProviderController.text.isNotEmpty;
+    _textFields['Quantidade Mínima'] = _minQuantityController.text.isNotEmpty;
+    _textFields['Valor de Custo'] = _costValueController.text.isNotEmpty;
+    _textFields['Valor de Venda'] = _saleValueController.text.isNotEmpty;
 
-    if (_checkTextFields.keys.contains(message)) {
-      _checkTextFields.update(message, (value) => value = true);
-    }
-    var list = [];
-    _checkTextFields.forEach((key, value) {
-      list.add(value);
-    });
-    for (var element in list) {
-      if (!element) {
-        isSaveButtonEnabled = false;
+    for (var value in _textFields.values.toList()) {
+      if (!value) {
+        setState(() => isSaveButtonEnabled = false);
         break;
       }
-      isSaveButtonEnabled = true;
+      setState(() => isSaveButtonEnabled = true);
     }
-
-    return null;
   }
 
   @override
@@ -167,6 +159,9 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
             padding: EdgeInsets.symmetric(horizontal: 15),
             child: Form(
               autovalidateMode: AutovalidateMode.onUserInteraction,
+              onChanged: () {
+                _checkEmptyController();
+              },
               child: ListView(
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
@@ -177,16 +172,17 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                     children: [
                       Expanded(
                         child: CustomTextField(
-                            isEnabled: !isUpdate,
-                            validator: (String? s) =>
-                                validatorEmpty(s, 'Código'),
+                            isEnabled:
+                                !isUpdate, //   validator: (String? s) =>                                validatorEmpty(s, 'Código'),
                             prefixIcon: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) {
-                                      return QrScanPage();
-                                    },
+                                onTap: () async {
+                                  var scannedQrCode = '';
+                                  scannedQrCode = await Navigator.of(context)
+                                      .push(MaterialPageRoute(
+                                    builder: (context) => QrScanPage(),
                                   ));
+
+                                  _productCodeController.text = scannedQrCode;
                                 },
                                 child: Icon(Icons.qr_code_scanner)),
                             controller: _productCodeController,
@@ -220,8 +216,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                         child: CustomTextFieldWithData(
                           callback: () async => _productProviderController
                               .text = await showProviderChoiceDialog(context),
-                          validator: (String? s) =>
-                              validatorEmpty(s, 'Fornecedor'),
+                          // validator: (String? s) =>                              validatorEmpty(s, 'Fornecedor'),
                           controller: _productProviderController,
                           name: 'Fornecedor',
                           items: Expanded(child: Text('data')),
@@ -270,32 +265,26 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                       textInputFormatterList: [
                         FilteringTextInputFormatter.digitsOnly
                       ],
-                      validator: (String? s) =>
-                          validatorEmpty(s, 'Quantidade Mínima'),
+                      //  validator: (String? s) =>                         validatorEmpty(s, 'Quantidade Mínima'),
                       controller: _minQuantityController,
                       name: 'Quantidade Mínima',
                       textInputAction: TextInputAction.next),
                   SizedBox(height: 5),
                   CustomTextField(
-                      textInputType: TextInputType.number,
-                      textInputFormatterList: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                      validator: (String? s) =>
-                          validatorEmpty(s, 'Valor de Custo'),
+                      prefix: Text('R\$ '),
+                      textInputType:
+                          TextInputType.numberWithOptions(decimal: true),
+                      //   validator: (String? s) =>                          validatorEmpty(s, 'Valor de Custo'),
                       controller: _costValueController,
                       name: 'Valor de Custo',
                       textInputAction: TextInputAction.next),
                   SizedBox(height: 5),
                   CustomTextField(
-                      textInputType: TextInputType.number,
-                      textInputFormatterList: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        TextInputMask(
-                            mask: ['R!\$! !999,99', 'R!\$! 999.999,99'])
-                      ],
-                      validator: (String? s) =>
-                          validatorEmpty(s, 'Valor de Venda'),
+                      prefix: Text('R\$ '),
+                      textInputType:
+                          TextInputType.numberWithOptions(decimal: true),
+                      // validator: (String? s) =>
+                      //     validatorEmpty(s, 'Valor de Venda'),
                       controller: _saleValueController,
                       name: 'Valor de Venda',
                       textInputAction: TextInputAction.next),

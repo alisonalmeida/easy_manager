@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:easy_manager/consts.dart';
+import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -14,27 +16,29 @@ class _QrScanPageState extends State<QrScanPage> {
   final qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
   late final QRViewController controller;
+  bool isFlashOn = false;
 
-/**
- *   @override
-  void reassemble() async {
-    if (Platform.isAndroid) {
-      await controller.pauseCamera();
-    }
-    controller.resumeCamera();
-    super.reassemble();
+  @override
+  void initState() {
+    _onQRViewCreated;
+
+    super.initState();
   }
- */
 
   @override
   void dispose() {
     controller.dispose();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: productBackgroundColor,
+        title: Text('Produtos'),
+      ),
       body: Center(child: _buildQrView(context)),
     );
   }
@@ -55,30 +59,52 @@ class _QrScanPageState extends State<QrScanPage> {
                 cutOutSize: MediaQuery.of(context).size.width * 0.8),
           ),
         ),
-        Row(
-          children: [
-            Expanded(
-              child: IconButton(
-                  onPressed: () {
-                    print(controller.hasPermissions);
-                  },
-                  icon: Icon(Icons.flash_on)),
-            ),
-          ],
+        Container(
+          color: productBackgroundColor,
+          child: Row(
+            children: [
+              Expanded(
+                child: IconButton(
+                    onPressed: () async {
+                      setState(() {
+                        controller.toggleFlash();
+                        isFlashOn = !isFlashOn;
+                      });
+                    },
+                    icon: isFlashOn
+                        ? const Icon(Icons.flash_on)
+                        : const Icon(Icons.flash_off)),
+              ),
+              Expanded(
+                  child: IconButton(
+                      onPressed: () async {
+                        await controller.flipCamera();
+                      },
+                      icon: const Icon(Icons.cameraswitch)))
+            ],
+          ),
         )
       ],
     );
   }
 
-  void _onQRViewCreated(QRViewController controller) {
-    setState(() {
-      this.controller = controller;
-    });
+  void _onQRViewCreated(QRViewController controller) async {
+    this.controller = controller;
+
+    if (Platform.isAndroid) {
+      await controller.pauseCamera();
+    } else if (Platform.isIOS) {
+      controller.resumeCamera();
+    }
+    controller.resumeCamera();
 
     controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData;
-      });
+      controller.pauseCamera();
+      result = scanData;
+      String? scannedQr = result!.code;
+      if (result!.code!.isNotEmpty) {
+        Navigator.of(context).pop(scannedQr);
+      }
     });
   }
 }

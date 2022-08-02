@@ -35,9 +35,12 @@ class _QrScanPageState extends State<QrScanPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
+        title: 'Produtos',
+        heroAnimation: '',
         backgroundColor: productBackgroundColor,
-        title: Text('Produtos'),
+        svgImage: kpathSvgProduct,
+        callback: () async => Navigator.pop(context),
       ),
       body: Center(child: _buildQrView(context)),
     );

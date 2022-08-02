@@ -92,7 +92,8 @@ Future<String> showProviderChoiceDialog(BuildContext context) async {
                                 final provider = providers[index];
                                 return CustomListTileCheck(
                                   callback: () {
-                                    returnedValue = provider.document!;
+                                    returnedValue =
+                                        '${provider.name!} - ${provider.document!}';
                                     Navigator.pop(context);
                                   },
                                   subtitle: provider.document!,

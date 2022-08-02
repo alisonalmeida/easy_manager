@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last
 
+import 'dart:io';
+
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/core/generate_random_string.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
@@ -14,10 +16,9 @@ import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/screens/crud_provider_screen.dart';
 import 'package:easy_manager/screens/qr_scan_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
+import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
-
 import '../core/upper_case_text_formatter.dart';
 import '../models/product_provider_model.dart';
 
@@ -82,12 +83,12 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
         brand: _productBrandController.text,
         categoryName: _productCategoryController.text,
         unitMeasurement: _unitMeasurementController.text,
-        costValue: double.parse(
-            _costValueController.text.replaceAll(RegExp(r'[^0-9\.]'), '')),
-        saleValue: double.parse(
-            _saleValueController.text.replaceAll(RegExp(r'[^0-9\.]'), '')),
+        costValue: double.parse(_costValueController.text
+            .replaceAll(RegExp(caseSensitive: false, r'[^0-9]\.?'), '.')),
+        saleValue: double.parse(_saleValueController.text
+            .replaceAll(RegExp(caseSensitive: false, r'[^0-9]\.?'), '.')),
         minQuantity: int.parse(
-            _minQuantityController.text.replaceAll(RegExp(r'[^0-9\.]'), '')),
+            _minQuantityController.text.replaceAll(RegExp(r'[^0-9]'), '')),
         description: _descriptionController.text);
     if (isUpdate) {
       product.id = widget.productkey!;
@@ -136,8 +137,6 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    NumberFormat formatter = NumberFormat.simpleCurrency(locale: 'pt_BR');
-
     return WillPopScope(
       onWillPop: () async {
         final shouldPop = await showGeneralConfirmationExitDialog(context);
@@ -172,17 +171,22 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                     children: [
                       Expanded(
                         child: CustomTextField(
-                            isEnabled:
-                                !isUpdate, //   validator: (String? s) =>                                validatorEmpty(s, 'Código'),
+                            isEnabled: !isUpdate,
                             prefixIcon: GestureDetector(
                                 onTap: () async {
-                                  var scannedQrCode = '';
-                                  scannedQrCode = await Navigator.of(context)
-                                      .push(MaterialPageRoute(
-                                    builder: (context) => QrScanPage(),
-                                  ));
+                                  if (Platform.isAndroid || Platform.isIOS) {
+                                    var scannedQrCode = '';
+                                    scannedQrCode = await Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (context) => QrScanPage(),
+                                    ));
 
-                                  _productCodeController.text = scannedQrCode;
+                                    _productCodeController.text = scannedQrCode;
+                                  } else {
+                                    showGeneralInformationDialogErrorMessage(
+                                        'Esse recurso funciona apenas em Android ou IOS',
+                                        context);
+                                  }
                                 },
                                 child: Icon(Icons.qr_code_scanner)),
                             controller: _productCodeController,
@@ -216,7 +220,6 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                         child: CustomTextFieldWithData(
                           callback: () async => _productProviderController
                               .text = await showProviderChoiceDialog(context),
-                          // validator: (String? s) =>                              validatorEmpty(s, 'Fornecedor'),
                           controller: _productProviderController,
                           name: 'Fornecedor',
                           items: Expanded(child: Text('data')),
@@ -257,34 +260,44 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                       textInputAction: TextInputAction.next),
                   SizedBox(height: 5),
                   CustomTextField(
-                      onChanged: () {
-                        print(formatter.format(_minQuantityController.text
-                            .replaceAll(RegExp(r'[^0-9\.]'), '')));
-                      },
+                      onChanged: () {},
                       textInputType: TextInputType.number,
                       textInputFormatterList: [
                         FilteringTextInputFormatter.digitsOnly
                       ],
-                      //  validator: (String? s) =>                         validatorEmpty(s, 'Quantidade Mínima'),
                       controller: _minQuantityController,
                       name: 'Quantidade Mínima',
                       textInputAction: TextInputAction.next),
                   SizedBox(height: 5),
                   CustomTextField(
+                      textInputType: TextInputType.number,
+                      textInputFormatterList: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        TextInputMask(
+                          mask: '9+,99',
+                          placeholder: '0',
+                          maxPlaceHolders: 3,
+                          reverse: true,
+                        )
+                      ],
                       prefix: Text('R\$ '),
-                      textInputType:
-                          TextInputType.numberWithOptions(decimal: true),
-                      //   validator: (String? s) =>                          validatorEmpty(s, 'Valor de Custo'),
                       controller: _costValueController,
                       name: 'Valor de Custo',
                       textInputAction: TextInputAction.next),
                   SizedBox(height: 5),
                   CustomTextField(
+                      textInputFormatterList: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        TextInputMask(
+                          mask: '9+,99',
+                          placeholder: '0',
+                          maxPlaceHolders: 3,
+                          reverse: true,
+                        )
+                      ],
                       prefix: Text('R\$ '),
                       textInputType:
                           TextInputType.numberWithOptions(decimal: true),
-                      // validator: (String? s) =>
-                      //     validatorEmpty(s, 'Valor de Venda'),
                       controller: _saleValueController,
                       name: 'Valor de Venda',
                       textInputAction: TextInputAction.next),

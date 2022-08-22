@@ -51,6 +51,9 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
     //update
 
     if (isUpdate) {
+
+      /**
+       * 
       Customer customer = companyBox.getCustomer(widget.customerId!)!;
       Address address = Address();
       _nameController.text = customer.name!;
@@ -67,6 +70,7 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
       _ufController.text = address.uf!;
       _cityController.text = address.localidade!;
       _observationsController.text = customer.observations!;
+       */
     }
     super.initState();
   }
@@ -92,13 +96,7 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
       customer.id = widget.customerId!;
     }
 
-    if (companyBox.checkCustomerCpf(customer.cpf!) && !isUpdate) {
-      showGeneralInformationDialogErrorMessage(
-          'O CPF já está cadastrado, por favor verifique!', context);
-    } else {
-      companyBox.insertCustomer(customer);
-      Navigator.pop(context);
-    }
+   
   }
 
   _getCep() async {

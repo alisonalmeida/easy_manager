@@ -8,7 +8,6 @@ import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
-import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/address_model.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/utils/colors.dart';
@@ -51,7 +50,8 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
     _focusNode = FocusNode();
     isUpdate = widget.productProviderKey == null ? false : true;
     //update
-    if (isUpdate) {
+   /**
+    *  if (isUpdate) {
       ProductProvider? productProvider =
           companyBox.getProvider(widget.productProviderKey!);
       Address address = Address();
@@ -70,6 +70,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
       _complementController.text = address.complemento!;
       _observationsController.text = productProvider.observations!;
     }
+    */
     super.initState();
   }
 
@@ -95,7 +96,8 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
       productProvider.id = widget.productProviderKey!;
     }
 
-    if (companyBox.checkProviderDocument(productProvider.document!) &&
+    /**
+     * if (companyBox.checkProviderDocument(productProvider.document!) &&
         !isUpdate) {
       showGeneralInformationDialogErrorMessage(
           'O CPF/CNPJ já está cadastrado. Edite o antigo ou escolha outro documento!',
@@ -104,6 +106,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
       companyBox.insertProvider(productProvider);
       Navigator.pop(context);
     }
+     */
   }
 
   _getCep() async {

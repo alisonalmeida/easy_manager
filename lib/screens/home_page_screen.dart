@@ -1,6 +1,6 @@
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/central_grid_button.dart';
-import 'package:easy_manager/helper/objectbox_helper.dart';
+import 'package:easy_manager/screens/configurations_screen.dart';
 import 'package:easy_manager/screens/crud_customer_screen.dart';
 import 'package:easy_manager/screens/customer_screen.dart';
 import 'package:easy_manager/screens/product_screen.dart';
@@ -51,6 +51,11 @@ class _HomePageState extends State<HomePage>
         title: 'Easy Manager',
         lottie: kpathLottieCheck,
       ),
+      endDrawer: ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text('data')),
       body: Container(
         color: selago,
         padding: const EdgeInsets.all(5),
@@ -128,12 +133,22 @@ class _HomePageState extends State<HomePage>
             CentralGridButton(
                 hero: 'Entrada e Saída',
                 title: 'Entrada e Saída',
-                backgroundColor: grey,
+                backgroundColor: Colors.indigo,
                 borderColor: greyShadow,
                 shadowColor: greyShadow,
                 color: white,
                 iconPath: kpathSvgMoney,
                 callback: () {}),
+            CentralGridButton(
+                borderColor: Colors.orangeAccent,
+                shadowColor: Colors.orangeAccent,
+                color: Colors.orange,
+                iconPath: kpathSvgSettings,
+                backgroundColor: Colors.orange,
+                callback: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Configurations())),
+                title: 'Configurações',
+                hero: 'Configurações'),
           ],
         ),
       ),

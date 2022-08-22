@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
+
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
@@ -10,6 +12,7 @@ import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/screens/crud_provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ProvidersScreen extends StatefulWidget {
   const ProvidersScreen({Key? key}) : super(key: key);
@@ -19,13 +22,7 @@ class ProvidersScreen extends StatefulWidget {
 }
 
 class _ProvidersScreenState extends State<ProvidersScreen> {
-  late Stream<List<ProductProvider>> streamProviders;
 
-  @override
-  void initState() {
-    streamProviders = companyBox.getProviders();
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -45,39 +42,15 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
         body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5),
             child: Center(
-              child: StreamBuilder<List<ProductProvider>>(
-                stream: streamProviders,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return EmptyWidget();
-                  } else {
-                    final providers = snapshot.data;
-                    if (providers!.isEmpty) {
-                      return EmptyWidget();
-                    }
-
-                    return ListView.builder(
-                        itemCount: providers.length,
-                        itemBuilder: (context, index) {
-                          final provider = providers[index];
-                          return CustomListTile(
-                              deleteCallback: () => _showDeleteAlertDialog(
-                                  context, provider.id, provider.name!),
-                              editCallback: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => CrudProviderScreen(
-                                          productProviderKey: provider.id))),
-                              title: provider.name!,
-                              icon: Icons.person,
-                              subtitle: provider.document!);
-                        });
-                  }
-                },
-              ),
             )),
         persistentFooterButtons: [
-          ElevatedButton(onPressed: () {}, child: Text('Teste'))
+          ElevatedButton(
+              onPressed: () async {
+                Directory dir = await getApplicationSupportDirectory();
+                var v = await dir.exists();
+                print(v);
+              },
+              child: Text('Teste'))
         ],
         floatingActionButton: ButtonRoundWithShadow(
             size: 60,
@@ -101,7 +74,6 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
     Widget continueButton = TextButton(
       child: Text("Confirmar"),
       onPressed: () {
-        companyBox.deleteProvider(index);
         Navigator.of(context).pop();
       },
     );

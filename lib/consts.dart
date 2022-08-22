@@ -12,6 +12,7 @@ const String kpathSvgPdv = 'lib/assets/svg/pdv.svg';
 const String kpathSvgChart = 'lib/assets/svg/bar-chart-and-polyline.svg';
 const String kpathSvgMoney = 'lib/assets/svg/money.svg';
 const String kpathSvgShuffle = 'lib/assets/svg/shuffle.svg';
+const String kpathSvgSettings = 'lib/assets/svg/settings.svg';
 
 const String kpathLottieCheck = 'lib/assets/animations/home_page_check.json';
 

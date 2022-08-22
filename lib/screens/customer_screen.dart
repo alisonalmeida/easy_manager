@@ -3,8 +3,6 @@
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/empty_widget.dart';
-import 'package:easy_manager/helper/objectbox_helper.dart';
-import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/customer_model.dart';
 import 'package:easy_manager/screens/crud_customer_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
@@ -21,12 +19,7 @@ class CustomerScreen extends StatefulWidget {
 }
 
 class _CustomerScreenState extends State<CustomerScreen> {
-  late Stream<List<Customer>> streamCustomers;
-  @override
-  void initState() {
-    streamCustomers = companyBox.getCustomers();
-    super.initState();
-  }
+
 
   @override
   void dispose() {
@@ -46,38 +39,6 @@ class _CustomerScreenState extends State<CustomerScreen> {
         body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5),
             child: Center(
-              child: StreamBuilder<List<Customer>>(
-                stream: streamCustomers,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  }
-                  final customers = snapshot.data;
-
-                  if (customers!.isEmpty) {
-                    return EmptyWidget();
-                  }
-
-                  return ListView.builder(
-                    itemCount: customers.length,
-                    itemBuilder: (context, index) {
-                      final customer = customers[index];
-                      return CustomListTile(
-                          deleteCallback: () => _showDeleteAlertDialog(
-                              context, customer.id, customer.name!),
-                          editCallback: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CrudCustomerScreen(
-                                        customerId: customer.id,
-                                      ))),
-                          title: customer.name!,
-                          icon: Icons.person,
-                          subtitle: customer.cpf!);
-                    },
-                  );
-                },
-              ),
             )),
         persistentFooterButtons: [
           ElevatedButton(onPressed: () {}, child: Text('teste'))
@@ -108,7 +69,6 @@ class _CustomerScreenState extends State<CustomerScreen> {
     Widget continueButton = TextButton(
       child: Text("Confirmar"),
       onPressed: () {
-        companyBox.deleteCustomer(index);
         Navigator.of(context).pop();
       },
     );

@@ -52,10 +52,11 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
     'Valor de Venda': false
   };
   final formKey = GlobalKey<FormState>();
-  late Stream<List<ProductProvider>> streamProviders;
 
   @override
   void initState() {
+/**
+ * 
     streamProviders = companyBox.getProviders();
     isUpdate = widget.productkey == null ? false : true;
     if (isUpdate) {
@@ -71,7 +72,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
       _saleValueController.text = product.saleValue.toString();
       _descriptionController.text = product.description;
     }
-
+ */
     super.initState();
   }
 
@@ -93,7 +94,8 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
     if (isUpdate) {
       product.id = widget.productkey!;
     }
-
+/**
+ * 
     if (companyBox.checkProductCode(product.cod) && !isUpdate) {
       showGeneralInformationDialogErrorMessage(
           'O código ja foi cadastrado, por favor, verifique!', context);
@@ -101,6 +103,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
       companyBox.insertProduct(product);
       Navigator.pop(context);
     }
+ */
   }
 
   void _checkEmptyController() {

@@ -1,14 +1,15 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:easy_manager/helper/objectbox_helper.dart';
+import 'package:easy_manager/helper/spreadsheet_connection.dart';
 import 'package:easy_manager/screens/home_page_screen.dart';
 import 'package:flutter/material.dart';
 
-late ObjectBox companyBox;
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  companyBox = await ObjectBox.init();
+  GSheetDb gSheets = GSheetDb();
+  await gSheets.init();
+  var v = await gSheets.getUsers();
+  print(v);
 
   runApp(const MyApp());
 }

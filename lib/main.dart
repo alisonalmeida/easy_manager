@@ -3,13 +3,13 @@
 import 'package:easy_manager/helper/spreadsheet_connection.dart';
 import 'package:easy_manager/screens/home_page_screen.dart';
 import 'package:flutter/material.dart';
-
+late GSheetDb gSheetDb;
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  GSheetDb gSheets = GSheetDb();
-  await gSheets.init();
-  var v = await gSheets.getUsers();
-  print(v);
+   gSheetDb = GSheetDb();
+  await gSheetDb.init();
+  var v = await gSheetDb.getUsers();
+  print(v!.first);
 
   runApp(const MyApp());
 }

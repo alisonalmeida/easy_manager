@@ -19,8 +19,6 @@ class CustomerScreen extends StatefulWidget {
 }
 
 class _CustomerScreenState extends State<CustomerScreen> {
-
-
   @override
   void dispose() {
     super.dispose();
@@ -29,32 +27,31 @@ class _CustomerScreenState extends State<CustomerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: customerBackgroundColor,
-        appBar: CustomAppBar(
-            heroAnimation: 'Clientes',
-            svgImage: kpathSvgPerson,
-            title: 'Clientes',
-            backgroundColor: customerBackgroundColor,
-            callback: () async => Navigator.pop(context)),
-        body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: Center(
-            )),
-        persistentFooterButtons: [
-          ElevatedButton(onPressed: () {}, child: Text('teste'))
-        ],
-        floatingActionButton: ButtonRoundWithShadow(
-            size: 60,
-            borderColor: woodSmoke,
-            color: white,
-            callback: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CrudCustomerScreen()));
-            },
-            shadowColor: woodSmoke,
-            iconPath: kpathSvgPlus));
+      backgroundColor: customerBackgroundColor,
+      appBar: CustomAppBar(
+          heroAnimation: 'Clientes',
+          svgImage: kpathSvgPerson,
+          title: 'Clientes',
+          backgroundColor: customerBackgroundColor,
+          callback: () async => Navigator.pop(context)),
+      body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5), child: Center()),
+      persistentFooterButtons: [
+        ElevatedButton(onPressed: () {}, child: Text('teste'))
+      ],
+      floatingActionButton: ButtonRoundWithShadow(
+          size: 60,
+          borderColor: woodSmoke,
+          color: white,
+          callback: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CrudCustomerScreen()),
+            );
+          },
+          shadowColor: woodSmoke,
+          iconPath: kpathSvgPlus),
+    );
   }
 
   _showDeleteAlertDialog(context, int index, String name) {

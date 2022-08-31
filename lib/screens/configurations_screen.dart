@@ -3,6 +3,7 @@ import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Configurations extends StatefulWidget {
   const Configurations({Key? key}) : super(key: key);
@@ -26,8 +27,7 @@ class _ConfigurationsState extends State<Configurations> {
           children: [
             ElevatedButton(
                 onPressed: () async {
-                  var v = await gSheetDb.getUsers();
-                  print(v);
+                  await getApplicationDocumentsDirectory();
                 },
                 child: Text('Usuarios'))
           ],

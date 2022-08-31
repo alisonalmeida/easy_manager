@@ -91,9 +91,11 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
         minQuantity: int.parse(
             _minQuantityController.text.replaceAll(RegExp(r'[^0-9]'), '')),
         description: _descriptionController.text);
-    if (isUpdate) {
-      product.id = widget.productkey!;
-    }
+    
+      if (isUpdate) {
+        product.id = widget.productkey!;
+      }
+    
 /**
  * 
     if (companyBox.checkProductCode(product.cod) && !isUpdate) {

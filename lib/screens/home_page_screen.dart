@@ -1,4 +1,5 @@
 import 'package:easy_manager/consts.dart';
+import 'package:easy_manager/core/misc.dart';
 import 'package:easy_manager/custom_widgets/central_grid_button.dart';
 import 'package:easy_manager/screens/configurations_screen.dart';
 import 'package:easy_manager/screens/crud_customer_screen.dart';
@@ -138,7 +139,9 @@ class _HomePageState extends State<HomePage>
                 shadowColor: greyShadow,
                 color: white,
                 iconPath: kpathSvgMoney,
-                callback: () {}),
+                callback: () {
+                  print(isFirstLaunch);
+                }),
             CentralGridButton(
                 borderColor: Colors.orangeAccent,
                 shadowColor: Colors.orangeAccent,

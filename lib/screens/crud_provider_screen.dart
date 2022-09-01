@@ -9,7 +9,6 @@ import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
 import 'package:easy_manager/main.dart';
-import 'package:easy_manager/models/address_model.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:easy_mask/easy_mask.dart';
@@ -17,10 +16,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CrudProviderScreen extends StatefulWidget {
-  const CrudProviderScreen({Key? key, this.productProviderKey})
+  const CrudProviderScreen({Key? key, this.productProviderDocument})
       : super(key: key);
 
-  final int? productProviderKey;
+  final String? productProviderDocument;
 
   @override
   State<CrudProviderScreen> createState() => _CrudProviderScreenState();
@@ -48,63 +47,72 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
   @override
   void initState() {
     _focusNode = FocusNode();
-    isUpdate = widget.productProviderKey == null ? false : true;
+    isUpdate = widget.productProviderDocument == null ? false : true;
+
     //update
-    /**
-    *  if (isUpdate) {
-      ProductProvider? productProvider =
-          companyBox.getProvider(widget.productProviderKey!);
-      Address address = Address();
-      _providerNameController.text = productProvider!.name!;
-      _cpfCnpjController.text = productProvider.document!;
-      _phoneNumberController1.text = productProvider.phoneNumber1!;
-      _phoneNumberController2.text = productProvider.phoneNumber2!;
-      _emailController.text = productProvider.email!;
-      address = addressFromJson(productProvider.getAddress);
-      _cepController.text = address.cep!;
-      _ufController.text = address.uf!;
-      _cityController.text = address.localidade!;
-      _streetController.text = address.logradouro!;
-      _numberController.text = address.numero.toString();
-      _districtController.text = address.bairro!;
-      _complementController.text = address.complemento!;
-      _observationsController.text = productProvider.observations!;
-    }
-    */
+    _updateFields();
     super.initState();
   }
 
+  _updateFields() async {
+    if (isUpdate) {
+      ProductProvider? productProvider =
+          await gSheetDb.getProvider(widget.productProviderDocument!);
+      _providerNameController.text = productProvider!.nome!;
+      _cpfCnpjController.text = productProvider.documento!;
+      _phoneNumberController1.text = productProvider.telefone1!;
+      _phoneNumberController2.text = productProvider.telefone2!;
+      _emailController.text = productProvider.email!;
+      _cepController.text = productProvider.cep!;
+      _ufController.text = productProvider.uf!;
+      _cityController.text = productProvider.localidade!;
+      _streetController.text = productProvider.logradouro!;
+      _districtController.text = productProvider.bairro!;
+      _numberController.text = productProvider.numero!;
+      _complementController.text = productProvider.complemento!;
+      _observationsController.text = productProvider.observacoes!;
+      
+    }
+  }
+
   _saveUpdate() async {
-    Address address = Address(
-        bairro: _districtController.text,
-        cep: _cepController.text,
-        complemento: _complementController.text,
-        localidade: _cityController.text,
-        logradouro: _streetController.text,
-        numero: _numberController.text,
-        uf: _ufController.text);
+   
     ProductProvider productProvider = ProductProvider(
         nome: _providerNameController.text,
         documento: _cpfCnpjController.text,
         telefone1: _phoneNumberController1.text,
         telefone2: _phoneNumberController2.text,
-        address: address,
+
         email: _emailController.text,
+        cep: _cepController.text,
+        uf: _ufController.text,
+        localidade: _cityController.text,
+        logradouro: _streetController.text,
+        numero: _numberController.text,
+        bairro: _districtController.text,
+        complemento: _complementController.text,
         observacoes: _observationsController.text);
-    gSheetDb.insertProvider(productProvider);
+    isUpdate
+        ? gSheetDb.updateProvider(productProvider)
+        : gSheetDb.addProvider(productProvider);
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
 
   _getCep() async {
+    /**
+  
     showGeneralWaitingDialog(context);
     try {
       final Address address;
       var r = await CepHelper.getData(
           _cepController.text.replaceAll(RegExp(r'[^0-9]'), ''));
       address = Address.fromJson(r);
-      _ufController.text = address.uf!;
-      _cityController.text = address.localidade!;
-      _streetController.text = address.logradouro!;
-      _districtController.text = address.bairro!;
+      _ufController.text = address.uf.toUpperCase();
+      _cityController.text = address.localidade.toUpperCase();
+      _streetController.text = address.logradouro.toUpperCase();
+      _districtController.text = address.bairro.toUpperCase();
 
       if (!mounted) return; //check if the data has come
       Navigator.pop(context);
@@ -113,6 +121,8 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
       Navigator.pop(context);
       showGeneralInformationDialogErrorMessage('Erro: $e', context);
     }
+    */
+
   }
 
   @override

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:easy_manager/consts.dart';
@@ -12,7 +13,7 @@ import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/screens/crud_provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:flutter/rendering.dart';
 
 class ProvidersScreen extends StatefulWidget {
   const ProvidersScreen({Key? key}) : super(key: key);
@@ -23,6 +24,7 @@ class ProvidersScreen extends StatefulWidget {
 
 class _ProvidersScreenState extends State<ProvidersScreen> {
   late Stream<List<Map<String, String>>?> stream;
+  bool showFabVisible = true;
 
   @override
   void initState() {
@@ -51,44 +53,80 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
             child: StreamBuilder(
               stream: stream,
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List<Map<String, String>> mapList =
-                      snapshot.data as List<Map<String, String>>;
-
-                  return ListView.builder(
-                      itemCount: mapList.toList().length,
-                      itemBuilder: (context, index) {
-                        ProductProvider productProvider =
-                            ProductProvider.fromMap(mapList[index]);
-
-                        return CustomListTile(
-                            deleteCallback: () {},
-                            editCallback: () {},
-                            title: productProvider.nome!,
-                            icon: Icons.factory,
-                            subtitle: productProvider.documento!);
-                      });
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(color: black),
+                  );
                 } else {
-                  return Text('asdasdasdasdNAOhas');
+                  if (snapshot.hasData) {
+                    List<Map<String, String>> mapList =
+                        snapshot.data as List<Map<String, String>>;
+
+                    return NotificationListener<UserScrollNotification>(
+                      onNotification: (notification) {
+                        if (notification.direction == ScrollDirection.reverse) {
+                          setState(() {
+                            showFabVisible = false;
+                          });
+                        }
+                        if (notification.direction == ScrollDirection.forward) {
+                          setState(() {
+                            showFabVisible = true;
+                          });
+                        }
+                        return true;
+                      },
+                      child: ListView.builder(
+                          itemCount: mapList.toList().length,
+                          itemBuilder: (context, index) {
+                            ProductProvider productProvider =
+                                ProductProvider.fromMap(mapList[index]);
+
+                            return CustomListTile(
+                                deleteCallback: () async {
+                                  _showDeleteAlertDialog(
+                                      context,
+                                      productProvider.nome!,
+                                      productProvider.documento!);
+                                },
+                                editCallback: () async {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              CrudProviderScreen(
+                                                  productProviderDocument:
+                                                      productProvider
+                                                          .documento)));
+                                },
+                                title: productProvider.nome!,
+                                icon: Icons.factory,
+                                subtitle: productProvider.documento!);
+                          }),
+                    );
+                  } else {
+                    return EmptyWidget();
+                  }
                 }
               },
             ),
           ),
         ),
-        persistentFooterButtons: [
-          ElevatedButton(onPressed: () async {}, child: Text('Teste'))
-        ],
-        floatingActionButton: ButtonRoundWithShadow(
-            size: 60,
-            borderColor: woodSmoke,
-            color: white,
-            callback: () => Navigator.push(context,
-                MaterialPageRoute(builder: (context) => CrudProviderScreen())),
-            shadowColor: woodSmoke,
-            iconPath: kpathSvgPlus));
+        floatingActionButton: showFabVisible
+            ? ButtonRoundWithShadow(
+                size: 60,
+                borderColor: woodSmoke,
+                color: white,
+                callback: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CrudProviderScreen())),
+                shadowColor: woodSmoke,
+                iconPath: kpathSvgPlus)
+            : null);
   }
 
-  _showDeleteAlertDialog(context, int index, String name) {
+  _showDeleteAlertDialog(context, String name, String document) {
     // set up the buttons
 
     Widget cancelButton = TextButton(
@@ -99,7 +137,8 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
     );
     Widget continueButton = TextButton(
       child: Text("Confirmar"),
-      onPressed: () {
+      onPressed: () async {
+        await gSheetDb.deleteProvider(document);
         Navigator.of(context).pop();
       },
     );

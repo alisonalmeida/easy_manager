@@ -9,7 +9,6 @@ import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
 import 'package:easy_manager/main.dart';
-import 'package:easy_manager/models/address_model.dart';
 import 'package:easy_manager/models/customer_model.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -76,18 +75,18 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
   }
 
   _saveUpdate() {
-    Address address = Address(
-        bairro: _districtController.text,
-        cep: _cepController.text,
-        complemento: _complementController.text,
-        localidade: _cityController.text,
-        logradouro: _streetController.text,
-        numero: _numberController.text,
-        uf: _ufController.text);
+    
     Customer customer = Customer(
         name: _nameController.text,
         cpf: _cpfController.text,
-        address: address,
+        cep: _cepController.text,
+        uf: _ufController.text,
+        localidade: _cityController.text,
+        logradouro: _streetController.text,
+        bairro: _districtController.text,
+        numero: _numberController.text,
+        complemento: _complementController.text,
+
         phoneNumber1: _phoneNumber1Controller.text,
         phoneNumber2: _phoneNumber2Controller.text,
         email: _emailController.text,
@@ -98,16 +97,18 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
   }
 
   _getCep() async {
+    /**
+     * 
     showGeneralWaitingDialog(context);
     try {
-      final Address address;
+      
       var r = await CepHelper.getData(
           _cepController.text.replaceAll(RegExp(r'[^0-9]'), '').toUpperCase());
-      address = Address.fromJson(r);
-      _ufController.text = address.uf!.toUpperCase();
-      _cityController.text = address.localidade!.toUpperCase();
-      _streetController.text = address.logradouro!.toUpperCase();
-      _districtController.text = address.bairro!.toUpperCase();
+      
+      _ufController.text = 
+      _cityController.text = address.localidade.toUpperCase();
+      _streetController.text = address.logradouro.toUpperCase();
+      _districtController.text = address.bairro.toUpperCase();
 
       if (!mounted) return; //check if the data has come
       Navigator.pop(context);
@@ -116,6 +117,7 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
       Navigator.pop(context);
       showGeneralInformationDialogErrorMessage('Erro: $e', context);
     }
+     */
   }
 
   @override

@@ -8,6 +8,7 @@ import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
+import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/address_model.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/utils/colors.dart';
@@ -28,7 +29,6 @@ class CrudProviderScreen extends StatefulWidget {
 class _CrudProviderScreenState extends State<CrudProviderScreen> {
   late FocusNode _focusNode;
 
-  bool _isEnabled = true;
   late bool isUpdate;
 
   final _providerNameController = TextEditingController();
@@ -50,7 +50,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
     _focusNode = FocusNode();
     isUpdate = widget.productProviderKey == null ? false : true;
     //update
-   /**
+    /**
     *  if (isUpdate) {
       ProductProvider? productProvider =
           companyBox.getProvider(widget.productProviderKey!);
@@ -84,29 +84,14 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
         numero: _numberController.text,
         uf: _ufController.text);
     ProductProvider productProvider = ProductProvider(
-        name: _providerNameController.text,
-        document: _cpfCnpjController.text,
-        phoneNumber1: _phoneNumberController1.text,
-        phoneNumber2: _phoneNumberController2.text,
-        address: addressToJson(address),
+        nome: _providerNameController.text,
+        documento: _cpfCnpjController.text,
+        telefone1: _phoneNumberController1.text,
+        telefone2: _phoneNumberController2.text,
+        address: address,
         email: _emailController.text,
-        observations: _observationsController.text);
-
-    if (isUpdate) {
-      productProvider.id = widget.productProviderKey!;
-    }
-
-    /**
-     * if (companyBox.checkProviderDocument(productProvider.document!) &&
-        !isUpdate) {
-      showGeneralInformationDialogErrorMessage(
-          'O CPF/CNPJ já está cadastrado. Edite o antigo ou escolha outro documento!',
-          context);
-    } else {
-      companyBox.insertProvider(productProvider);
-      Navigator.pop(context);
-    }
-     */
+        observacoes: _observationsController.text);
+    gSheetDb.insertProvider(productProvider);
   }
 
   _getCep() async {
@@ -245,14 +230,12 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
                         flex: 4,
                         child: CustomButtonCancel(
                             text: 'Cancelar',
-                            onTap: () =>
-                              Navigator.pop(context)
-                            )),
+                            onTap: () => Navigator.pop(context))),
                     Spacer(flex: 1),
                     Expanded(
                         flex: 4,
                         child: CustomButtonConfirm(
-                          isEnabled: _isEnabled,
+                          isEnabled: true,
                           text: 'Salvar',
                           onTap: _saveUpdate,
                         ))

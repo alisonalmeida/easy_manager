@@ -87,14 +87,12 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
     Customer customer = Customer(
         name: _nameController.text,
         cpf: _cpfController.text,
-        address: addressToJson(address),
+        address: address,
         phoneNumber1: _phoneNumber1Controller.text,
         phoneNumber2: _phoneNumber2Controller.text,
         email: _emailController.text,
         observations: _observationsController.text);
-    if (isUpdate) {
-      customer.id = widget.customerId!;
-    }
+    
 
    
   }

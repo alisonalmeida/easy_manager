@@ -4,6 +4,7 @@ const String kpathSvgCheck = 'lib/assets/svg/check-mark.svg';
 const String kpathSvgPlus = 'lib/assets/svg/plus.svg';
 const String kpathSvgMinus = 'lib/assets/svg/minus.svg';
 const String kpathSvgArrowBack = 'lib/assets/svg/arrow_back.svg';
+const String kpathSvgArrowForward = 'lib/assets/svg/arrow-forward.svg';
 const String kpathSvgRefresh = 'lib/assets/svg/refresh.svg';
 const String kpathSvgPerson = 'lib/assets/svg/person.svg';
 const String kpathSvgProduct = 'lib/assets/svg/product.svg';
@@ -15,6 +16,13 @@ const String kpathSvgShuffle = 'lib/assets/svg/shuffle.svg';
 const String kpathSvgSettings = 'lib/assets/svg/settings.svg';
 
 const String kpathLottieCheck = 'lib/assets/animations/home_page_check.json';
+const List<String> kpathLottieIntro = [
+  'lib/assets/animations/69164-marketing-campaign-creative-3d-animation.json',
+  'lib/assets/animations/69854-successful-launch.json'
+];
+
+const String kpathLottieBackground =
+    'lib/assets/animations/87818-bixos-background.json';
 
 showGeneralInformationDialogErrorMessage(String message, BuildContext context) {
   showDialog(

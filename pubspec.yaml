@@ -22,12 +22,8 @@ dependencies:
   qr_flutter: ^4.0.0
   qr_code_scanner: ^1.0.0
   gsheets: ^0.4.2
-  shared_preferences: ^2.0.15
-  introduction_screen: ^3.0.2
 
 dev_dependencies:
-  build_runner: ^2.1.11
-  objectbox_generator: any
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
@@ -38,10 +34,20 @@ flutter:
   assets:
     - lib/assets/svg/
     - lib/assets/animations/
+    - lib/assets/fonts/
   fonts:
     - family: JosefinSans
       fonts:
         - asset: lib/assets/fonts/JosefinSans/JosefinSans-Regular.ttf
         - asset: lib/assets/fonts/JosefinSans/JosefinSans-Italic.ttf
         - asset: lib/assets/fonts/JosefinSans/JosefinSans-Bold.ttf
+    - family: Ubuntu
+      fonts:
+        - asset: lib/assets/fonts/Ubuntu/Ubuntu-Light.ttf
+        - asset: lib/assets/fonts/Ubuntu/Ubuntu-Regular.ttf
+        - asset: lib/assets/fonts/Ubuntu/Ubuntu-Medium.ttf
+        - asset: lib/assets/fonts/Ubuntu/Ubuntu-Bold.ttf
+        - asset: lib/assets/fonts/Ubuntu/Ubuntu-Italic.ttf
+        
+        
           

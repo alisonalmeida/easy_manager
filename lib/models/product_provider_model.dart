@@ -1,39 +1,44 @@
 import 'package:easy_manager/models/address_model.dart';
-import 'package:objectbox/objectbox.dart';
+import 'dart:convert';
 
-import 'company_model.dart';
-
-//flutter pub run build_runner build --delete-conflicting-outputs
-@Entity()
-@Sync()
 class ProductProvider {
-  int id;
-
-  final String? name;
-  final String? document;
-  final String? phoneNumber1;
-  final String? phoneNumber2;
-  String? address;
+  final String? nome;
+  final String? documento;
+  final String? telefone1;
+  final String? telefone2;
+  final Address? address;
   final String? email;
-  final String? observations;
-
-  final dbModel = ToOne<CompanyModel>();
+  final String? observacoes;
 
   ProductProvider(
-      {this.id = 0,
-      this.name,
-      this.document,
-      this.phoneNumber1,
-      this.phoneNumber2,
+      {this.nome,
+      this.documento,
+      this.telefone1,
+      this.telefone2,
       this.address,
       this.email,
-      this.observations});
+      this.observacoes});
 
-  setAddress(Address? address) {
-    this.address = addressToJson(address!).toString();
-  }
+  factory ProductProvider.fromJson(String str) =>
+      ProductProvider.fromMap(json.decode(str));
 
-  String get getAddress {
-    return address!;
-  }
+  String toJson() => json.encode(toMap());
+
+  factory ProductProvider.fromMap(Map<String, dynamic> json) => ProductProvider(
+        nome: json["nome"],
+        documento: json["documento"],
+        telefone1: json["telefone1"],
+        telefone2: json["telefone2"],
+        email: json["email"],
+        observacoes: json["observacoes"],
+      );
+
+  Map<String, dynamic> toMap() => {
+        "nome": nome,
+        "documento": documento,
+        "telefone1": telefone1,
+        "telefone2": telefone2,
+        "email": email,
+        "observacoes": observacoes,
+      };
 }

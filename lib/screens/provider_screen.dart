@@ -22,7 +22,13 @@ class ProvidersScreen extends StatefulWidget {
 }
 
 class _ProvidersScreenState extends State<ProvidersScreen> {
+  late Stream<List<Map<String, String>>?> stream;
 
+  @override
+  void initState() {
+    stream = gSheetDb.getAllProviders();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -40,17 +46,37 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
             svgImage: kpathSvgFactory,
             heroAnimation: 'Fornecedores'),
         body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: Center(
-            )),
-        persistentFooterButtons: [
-          ElevatedButton(
-              onPressed: () async {
-                Directory dir = await getApplicationSupportDirectory();
-                var v = await dir.exists();
-                print(v);
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: Center(
+            child: StreamBuilder(
+              stream: stream,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<Map<String, String>> mapList =
+                      snapshot.data as List<Map<String, String>>;
+
+                  return ListView.builder(
+                      itemCount: mapList.toList().length,
+                      itemBuilder: (context, index) {
+                        ProductProvider productProvider =
+                            ProductProvider.fromMap(mapList[index]);
+
+                        return CustomListTile(
+                            deleteCallback: () {},
+                            editCallback: () {},
+                            title: productProvider.nome!,
+                            icon: Icons.factory,
+                            subtitle: productProvider.documento!);
+                      });
+                } else {
+                  return Text('asdasdasdasdNAOhas');
+                }
               },
-              child: Text('Teste'))
+            ),
+          ),
+        ),
+        persistentFooterButtons: [
+          ElevatedButton(onPressed: () async {}, child: Text('Teste'))
         ],
         floatingActionButton: ButtonRoundWithShadow(
             size: 60,

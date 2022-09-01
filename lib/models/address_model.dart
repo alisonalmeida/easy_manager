@@ -2,14 +2,13 @@ import 'dart:convert';
 
 class Address {
   Address({
-    int id = 0,
-    this.cep,
-    this.logradouro,
-    this.complemento,
-    this.bairro,
-    this.localidade,
-    this.uf,
-    this.numero,
+    this.cep = '',
+    this.logradouro = '',
+    this.complemento = '',
+    this.bairro = '',
+    this.localidade = '',
+    this.uf = '',
+    this.numero = '',
   });
 
   String? cep;

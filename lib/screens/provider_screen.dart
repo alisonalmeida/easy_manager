@@ -85,9 +85,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                             return CustomListTile(
                                 deleteCallback: () async {
                                   _showDeleteAlertDialog(
-                                      context,
-                                      productProvider.nome!,
-                                      productProvider.documento!);
+                                      context, productProvider);
                                 },
                                 editCallback: () async {
                                   Navigator.push(
@@ -95,9 +93,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               CrudProviderScreen(
-                                                  productProviderDocument:
-                                                      productProvider
-                                                          .documento)));
+                                                  id: productProvider.id)));
                                 },
                                 title: productProvider.nome!,
                                 icon: Icons.factory,
@@ -126,7 +122,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
             : null);
   }
 
-  _showDeleteAlertDialog(context, String name, String document) {
+  _showDeleteAlertDialog(context, ProductProvider productProvider) {
     // set up the buttons
 
     Widget cancelButton = TextButton(
@@ -138,14 +134,14 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
     Widget continueButton = TextButton(
       child: Text("Confirmar"),
       onPressed: () async {
-        await gSheetDb.deleteProvider(document);
+        await gSheetDb.deleteProvider(productProvider.documento!);
         Navigator.of(context).pop();
       },
     );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text(name),
+      title: Text(productProvider.nome!),
       content: Text("Confirma a exclusão do cadastro?"),
       actions: [
         cancelButton,

@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:easy_manager/consts.dart';
-import 'package:easy_manager/core/cep_network.dart';
+import 'package:easy_manager/helper/cep_network.dart';
 import 'package:easy_manager/core/upper_case_text_formatter.dart';
 import 'package:easy_manager/custom_widgets/custom_address_area.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
@@ -16,9 +16,9 @@ import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/services.dart';
 
 class CrudCustomerScreen extends StatefulWidget {
-  const CrudCustomerScreen({Key? key, this.customerId}) : super(key: key);
+  const CrudCustomerScreen({Key? key, this.id}) : super(key: key);
 
-  final int? customerId;
+  final String? id;
 
   @override
   State<CrudCustomerScreen> createState() => _CrudCustomerScreenState();
@@ -26,7 +26,6 @@ class CrudCustomerScreen extends StatefulWidget {
 
 class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
   late FocusNode _focusNode;
-  bool _isEnabled = true;
   late bool isUpdate;
 
   final _nameController = TextEditingController();
@@ -46,54 +45,52 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
   @override
   void initState() {
     _focusNode = FocusNode();
-    isUpdate = widget.customerId == null ? false : true;
+    isUpdate = widget.id == null ? false : true;
+
     //update
+    isUpdate ? _fillFields() : null;
 
-    if (isUpdate) {
-
-      /**
-       * 
-      Customer customer = companyBox.getCustomer(widget.customerId!)!;
-      Address address = Address();
-      _nameController.text = customer.name!;
-      _cpfController.text = customer.cpf!;
-      _phoneNumber1Controller.text = customer.phoneNumber1!;
-      _phoneNumber2Controller.text = customer.phoneNumber2!;
-      _emailController.text = customer.email!;
-      address = addressFromJson(customer.getAddress);
-      _cepController.text = address.cep!;
-      _districtController.text = address.bairro!;
-      _streetController.text = address.logradouro!;
-      _numberController.text = address.numero!;
-      _complementController.text = address.complemento!;
-      _ufController.text = address.uf!;
-      _cityController.text = address.localidade!;
-      _observationsController.text = customer.observations!;
-       */
-    }
     super.initState();
   }
 
+  _fillFields() async {
+    Customer? customer = await gSheetDb.getCustomer(widget.id!);
+
+    _nameController.text = customer!.nome!;
+    _cpfController.text = customer.documento!;
+    _phoneNumber1Controller.text = customer.telefone1!;
+    _phoneNumber2Controller.text = customer.telefone2!;
+    _emailController.text = customer.email!;
+    _cepController.text = customer.cep!;
+    _ufController.text = customer.uf!;
+    _cityController.text = customer.localidade!;
+    _streetController.text = customer.logradouro!;
+    _districtController.text = customer.bairro!;
+    _numberController.text = customer.numero!;
+    _complementController.text = customer.complemento!;
+    _observationsController.text = customer.observacoes!;
+  }
+
   _saveUpdate() {
-    
     Customer customer = Customer(
-        name: _nameController.text,
-        cpf: _cpfController.text,
+        id: isUpdate ? widget.id : '',
+        nome: _nameController.text,
+        documento: _cpfController.text,
+        telefone1: _phoneNumber1Controller.text,
+        telefone2: _phoneNumber2Controller.text,
+        email: _emailController.text,
         cep: _cepController.text,
         uf: _ufController.text,
         localidade: _cityController.text,
         logradouro: _streetController.text,
-        bairro: _districtController.text,
         numero: _numberController.text,
+        bairro: _districtController.text,
         complemento: _complementController.text,
-
-        phoneNumber1: _phoneNumber1Controller.text,
-        phoneNumber2: _phoneNumber2Controller.text,
-        email: _emailController.text,
-        observations: _observationsController.text);
-    
-
-   
+        observacoes: _observationsController.text);
+    gSheetDb.putCustomer(customer);
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
 
   _getCep() async {
@@ -187,6 +184,18 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
                     name: 'Email',
                     textInputAction: TextInputAction.next),
                 SizedBox(height: 5),
+                CustomTextField(
+                    textInputType: TextInputType.emailAddress,
+                    controller: _phoneNumber1Controller,
+                    name: 'Telefone 1',
+                    textInputAction: TextInputAction.next),
+                SizedBox(height: 5),
+                CustomTextField(
+                    textInputType: TextInputType.emailAddress,
+                    controller: _phoneNumber2Controller,
+                    name: 'Telefone 2',
+                    textInputAction: TextInputAction.next),
+                SizedBox(height: 5),
                 CustomAddressArea(
                     cepController: _cepController,
                     callback: _getCep,
@@ -218,7 +227,7 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
                     Expanded(
                         flex: 4,
                         child: CustomButtonConfirm(
-                          isEnabled: _isEnabled,
+                          isEnabled: true,
                           text: 'Salvar',
                           onTap: _saveUpdate,
                         ))

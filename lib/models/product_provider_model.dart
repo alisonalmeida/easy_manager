@@ -5,7 +5,9 @@ ProductProvider productProviderFromJson(String str) =>
 
 String productProviderToJson(ProductProvider data) =>
     json.encode(data.toJson());
+
 class ProductProvider {
+  String? id;
   final String? nome;
   final String? documento;
   final String? telefone1;
@@ -20,8 +22,8 @@ class ProductProvider {
   final String? email;
   final String? observacoes;
 
-  ProductProvider(
-      {
+  ProductProvider({
+    this.id = '',
     this.nome,
     this.documento,
     this.telefone1,
@@ -40,9 +42,9 @@ class ProductProvider {
   factory ProductProvider.fromJson(String str) =>
       ProductProvider.fromMap(json.decode(str));
 
-
   factory ProductProvider.fromMap(Map<String, dynamic> json) => ProductProvider(
-       nome: json["nome"],
+        id: json["id"],
+        nome: json["nome"],
         documento: json["documento"],
         telefone1: json["telefone1"],
         telefone2: json["telefone2"],
@@ -58,6 +60,7 @@ class ProductProvider {
       );
 
   Map<String, dynamic> toJson() => {
+        "id": id,
         "nome": nome,
         "documento": documento,
         "telefone1": telefone1,
@@ -71,8 +74,5 @@ class ProductProvider {
         "numero": numero,
         "complemento": complemento,
         "observacoes": observacoes,
-  };
-
-
-  
+      };
 }

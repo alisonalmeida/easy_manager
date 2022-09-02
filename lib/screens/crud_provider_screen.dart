@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:easy_manager/consts.dart';
-import 'package:easy_manager/core/cep_network.dart';
+import 'package:easy_manager/helper/cep_network.dart';
 import 'package:easy_manager/core/upper_case_text_formatter.dart';
 import 'package:easy_manager/custom_widgets/custom_address_area.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
@@ -16,10 +16,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CrudProviderScreen extends StatefulWidget {
-  const CrudProviderScreen({Key? key, this.productProviderDocument})
-      : super(key: key);
+  const CrudProviderScreen({Key? key, this.id}) : super(key: key);
 
-  final String? productProviderDocument;
+  final String? id;
 
   @override
   State<CrudProviderScreen> createState() => _CrudProviderScreenState();
@@ -47,42 +46,38 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
   @override
   void initState() {
     _focusNode = FocusNode();
-    isUpdate = widget.productProviderDocument == null ? false : true;
+    isUpdate = widget.id == null ? false : true;
 
     //update
-    _updateFields();
+    isUpdate ? _fillFields() : null;
     super.initState();
   }
 
-  _updateFields() async {
-    if (isUpdate) {
-      ProductProvider? productProvider =
-          await gSheetDb.getProvider(widget.productProviderDocument!);
-      _providerNameController.text = productProvider!.nome!;
-      _cpfCnpjController.text = productProvider.documento!;
-      _phoneNumberController1.text = productProvider.telefone1!;
-      _phoneNumberController2.text = productProvider.telefone2!;
-      _emailController.text = productProvider.email!;
-      _cepController.text = productProvider.cep!;
-      _ufController.text = productProvider.uf!;
-      _cityController.text = productProvider.localidade!;
-      _streetController.text = productProvider.logradouro!;
-      _districtController.text = productProvider.bairro!;
-      _numberController.text = productProvider.numero!;
-      _complementController.text = productProvider.complemento!;
-      _observationsController.text = productProvider.observacoes!;
-      
-    }
+  _fillFields() async {
+    ProductProvider? productProvider = await gSheetDb.getProvider(widget.id!);
+
+    _providerNameController.text = productProvider!.nome!;
+    _cpfCnpjController.text = productProvider.documento!;
+    _phoneNumberController1.text = productProvider.telefone1!;
+    _phoneNumberController2.text = productProvider.telefone2!;
+    _emailController.text = productProvider.email!;
+    _cepController.text = productProvider.cep!;
+    _ufController.text = productProvider.uf!;
+    _cityController.text = productProvider.localidade!;
+    _streetController.text = productProvider.logradouro!;
+    _districtController.text = productProvider.bairro!;
+    _numberController.text = productProvider.numero!;
+    _complementController.text = productProvider.complemento!;
+    _observationsController.text = productProvider.observacoes!;
   }
 
   _saveUpdate() async {
-   
     ProductProvider productProvider = ProductProvider(
+        id: isUpdate ? widget.id : '',
         nome: _providerNameController.text,
         documento: _cpfCnpjController.text,
         telefone1: _phoneNumberController1.text,
         telefone2: _phoneNumberController2.text,
-
         email: _emailController.text,
         cep: _cepController.text,
         uf: _ufController.text,
@@ -92,9 +87,7 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
         bairro: _districtController.text,
         complemento: _complementController.text,
         observacoes: _observationsController.text);
-    isUpdate
-        ? gSheetDb.updateProvider(productProvider)
-        : gSheetDb.addProvider(productProvider);
+    gSheetDb.putProvider(productProvider);
     if (mounted) {
       Navigator.pop(context);
     }
@@ -122,7 +115,6 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
       showGeneralInformationDialogErrorMessage('Erro: $e', context);
     }
     */
-
   }
 
   @override

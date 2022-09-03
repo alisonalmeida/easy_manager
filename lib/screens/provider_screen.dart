@@ -1,8 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:async';
-import 'dart:io';
-
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
@@ -25,6 +23,7 @@ class ProvidersScreen extends StatefulWidget {
 class _ProvidersScreenState extends State<ProvidersScreen> {
   late Stream<List<Map<String, String>>?> stream;
   bool showFabVisible = true;
+  bool listReverse = false;
 
   @override
   void initState() {
@@ -61,6 +60,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                   if (snapshot.hasData) {
                     List<Map<String, String>> mapList =
                         snapshot.data as List<Map<String, String>>;
+                    listReverse ? mapList = mapList.reversed.toList() : null;
 
                     return NotificationListener<UserScrollNotification>(
                       onNotification: (notification) {
@@ -84,10 +84,10 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
 
                             return CustomListTile(
                                 deleteCallback: () async {
-                                  _showDeleteAlertDialog(
+                                  await _showDeleteAlertDialog(
                                       context, productProvider);
                                 },
-                                editCallback: () async {
+                                editCallback: () {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -108,6 +108,12 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
             ),
           ),
         ),
+        persistentFooterButtons: [
+          IconButton(
+              onPressed: () => listReverse = !listReverse,
+              icon: Icon(Icons.filter_alt)),
+          IconButton(onPressed: () {}, icon: Icon(Icons.search))
+        ],
         floatingActionButton: showFabVisible
             ? ButtonRoundWithShadow(
                 size: 60,
@@ -134,7 +140,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
     Widget continueButton = TextButton(
       child: Text("Confirmar"),
       onPressed: () async {
-        await gSheetDb.deleteProvider(productProvider.documento!);
+        await gSheetDb.deleteProvider(productProvider.id!);
         Navigator.of(context).pop();
       },
     );

@@ -23,6 +23,7 @@ class CustomerScreen extends StatefulWidget {
 class _CustomerScreenState extends State<CustomerScreen> {
   late Stream<List<Map<String, String>>?> stream;
   bool showFabVisible = true;
+  bool listReverse = false;
 
   @override
   void initState() {
@@ -59,6 +60,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                 if (snapshot.hasData) {
                   List<Map<String, String>> mapList =
                       snapshot.data as List<Map<String, String>>;
+                  listReverse ? mapList = mapList.reversed.toList() : null;
 
                   return NotificationListener<UserScrollNotification>(
                     onNotification: (notification) {
@@ -104,6 +106,12 @@ class _CustomerScreenState extends State<CustomerScreen> {
           ),
         ),
       ),
+      persistentFooterButtons: [
+        IconButton(
+            onPressed: () => listReverse = !listReverse,
+            icon: Icon(Icons.filter_alt)),
+        IconButton(onPressed: () {}, icon: Icon(Icons.search))
+      ],
       floatingActionButton: ButtonRoundWithShadow(
           size: 60,
           borderColor: woodSmoke,

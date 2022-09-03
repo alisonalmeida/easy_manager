@@ -1,6 +1,7 @@
 import 'package:easy_manager/credentials.dart';
 import 'package:easy_manager/helper/world_time.dart';
 import 'package:easy_manager/models/customer_model.dart';
+import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:gsheets/gsheets.dart';
 
@@ -11,6 +12,7 @@ class GSheetDb {
   final String _usersSheetTitle = 'usuarios';
   final String _providersSheetTitle = 'fornecedores';
   final String _customersSheetTitle = 'clientes';
+  final String _productsSheetTitle = 'produtos';
 
   GSheetDb() {
     gSheets = GSheets(credential);
@@ -55,7 +57,6 @@ class GSheetDb {
       for (var i = 0; i < list!.toList().length; i++) {
         ProductProvider testeProvider =
             ProductProvider.fromMap(list.toList()[i]);
-
         if (testeProvider.id == productProvider.id) {
           await sheet.deleteRow(i + 2);
 
@@ -75,6 +76,7 @@ class GSheetDb {
             productProvider.complemento,
             productProvider.observacoes
           ]);
+
           break;
         }
       }
@@ -109,22 +111,8 @@ class GSheetDb {
 
     for (var i = 0; i < list!.toList().length; i++) {
       if (list.toList()[i]['id'] == id) {
-        ProductProvider productProvider = ProductProvider(
-          id: list.toList()[i]['id'],
-          nome: list.toList()[i]['nome'],
-          documento: list.toList()[i]['documento'],
-          telefone1: list.toList()[i]['telefone1'],
-          telefone2: list.toList()[i]['telefone2'],
-          email: list.toList()[i]['email'],
-          cep: list.toList()[i]['cep'],
-          uf: list.toList()[i]['uf'],
-          localidade: list.toList()[i]['localidade'],
-          logradouro: list.toList()[i]['logradouro'],
-          bairro: list.toList()[i]['bairro'],
-          numero: list.toList()[i]['numero'],
-          complemento: list.toList()[i]['complemento'],
-          observacoes: list.toList()[i]['observacoes'],
-        );
+        ProductProvider productProvider =
+            ProductProvider.fromMap(list.toList()[i]);
         return productProvider;
       }
     }
@@ -213,23 +201,91 @@ class GSheetDb {
 
     for (var i = 0; i < list!.toList().length; i++) {
       if (list.toList()[i]['id'] == id) {
-        Customer customer = Customer(
-          id: list.toList()[i]['id'],
-          nome: list.toList()[i]['nome'],
-          documento: list.toList()[i]['documento'],
-          telefone1: list.toList()[i]['telefone1'],
-          telefone2: list.toList()[i]['telefone2'],
-          email: list.toList()[i]['email'],
-          cep: list.toList()[i]['cep'],
-          uf: list.toList()[i]['uf'],
-          localidade: list.toList()[i]['localidade'],
-          logradouro: list.toList()[i]['logradouro'],
-          bairro: list.toList()[i]['bairro'],
-          numero: list.toList()[i]['numero'],
-          complemento: list.toList()[i]['complemento'],
-          observacoes: list.toList()[i]['observacoes'],
-        );
+        Customer customer = Customer.fromMap(list.toList()[i]);
         return customer;
+      }
+    }
+    return null;
+  }
+
+//PRODUCTS
+
+  Future putProduct(Product product) async {
+    Worksheet? sheet = ss.worksheetByTitle(_productsSheetTitle);
+
+    if (product.id!.isEmpty) {
+      String newId = await WorldTime.getDateFormatted();
+      await sheet!.values.appendRow([
+        newId,
+        product.codigo,
+        product.nome,
+        product.fornecedorDocumento,
+        product.valorCusto,
+        product.valorVenda,
+        product.marca,
+        product.categoria,
+        product.unidadeMedida,
+        product.quantidadeMinima,
+        product.descricao,
+      ]);
+    } else {
+      var list = await sheet!.values.map.allRows();
+
+      for (var i = 0; i < list!.toList().length; i++) {
+        Product testProduct = Product.fromMap(list.toList()[i]);
+
+        if (testProduct.id == product.id) {
+          await sheet.deleteRow(i + 2);
+
+          await sheet.values.appendRow([
+            product.id,
+            product.codigo,
+            product.nome,
+            product.fornecedorDocumento,
+            product.valorCusto,
+            product.valorVenda,
+            product.marca,
+            product.categoria,
+            product.unidadeMedida,
+            product.quantidadeMinima,
+            product.descricao,
+          ]);
+          break;
+        }
+      }
+    }
+  }
+
+  Stream<List<Map<String, String>>?> getAllProductss() async* {
+    Worksheet? sheet = ss.worksheetByTitle(_productsSheetTitle);
+    while (true) {
+      await Future.delayed(Duration(seconds: _delaySecondsUpdate));
+      Stream<List<Map<String, String>>?> products =
+          sheet!.values.map.allRows().asStream();
+      yield* products;
+    }
+  }
+
+  deleteProduct(String id) async {
+    Worksheet? sheet = ss.worksheetByTitle(_productsSheetTitle);
+    var list = await sheet!.values.map.allRows();
+
+    for (var i = 0; i < list!.toList().length; i++) {
+      if (list.toList()[i]['id'] == id) {
+        await sheet.deleteRow(i + 2);
+        break;
+      }
+    }
+  }
+
+  Future<Product?> getProduct(String id) async {
+    Worksheet? sheet = ss.worksheetByTitle(_productsSheetTitle);
+    var list = await sheet!.values.map.allRows();
+
+    for (var i = 0; i < list!.toList().length; i++) {
+      if (list.toList()[i]['id'] == id) {
+        Product product = Product.fromMap(list.toList()[i]);
+        return product;
       }
     }
     return null;

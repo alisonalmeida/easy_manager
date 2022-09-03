@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -34,36 +36,41 @@ class CustomAppBar extends StatelessWidget implements PreferredSize {
       elevation: 0,
       backgroundColor: backgroundColor,
       leading: null,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      title: Column(
         children: [
-          ButtonRoundWithShadow(
-              size: 45,
-              borderColor: woodSmoke,
-              color: white,
-              callback: callback,
-              shadowColor: woodSmoke,
-              iconPath: 'lib/assets/svg/arrow_back.svg'),
-          Flexible(
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  color: woodSmoke,
-                  fontSize: 20,
-                  fontFamily: 'JosefinsSans',
-                  fontWeight: FontWeight.w700),
-            ),
-          ),
-          Container(
-            width: 50,
-            height: 50,
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-                color: white,
-                border: Border.all(),
-                borderRadius: const BorderRadius.all(Radius.circular(50))),
-            child: Hero(tag: heroAnimation, child: SvgPicture.asset(svgImage)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ButtonRoundWithShadow(
+                  size: 45,
+                  borderColor: woodSmoke,
+                  color: white,
+                  callback: callback,
+                  shadowColor: woodSmoke,
+                  iconPath: 'lib/assets/svg/arrow_back.svg'),
+              Flexible(
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      color: woodSmoke,
+                      fontSize: 20,
+                      fontFamily: 'JosefinsSans',
+                      fontWeight: FontWeight.w700),
+                ),
+              ),
+              Container(
+                width: 50,
+                height: 50,
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                    color: white,
+                    border: Border.all(),
+                    borderRadius: const BorderRadius.all(Radius.circular(50))),
+                child:
+                    Hero(tag: heroAnimation, child: SvgPicture.asset(svgImage)),
+              ),
+            ],
           ),
         ],
       ),

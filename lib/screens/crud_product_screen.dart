@@ -20,11 +20,10 @@ import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../core/upper_case_text_formatter.dart';
-import '../models/product_provider_model.dart';
 
 class CrudProductScreen extends StatefulWidget {
-  const CrudProductScreen({Key? key, this.productkey}) : super(key: key);
-  final int? productkey;
+  const CrudProductScreen({Key? key, this.id}) : super(key: key);
+  final String? id;
 
   @override
   State<CrudProductScreen> createState() => _CrudProductScreenState();
@@ -42,83 +41,47 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
   final _saleValueController = TextEditingController();
   final _descriptionController = TextEditingController();
   late bool isUpdate;
-  late bool isSaveButtonEnabled = false;
-  final Map<String, bool> _textFields = {
-    'Código': false,
-    'Nome do Produto': false,
-    'Fornecedor': false,
-    'Quantidade Mínima': false,
-    'Valor de Custo': false,
-    'Valor de Venda': false
-  };
-  final formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
-/**
- * 
-    streamProviders = companyBox.getProviders();
-    isUpdate = widget.productkey == null ? false : true;
-    if (isUpdate) {
-      isSaveButtonEnabled = true;
-      Product product = companyBox.getProduct(widget.productkey!)!;
-      _productCodeController.text = product.cod;
-      _productNameController.text = product.name;
-      _productProviderController.text = product.productProviderDocument;
-      _productCategoryController.text = product.categoryName;
-      _unitMeasurementController.text = product.unitMeasurement;
-      _minQuantityController.text = product.minQuantity.toString();
-      _costValueController.text = product.costValue.toString();
-      _saleValueController.text = product.saleValue.toString();
-      _descriptionController.text = product.description;
-    }
- */
+    isUpdate = widget.id == null ? false : true;
     super.initState();
+  }
+
+  _fillFields() async {
+    Product? product = await gSheetDb.getProduct(widget.id!);
+    _productCodeController.text = product!.codigo!;
+    _productNameController.text = product.nome!;
+    _productProviderController.text = product.fornecedorDocumento!;
+    _costValueController.text = product.valorCusto!.toString();
+    _saleValueController.text = product.valorVenda!.toString();
+    _productBrandController.text = product.marca!;
+    _productCategoryController.text = product.categoria!;
+    _unitMeasurementController.text = product.unidadeMedida!;
+    _minQuantityController.text = product.quantidadeMinima!.toString();
+
+    _descriptionController.text = product.descricao!;
   }
 
   _saveUpdate() {
     Product product = Product(
-        cod: _productCodeController.text,
-        name: _productNameController.text,
-        productProviderDocument: _productProviderController.text,
-        brand: _productBrandController.text,
-        categoryName: _productCategoryController.text,
-        unitMeasurement: _unitMeasurementController.text,
-        costValue: double.parse(_costValueController.text
+        id: isUpdate ? widget.id : '',
+        codigo: _productCodeController.text,
+        fornecedorDocumento: _productProviderController.text,
+        valorCusto: double.parse(_costValueController.text
             .replaceAll(RegExp(caseSensitive: false, r'[^0-9]\.?'), '.')),
-        saleValue: double.parse(_saleValueController.text
+        valorVenda: double.parse(_saleValueController.text
             .replaceAll(RegExp(caseSensitive: false, r'[^0-9]\.?'), '.')),
-        minQuantity: int.parse(
+        marca: _productBrandController.text,
+        categoria: _productCategoryController.text,
+        unidadeMedida: _unitMeasurementController.text,
+        quantidadeMinima: int.parse(
             _minQuantityController.text.replaceAll(RegExp(r'[^0-9]'), '')),
-        description: _descriptionController.text);
-    
-    
-/**
- * 
-    if (companyBox.checkProductCode(product.cod) && !isUpdate) {
-      showGeneralInformationDialogErrorMessage(
-          'O código ja foi cadastrado, por favor, verifique!', context);
-    } else {
-      companyBox.insertProduct(product);
+        descricao: _descriptionController.text);
+    gSheetDb.putProduct(product);
+
+    if (mounted) {
       Navigator.pop(context);
-    }
- */
-  }
-
-  void _checkEmptyController() {
-    _textFields['Código'] = _productCodeController.text.isNotEmpty;
-    _textFields['Nome do Produto'] = _productNameController.text.isNotEmpty;
-    _textFields['Fornecedor'] = _productProviderController.text.isNotEmpty;
-    _textFields['Quantidade Mínima'] = _minQuantityController.text.isNotEmpty;
-    _textFields['Valor de Custo'] = _costValueController.text.isNotEmpty;
-    _textFields['Valor de Venda'] = _saleValueController.text.isNotEmpty;
-
-    for (var value in _textFields.values.toList()) {
-      if (!value) {
-        setState(() => isSaveButtonEnabled = false);
-        break;
-      }
-      setState(() => isSaveButtonEnabled = true);
     }
   }
 
@@ -160,9 +123,6 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
             padding: EdgeInsets.symmetric(horizontal: 15),
             child: Form(
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              onChanged: () {
-                _checkEmptyController();
-              },
               child: ListView(
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
@@ -220,8 +180,10 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                     children: [
                       Expanded(
                         child: CustomTextFieldWithData(
-                          callback: () async => _productProviderController
-                              .text = await showProviderChoiceDialog(context),
+                          callback: () async {
+                            _productProviderController.text =
+                                await showProviderChoiceDialog(context);
+                          },
                           controller: _productProviderController,
                           name: 'Fornecedor',
                           items: Expanded(child: Text('data')),
@@ -322,17 +284,14 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                               onTap: () => Navigator.pop(context))),
                       Spacer(flex: 1),
                       Expanded(
-                          flex: 4,
-                          child: CustomButtonConfirm(
-                              isEnabled: isSaveButtonEnabled,
-                              text: 'Salvar',
-                              onTap: isSaveButtonEnabled
-                                  ? _saveUpdate
-                                  : () {
-                                      showGeneralInformationDialogErrorMessage(
-                                          'Voce precisa preencher todos os campos obrigatórios!',
-                                          context);
-                                    }))
+                        flex: 4,
+                        child: CustomButtonConfirm(
+                            isEnabled: true,
+                            text: 'Salvar',
+                            onTap: () {
+                              _saveUpdate();
+                            }),
+                      ),
                     ],
                   ),
                   SizedBox(height: 40),

@@ -61,8 +61,9 @@ class _HomePageState extends State<HomePage>
         padding: const EdgeInsets.all(5),
         child: GridView(
           padding: const EdgeInsets.all(8.0),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
+          ),
           children: [
             CentralGridButton(
               hero: 'Produtos',
@@ -138,9 +139,7 @@ class _HomePageState extends State<HomePage>
                 shadowColor: greyShadow,
                 color: white,
                 iconPath: kpathSvgMoney,
-                callback: () {
-                  
-                }),
+                callback: () {}),
             CentralGridButton(
                 borderColor: Colors.orangeAccent,
                 shadowColor: Colors.orangeAccent,

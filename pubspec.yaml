@@ -36,6 +36,7 @@ flutter:
     - lib/assets/svg/
     - lib/assets/animations/
     - lib/assets/fonts/
+    - lib/assets/img/
   fonts:
     - family: JosefinSans
       fonts:

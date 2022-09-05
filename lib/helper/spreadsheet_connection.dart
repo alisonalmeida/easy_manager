@@ -5,7 +5,7 @@ import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:gsheets/gsheets.dart';
 
-class GSheetDb {
+class GSheetDb{
   late final GSheets gSheets;
   late final Spreadsheet ss;
   final int _delaySecondsUpdate = 2;
@@ -89,6 +89,7 @@ class GSheetDb {
       await Future.delayed(Duration(seconds: _delaySecondsUpdate));
       Stream<List<Map<String, String>>?> providers =
           sheet!.values.map.allRows().asStream();
+
       yield* providers;
     }
   }
@@ -256,12 +257,13 @@ class GSheetDb {
     }
   }
 
-  Stream<List<Map<String, String>>?> getAllProductss() async* {
+  Stream<List<Map<String, String>>?> getAllProducts() async* {
     Worksheet? sheet = ss.worksheetByTitle(_productsSheetTitle);
     while (true) {
       await Future.delayed(Duration(seconds: _delaySecondsUpdate));
       Stream<List<Map<String, String>>?> products =
           sheet!.values.map.allRows().asStream();
+
       yield* products;
     }
   }

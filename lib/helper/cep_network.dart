@@ -1,3 +1,4 @@
+import 'package:easy_manager/models/address.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -8,8 +9,9 @@ class CepHelper {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> map = jsonDecode(response.body);
+      Address address = Address.fromJson(map);
 
-      return map;
+      return address;
     } else {
       return null;
     }

@@ -11,7 +11,9 @@ import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
 import 'package:easy_manager/custom_widgets/custom_modal_bottom_sheet_provider.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field_with_data.dart';
+import 'package:easy_manager/helper/cep_network.dart';
 import 'package:easy_manager/main.dart';
+import 'package:easy_manager/models/address.dart';
 import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/screens/crud_provider_screen.dart';
 import 'package:easy_manager/screens/qr_scan_screen.dart';
@@ -45,6 +47,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
   @override
   void initState() {
     isUpdate = widget.id == null ? false : true;
+    isUpdate ? _fillFields() : null;
     super.initState();
   }
 
@@ -67,16 +70,23 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
     Product product = Product(
         id: isUpdate ? widget.id : '',
         codigo: _productCodeController.text,
+        nome: _productNameController.text,
         fornecedorDocumento: _productProviderController.text,
-        valorCusto: double.parse(_costValueController.text
-            .replaceAll(RegExp(caseSensitive: false, r'[^0-9]\.?'), '.')),
-        valorVenda: double.parse(_saleValueController.text
-            .replaceAll(RegExp(caseSensitive: false, r'[^0-9]\.?'), '.')),
+        valorCusto: _costValueController.text.isEmpty
+            ? 0
+            : double.parse(_costValueController.text
+                .replaceAll(RegExp(caseSensitive: false, r'[^0-9]\.?'), '.')),
+        valorVenda: _saleValueController.text.isEmpty
+            ? 0
+            : double.parse(_saleValueController.text
+                .replaceAll(RegExp(caseSensitive: false, r'[^0-9]\.?'), '.')),
         marca: _productBrandController.text,
         categoria: _productCategoryController.text,
         unidadeMedida: _unitMeasurementController.text,
-        quantidadeMinima: int.parse(
-            _minQuantityController.text.replaceAll(RegExp(r'[^0-9]'), '')),
+        quantidadeMinima: _minQuantityController.text.isEmpty
+            ? 0
+            : int.parse(
+                _minQuantityController.text.replaceAll(RegExp(r'[^0-9]'), '')),
         descricao: _descriptionController.text);
     gSheetDb.putProduct(product);
 
@@ -183,6 +193,9 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
                           callback: () async {
                             _productProviderController.text =
                                 await showProviderChoiceDialog(context);
+                            
+                            
+                            
                           },
                           controller: _productProviderController,
                           name: 'Fornecedor',

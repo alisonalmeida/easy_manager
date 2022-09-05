@@ -9,6 +9,7 @@ import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
 import 'package:easy_manager/main.dart';
+import 'package:easy_manager/models/address.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:easy_mask/easy_mask.dart';
@@ -94,18 +95,15 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
   }
 
   _getCep() async {
-    /**
-  
     showGeneralWaitingDialog(context);
     try {
-      final Address address;
-      var r = await CepHelper.getData(
-          _cepController.text.replaceAll(RegExp(r'[^0-9]'), ''));
-      address = Address.fromJson(r);
-      _ufController.text = address.uf.toUpperCase();
-      _cityController.text = address.localidade.toUpperCase();
-      _streetController.text = address.logradouro.toUpperCase();
-      _districtController.text = address.bairro.toUpperCase();
+      Address address = await CepHelper.getData(
+          _cepController.text.replaceAll(RegExp(r'[^0-9]'), '').toUpperCase());
+
+      _ufController.text = address.uf!;
+      _cityController.text = address.localidade!.toUpperCase();
+      _streetController.text = address.logradouro!.toUpperCase();
+      _districtController.text = address.bairro!.toUpperCase();
 
       if (!mounted) return; //check if the data has come
       Navigator.pop(context);
@@ -114,7 +112,6 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
       Navigator.pop(context);
       showGeneralInformationDialogErrorMessage('Erro: $e', context);
     }
-    */
   }
 
   @override

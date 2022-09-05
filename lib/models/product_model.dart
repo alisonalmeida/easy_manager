@@ -26,27 +26,28 @@ class Product {
       this.quantidadeMinima,
       this.descricao});
 
-
-        factory Product.fromJson(String str) => Product.fromMap(json.decode(str));
+  factory Product.fromJson(String str) => Product.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
   factory Product.fromMap(Map<String, dynamic> json) => Product(
         id: json["id"],
         codigo: json["codigo"],
+        nome: json["nome"],
         fornecedorDocumento: json["fornecedorDocumento"],
-        valorCusto: json["valorCusto"].toDouble(),
-        valorVenda: json["valorVenda"].toDouble(),
+        valorCusto: double.parse(json["valorCusto"]),
+        valorVenda: double.parse(json["valorVenda"]),
         marca: json["marca"],
         categoria: json["categoria"],
         unidadeMedida: json["unidadeMedida"],
-        quantidadeMinima: json["quantidadeMinima"],
+        quantidadeMinima: int.parse(json["quantidadeMinima"]),
         descricao: json["descricao"],
       );
 
   Map<String, dynamic> toMap() => {
         "id": id,
         "codigo": codigo,
+        "nome": nome,
         "fornecedorDocumento": fornecedorDocumento,
         "valorCusto": valorCusto,
         "valorVenda": valorVenda,
@@ -56,4 +57,9 @@ class Product {
         "quantidadeMinima": quantidadeMinima,
         "descricao": descricao,
       };
+
+  @override
+  String toString() {
+    return 'Product{id: $id, nome: $nome, codigo: $codigo, fornecedorDocumento: $fornecedorDocumento, valorCusto: $valorCusto, valorVenda: $valorVenda, marca: $marca, categoria: $categoria, unidadeMedida: $unidadeMedida, quantidadeMinima: $quantidadeMinima, descricao: $descricao}';
+  }
 }

@@ -75,4 +75,9 @@ class ProductProvider {
         "complemento": complemento,
         "observacoes": observacoes,
       };
+
+  @override
+  String toString() {
+    return 'ProductProvider{id: $id, nome: $nome, documento: $documento, telefone1: $telefone1, telefone2: $telefone2, email: $email, cep: $cep, uf: $uf, localidade: $localidade, logradouro: $logradouro, bairro: $bairro, numero: $numero, complemento: $complemento, observacoes: $observacoes}';
+  }
 }

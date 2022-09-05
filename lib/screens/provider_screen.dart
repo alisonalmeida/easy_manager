@@ -89,11 +89,12 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                                 },
                                 editCallback: () {
                                   Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              CrudProviderScreen(
-                                                  id: productProvider.id)));
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => CrudProviderScreen(
+                                          id: productProvider.id),
+                                    ),
+                                  );
                                 },
                                 title: productProvider.nome!,
                                 icon: Icons.factory,

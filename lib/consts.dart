@@ -14,15 +14,16 @@ const String kpathSvgChart = 'lib/assets/svg/bar-chart-and-polyline.svg';
 const String kpathSvgMoney = 'lib/assets/svg/money.svg';
 const String kpathSvgShuffle = 'lib/assets/svg/shuffle.svg';
 const String kpathSvgSettings = 'lib/assets/svg/settings.svg';
+const String kpathSvgBudgets = 'lib/assets/svg/budget.svg';
 
 const String kpathLottieCheck = 'lib/assets/animations/home_page_check.json';
 const List<String> kpathLottieIntro = [
   'lib/assets/animations/69164-marketing-campaign-creative-3d-animation.json',
   'lib/assets/animations/69854-successful-launch.json'
 ];
+const String kpathMainLogo = 'lib/assets/img/logo-HBEstilo-sem-fundo.png';
 
-const String kpathLottieBackground =
-    'lib/assets/animations/87818-bixos-background.json';
+enum UserType { administrator, employee }
 
 showGeneralInformationDialogErrorMessage(String message, BuildContext context) {
   showDialog(

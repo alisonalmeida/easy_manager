@@ -7,10 +7,10 @@ import 'package:flutter/material.dart';
 late GSheetDb gSheetDb;
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-   gSheetDb = GSheetDb();
+
+  gSheetDb = GSheetDb();
   await gSheetDb.init();
-  
+
   runApp(const MyApp());
 }
 
@@ -26,7 +26,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home:  HomePage(),
+      home: HomePage(),
     );
   }
 }

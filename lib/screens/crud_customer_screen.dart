@@ -9,6 +9,7 @@ import 'package:easy_manager/custom_widgets/custom_button_cancel.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
 import 'package:easy_manager/main.dart';
+import 'package:easy_manager/models/address.dart';
 import 'package:easy_manager/models/customer_model.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -94,18 +95,15 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
   }
 
   _getCep() async {
-    /**
-     * 
     showGeneralWaitingDialog(context);
     try {
-      
-      var r = await CepHelper.getData(
+      Address address = await CepHelper.getData(
           _cepController.text.replaceAll(RegExp(r'[^0-9]'), '').toUpperCase());
-      
-      _ufController.text = 
-      _cityController.text = address.localidade.toUpperCase();
-      _streetController.text = address.logradouro.toUpperCase();
-      _districtController.text = address.bairro.toUpperCase();
+
+      _ufController.text = address.uf!;
+      _cityController.text = address.localidade!.toUpperCase();
+      _streetController.text = address.logradouro!.toUpperCase();
+      _districtController.text = address.bairro!.toUpperCase();
 
       if (!mounted) return; //check if the data has come
       Navigator.pop(context);
@@ -114,7 +112,6 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
       Navigator.pop(context);
       showGeneralInformationDialogErrorMessage('Erro: $e', context);
     }
-     */
   }
 
   @override

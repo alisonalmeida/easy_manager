@@ -1,11 +1,12 @@
 import 'package:easy_manager/credentials.dart';
 import 'package:easy_manager/helper/world_time.dart';
+import 'package:easy_manager/models/budget_model.dart';
 import 'package:easy_manager/models/customer_model.dart';
 import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:gsheets/gsheets.dart';
 
-class GSheetDb{
+class GSheetDb {
   late final GSheets gSheets;
   late final Spreadsheet ss;
   final int _delaySecondsUpdate = 2;
@@ -13,6 +14,7 @@ class GSheetDb{
   final String _providersSheetTitle = 'fornecedores';
   final String _customersSheetTitle = 'clientes';
   final String _productsSheetTitle = 'produtos';
+  final String _budgetsSheetTitle = 'orçamentos';
 
   GSheetDb() {
     gSheets = GSheets(credential);
@@ -288,6 +290,80 @@ class GSheetDb{
       if (list.toList()[i]['id'] == id) {
         Product product = Product.fromMap(list.toList()[i]);
         return product;
+      }
+    }
+    return null;
+  }
+
+  //BUDGETS
+
+  Future putBudget(Budget budget) async {
+    Worksheet? sheet = ss.worksheetByTitle(_budgetsSheetTitle);
+
+    if (budget.id!.isEmpty) {
+      String newId = await WorldTime.getDateFormatted();
+      await sheet!.values.appendRow([
+        newId,
+        budget.nomeCliente,
+        budget.data,
+        budget.listaProdutosId,
+        budget.valorTotal,
+        budget.status,
+      ]);
+    } else {
+      var list = await sheet!.values.map.allRows();
+
+      for (var i = 0; i < list!.toList().length; i++) {
+        Budget testeBudget = Budget.fromMap(list.toList()[i]);
+
+        if (testeBudget.id == testeBudget.id) {
+          await sheet.deleteRow(i + 2);
+
+          await sheet.values.appendRow([
+            testeBudget.id,
+            budget.nomeCliente,
+            budget.data,
+            budget.listaProdutosId,
+            budget.valorTotal,
+            budget.status,
+          ]);
+          break;
+        }
+      }
+    }
+  }
+
+  Stream<List<Map<String, String>>?> getAllBudgets() async* {
+    Worksheet? sheet = ss.worksheetByTitle(_budgetsSheetTitle);
+    while (true) {
+      await Future.delayed(Duration(seconds: _delaySecondsUpdate));
+      Stream<List<Map<String, String>>?> budgets =
+          sheet!.values.map.allRows().asStream();
+
+      yield* budgets;
+    }
+  }
+
+  deleteBudget(String id) async {
+    Worksheet? sheet = ss.worksheetByTitle(_budgetsSheetTitle);
+    var list = await sheet!.values.map.allRows();
+
+    for (var i = 0; i < list!.toList().length; i++) {
+      if (list.toList()[i]['id'] == id) {
+        await sheet.deleteRow(i + 2);
+        break;
+      }
+    }
+  }
+
+  Future<Budget?> getBudget(String id) async {
+    Worksheet? sheet = ss.worksheetByTitle(_budgetsSheetTitle);
+    var list = await sheet!.values.map.allRows();
+
+    for (var i = 0; i < list!.toList().length; i++) {
+      if (list.toList()[i]['id'] == id) {
+        Budget budget = Budget.fromMap(list.toList()[i]);
+        return budget;
       }
     }
     return null;

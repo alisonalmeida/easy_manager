@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+const String appName='HB Estilo Manager';
+
 const String kpathSvgCheck = 'lib/assets/svg/check-mark.svg';
 const String kpathSvgPlus = 'lib/assets/svg/plus.svg';
 const String kpathSvgMinus = 'lib/assets/svg/minus.svg';

@@ -1,11 +1,10 @@
-import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class CentralGridButton extends StatelessWidget {
   final Color borderColor;
   final Color shadowColor;
-  final Color color;
+  
   final String iconPath;
   final Color backgroundColor;
   final VoidCallback callback;
@@ -16,7 +15,7 @@ class CentralGridButton extends StatelessWidget {
     Key? key,
     required this.borderColor,
     required this.shadowColor,
-    required this.color,
+    
     required this.iconPath,
     required this.backgroundColor,
     required this.callback,
@@ -30,15 +29,15 @@ class CentralGridButton extends StatelessWidget {
       onTap: callback,
       child: Container(
         margin: const EdgeInsets.all(2),
-        decoration: ShapeDecoration(shadows: [
+        decoration: ShapeDecoration(shadows: const [
           BoxShadow(
-            color: shadowColor,
-            offset: const Offset(
+            
+            offset: Offset(
               1.0, // Move horizontally
               2.0, // Move Vertically
             ),
           )
-        ], color: color, shape: Border.all(color: borderColor)),
+        ],color: shadowColor,  shape: Border.all(color: borderColor)),
         child: Container(
           color: backgroundColor,
           child: Column(

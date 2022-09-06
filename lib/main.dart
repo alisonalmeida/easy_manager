@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:easy_manager/helper/spreadsheet_connection.dart';
+import 'package:easy_manager/screens/add_budget_screen.dart';
 import 'package:easy_manager/screens/home_page_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +27,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: AddBudgetScreen(),
     );
   }
 }

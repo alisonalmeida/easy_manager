@@ -1,5 +1,7 @@
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/central_grid_button.dart';
+import 'package:easy_manager/models/product_model.dart';
+import 'package:easy_manager/screens/add_budget_screen.dart';
 import 'package:easy_manager/screens/budget_screen.dart';
 import 'package:easy_manager/screens/configurations_screen.dart';
 import 'package:easy_manager/screens/crud_customer_screen.dart';
@@ -22,6 +24,7 @@ class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
   late bool _checked;
+  int numbergrid = 1;
 
   @override
   initState() {
@@ -50,7 +53,7 @@ class _HomePageState extends State<HomePage>
       appBar: CustomHomeAppBar(
         callback: changeAnimation,
         controller: _animationController,
-        title: 'Easy Manager',
+        title: appName,
         lottie: kpathLottieCheck,
       ),
       endDrawer: ElevatedButton(
@@ -64,30 +67,31 @@ class _HomePageState extends State<HomePage>
         child: GridView(
           padding: const EdgeInsets.all(8.0),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
+            crossAxisCount:
+                (numbergrid * MediaQuery.of(context).size.width ~/ 200) < 1
+                    ? 1
+                    : (numbergrid * MediaQuery.of(context).size.width ~/ 200),
           ),
           children: [
             CentralGridButton(
-              hero: 'Produtos',
-              title: 'Produtos',
+              hero: ProductsScreen.name,
+              title: ProductsScreen.name,
               backgroundColor: productBackgroundColor,
-              borderColor: pinkSalomn,
-              shadowColor: pinkSalomn,
-              color: white,
+              borderColor: productBackgroundColorShadow,
+              shadowColor: productBackgroundColorShadow,
               iconPath: kpathSvgProduct,
               callback: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ProductsScreen(),
+                    builder: (context) => const ProductsScreen(),
                   )),
             ),
             CentralGridButton(
-              hero: 'Clientes',
-              title: 'Clientes',
+              hero: CustomerScreen.name,
+              title: CustomerScreen.name,
               backgroundColor: customerBackgroundColor,
               borderColor: customerBackgroundColorShadow,
               shadowColor: customerBackgroundColorShadow,
-              color: white,
               iconPath: kpathSvgPerson,
               callback: () {
                 Navigator.push(
@@ -98,12 +102,11 @@ class _HomePageState extends State<HomePage>
               },
             ),
             CentralGridButton(
-              hero: 'Fornecedores',
-              title: 'Fornecedores',
+              hero: ProvidersScreen.name,
+              title: ProvidersScreen.name,
               backgroundColor: providerBackgroundColor,
               borderColor: providerBackgroundColorShadow,
               shadowColor: providerBackgroundColorShadow,
-              color: white,
               iconPath: kpathSvgFactory,
               callback: () => Navigator.push(
                   context,
@@ -112,18 +115,17 @@ class _HomePageState extends State<HomePage>
                   )),
             ),
             CentralGridButton(
-                borderColor: Colors.black,
-                shadowColor: Colors.black,
-                color: Colors.green,
+                backgroundColor: budgetBackgroundColor,
+                borderColor: budgetBackgroundColorShadow,
+                shadowColor: budgetBackgroundColorShadow,
                 iconPath: kpathSvgBudgets,
-                backgroundColor: white,
                 callback: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const BudgetScreen(),
+                      builder: (context) => const BudgetssScreen(),
                     )),
-                title: 'Orçamentos',
-                hero: 'Orçamentos'),
+                title: BudgetssScreen.name,
+                hero: BudgetssScreen.name),
             /**
              * CentralGridButton(
                 hero: 'PDV',
@@ -166,15 +168,14 @@ class _HomePageState extends State<HomePage>
             CentralGridButton(
                 borderColor: Colors.orangeAccent,
                 shadowColor: Colors.orangeAccent,
-                color: Colors.orange,
                 iconPath: kpathSvgSettings,
                 backgroundColor: Colors.orange,
                 callback: () => Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const Configurations())),
-                title: 'Configurações',
-                hero: 'Configurações'),
+                title: Configurations.name,
+                hero: Configurations.name),
           ],
         ),
       ),

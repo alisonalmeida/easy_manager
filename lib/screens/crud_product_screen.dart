@@ -16,6 +16,7 @@ import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/address.dart';
 import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/screens/crud_provider_screen.dart';
+import 'package:easy_manager/screens/product_screen.dart';
 import 'package:easy_manager/screens/qr_scan_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:easy_mask/easy_mask.dart';
@@ -122,11 +123,11 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
         child: Scaffold(
           backgroundColor: productBackgroundColor,
           appBar: CustomAppBar(
-            heroAnimation: '',
+            heroAnimation: ProductsScreen.name,
             svgImage: kpathSvgProduct,
             callback: () async => showGeneralConfirmationExitDialog(context),
             backgroundColor: productBackgroundColor,
-            title: 'Produtos',
+            title: ProductsScreen.name,
           ),
           body: Container(
             color: productBackgroundColor,

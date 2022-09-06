@@ -2,18 +2,18 @@
 
 import 'package:easy_manager/custom_widgets/empty_widget.dart';
 import 'package:easy_manager/main.dart';
-import 'package:easy_manager/models/product_provider_model.dart';
+import 'package:easy_manager/models/customer_model.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 
-Future<String> showProviderChoiceDialog(BuildContext context) async {
+Future<String> showCustomerChoiceDialog(BuildContext context) async {
   DraggableScrollableController controller = DraggableScrollableController();
   Stream<List<Map<String, String>>?> stream;
-  stream = gSheetDb.getAllProviders();
+  stream = gSheetDb.getAllCustomers();
 
   String returnedValue = '';
   await showModalBottomSheet(
-    backgroundColor: providerBackgroundColor,
+    backgroundColor: customerBackgroundColor,
     isScrollControlled: true,
     shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
@@ -40,7 +40,7 @@ Future<String> showProviderChoiceDialog(BuildContext context) async {
                 ),
                 Flexible(
                     child: Text(
-                  'Escolha um fornecedor ou adicone um novo',
+                  'Escolha um cliente ou adicione um novo',
                   style: TextStyle(
                       color: woodSmoke,
                       fontSize: 20,
@@ -64,8 +64,8 @@ Future<String> showProviderChoiceDialog(BuildContext context) async {
                           return ListView.builder(
                               itemCount: mapList.toList().length,
                               itemBuilder: (context, index) {
-                                ProductProvider productProvider =
-                                    ProductProvider.fromMap(mapList[index]);
+                                Customer customer =
+                                    Customer.fromMap(mapList[index]);
 
                                 return Container(
                                   decoration: ShapeDecoration(shadows: const [
@@ -79,12 +79,12 @@ Future<String> showProviderChoiceDialog(BuildContext context) async {
                                   ], color: Colors.white, shape: Border.all()),
                                   child: ListTile(
                                       onTap: () {
-                                        returnedValue = productProvider.nome!;
+                                        returnedValue = customer.nome!;
                                         Navigator.pop(context);
                                       },
-                                      title: Text(productProvider.nome!),
+                                      title: Text(customer.nome!),
                                       subtitle:
-                                          Text(productProvider.documento!)),
+                                          Text(customer.documento!)),
                                 );
                               });
                         } else {

@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 Future<String> showProviderChoiceDialog(BuildContext context) async {
   DraggableScrollableController controller = DraggableScrollableController();
   Stream<List<Map<String, String>>?> stream;
-  stream = gSheetDb.getAllProviders();
+  stream = gSheetDb.getStreamProviders();
 
   String returnedValue = '';
   await showModalBottomSheet(

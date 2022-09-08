@@ -1,15 +1,17 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:easy_manager/custom_widgets/custom_button_add.dart';
 import 'package:easy_manager/custom_widgets/empty_widget.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/customer_model.dart';
+import 'package:easy_manager/screens/customer/crud_customer_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 Future<String> showCustomerChoiceDialog(BuildContext context) async {
   DraggableScrollableController controller = DraggableScrollableController();
   Stream<List<Map<String, String>>?> stream;
-  stream = gSheetDb.getAllCustomers();
+  stream = gSheetDb.getStreamCustomers();
 
   String returnedValue = '';
   await showModalBottomSheet(
@@ -47,6 +49,16 @@ Future<String> showCustomerChoiceDialog(BuildContext context) async {
                       fontFamily: 'JosefinsSans',
                       fontWeight: FontWeight.w700),
                 )),
+                CustomAddButton(
+                    text: 'Adicionar Novo Cliente',
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CrudCustomerScreen(),
+                          ));
+                    }),
                 Expanded(
                   child: StreamBuilder(
                     stream: stream,
@@ -83,8 +95,7 @@ Future<String> showCustomerChoiceDialog(BuildContext context) async {
                                         Navigator.pop(context);
                                       },
                                       title: Text(customer.nome!),
-                                      subtitle:
-                                          Text(customer.documento!)),
+                                      subtitle: Text(customer.documento!)),
                                 );
                               });
                         } else {

@@ -15,14 +15,14 @@ import 'package:easy_manager/helper/cep_network.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/address.dart';
 import 'package:easy_manager/models/product_model.dart';
-import 'package:easy_manager/screens/crud_provider_screen.dart';
-import 'package:easy_manager/screens/product_screen.dart';
+import 'package:easy_manager/screens/provider/crud_provider_screen.dart';
+import 'package:easy_manager/screens/product/product_screen.dart';
 import 'package:easy_manager/screens/qr_scan_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../core/upper_case_text_formatter.dart';
+import '../../core/upper_case_text_formatter.dart';
 
 class CrudProductScreen extends StatefulWidget {
   const CrudProductScreen({Key? key, this.id}) : super(key: key);

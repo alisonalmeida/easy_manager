@@ -1,14 +1,13 @@
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/central_grid_button.dart';
 import 'package:easy_manager/models/product_model.dart';
-import 'package:easy_manager/screens/add_budget_screen.dart';
-import 'package:easy_manager/screens/budget_screen.dart';
+import 'package:easy_manager/screens/budget/budget_screen.dart';
+import 'package:easy_manager/screens/customer/customer_screen.dart';
+
 import 'package:easy_manager/screens/configurations_screen.dart';
-import 'package:easy_manager/screens/crud_customer_screen.dart';
-import 'package:easy_manager/screens/customer_screen.dart';
 import 'package:easy_manager/screens/pdv_screen.dart';
-import 'package:easy_manager/screens/product_screen.dart';
-import 'package:easy_manager/screens/provider_screen.dart';
+import 'package:easy_manager/screens/product/product_screen.dart';
+import 'package:easy_manager/screens/provider/provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import '../custom_widgets/custom_home_app_bar.dart';
@@ -122,10 +121,10 @@ class _HomePageState extends State<HomePage>
                 callback: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const BudgetssScreen(),
+                      builder: (context) => const BudgetsScreen(),
                     )),
-                title: BudgetssScreen.name,
-                hero: BudgetssScreen.name),
+                title: BudgetsScreen.name,
+                hero: BudgetsScreen.name),
             /**
              * CentralGridButton(
                 hero: 'PDV',

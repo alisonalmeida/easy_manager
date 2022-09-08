@@ -2,16 +2,17 @@ import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class SearchTextField extends StatelessWidget {
-  SearchTextField(
-      {super.key,
-       this.focusNode,
-      required this.searchController,
-      required this.clearField,
-      });
+  SearchTextField({
+    super.key,
+    this.focusNode,
+    required this.searchController,
+    required this.clearField,
+    this.onChanged
+  });
   FocusNode? focusNode;
   TextEditingController searchController;
   VoidCallback clearField;
-  
+  Function(String)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,7 @@ class SearchTextField extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
       ),
       child: TextField(
-        
+        onChanged: onChanged,
         focusNode: focusNode,
         controller: searchController,
         decoration: InputDecoration(

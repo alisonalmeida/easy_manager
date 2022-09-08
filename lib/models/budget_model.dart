@@ -1,8 +1,10 @@
 // To parse this JSON data, do
 //
-//     final Budget = BudgetFromMap(jsonString);
+//     final budget = budgetFromMap(jsonString);
 
 import 'dart:convert';
+
+import 'package:easy_manager/models/product_model.dart';
 
 Budget budgetFromMap(String str) => Budget.fromMap(json.decode(str));
 
@@ -10,10 +12,10 @@ String budgetToMap(Budget data) => json.encode(data.toMap());
 
 class Budget {
   Budget({
-    this.id = '',
+    this.id,
     this.nomeCliente,
     this.data,
-    this.listaProdutosId,
+    this.produtos,
     this.valorTotal,
     this.status,
   });
@@ -21,7 +23,7 @@ class Budget {
   String? id;
   String? nomeCliente;
   String? data;
-  List<String>? listaProdutosId=[];
+  List<Product>? produtos;
   double? valorTotal;
   String? status;
 
@@ -29,8 +31,8 @@ class Budget {
         id: json["id"],
         nomeCliente: json["nomeCliente"],
         data: json["data"],
-        listaProdutosId:
-            List<String>.from(json["listaProdutosId"].map((x) => x)),
+        produtos:
+            List<Product>.from(json["produtos"].map((x) => Product.fromMap(x))),
         valorTotal: json["valorTotal"].toDouble(),
         status: json["status"],
       );
@@ -39,7 +41,7 @@ class Budget {
         "id": id,
         "nomeCliente": nomeCliente,
         "data": data,
-        "listaProdutosId": List<dynamic>.from(listaProdutosId!.map((x) => x)),
+        "produtos": List<dynamic>.from(produtos!.map((x) => x.toMap())),
         "valorTotal": valorTotal,
         "status": status,
       };

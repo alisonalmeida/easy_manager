@@ -11,7 +11,7 @@ import 'package:easy_manager/custom_widgets/custom_text_field.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/address.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
-import 'package:easy_manager/screens/provider_screen.dart';
+import 'package:easy_manager/screens/provider/provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/material.dart';

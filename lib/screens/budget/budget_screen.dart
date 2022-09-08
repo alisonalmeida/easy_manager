@@ -9,20 +9,20 @@ import 'package:easy_manager/custom_widgets/custom_search_text_field.dart';
 import 'package:easy_manager/custom_widgets/empty_widget.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/budget_model.dart';
-import 'package:easy_manager/screens/add_budget_screen.dart';
+import 'package:easy_manager/screens/budget/add_budget_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class BudgetssScreen extends StatefulWidget {
-  const BudgetssScreen({Key? key}) : super(key: key);
+class BudgetsScreen extends StatefulWidget {
+  const BudgetsScreen({Key? key}) : super(key: key);
   static String name = 'Orçamentos';
 
   @override
-  State<BudgetssScreen> createState() => _BudgetssScreenState();
+  State<BudgetsScreen> createState() => _BudgetsScreenState();
 }
 
-class _BudgetssScreenState extends State<BudgetssScreen> {
+class _BudgetsScreenState extends State<BudgetsScreen> {
   late Stream<List<Map<String, String>>?> stream;
   bool showFabVisible = true;
   bool listReverse = false;
@@ -33,7 +33,7 @@ class _BudgetssScreenState extends State<BudgetssScreen> {
 
   @override
   void initState() {
-    stream = gSheetDb.getAllBudgets();
+    stream = gSheetDb.getStreamBudgets();
     super.initState();
   }
 
@@ -49,11 +49,11 @@ class _BudgetssScreenState extends State<BudgetssScreen> {
     return Scaffold(
         backgroundColor: budgetBackgroundColor,
         appBar: CustomAppBar(
-            title: BudgetssScreen.name,
+            title: BudgetsScreen.name,
             backgroundColor: budgetBackgroundColor,
             callback: () async => Navigator.pop(context),
             svgImage: kpathSvgBudgets,
-            heroAnimation: BudgetssScreen.name),
+            heroAnimation: BudgetsScreen.name),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5),
           child: Column(
@@ -78,7 +78,9 @@ class _BudgetssScreenState extends State<BudgetssScreen> {
                       if (snapshot.hasData) {
                         List<Map<String, String>> mapList =
                             snapshot.data as List<Map<String, String>>;
-                        listReverse ? mapList = mapList.reversed.toList() : null;
+                        listReverse
+                            ? mapList = mapList.reversed.toList()
+                            : null;
                         isSearching
                             ? mapList = mapList
                                 .where((element) => element['nome']
@@ -88,15 +90,17 @@ class _BudgetssScreenState extends State<BudgetssScreen> {
                                         searchController.text.toLowerCase()))
                                 .toList()
                             : null;
-              
+
                         return NotificationListener<UserScrollNotification>(
                           onNotification: (notification) {
-                            if (notification.direction == ScrollDirection.reverse) {
+                            if (notification.direction ==
+                                ScrollDirection.reverse) {
                               setState(() {
                                 showFabVisible = false;
                               });
                             }
-                            if (notification.direction == ScrollDirection.forward) {
+                            if (notification.direction ==
+                                ScrollDirection.forward) {
                               setState(() {
                                 showFabVisible = true;
                               });
@@ -107,17 +111,18 @@ class _BudgetssScreenState extends State<BudgetssScreen> {
                               itemCount: mapList.toList().length,
                               itemBuilder: (context, index) {
                                 Budget budget = Budget.fromMap(mapList[index]);
-              
+
                                 return CustomListTile(
                                     deleteCallback: () async {
-                                      await _showDeleteAlertDialog(context, budget);
+                                      await _showDeleteAlertDialog(
+                                          context, budget);
                                     },
                                     editCallback: () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              AddBudgetScreen(id: budget.id),
+                                              AddBudgetScreen(),
                                         ),
                                       );
                                     },

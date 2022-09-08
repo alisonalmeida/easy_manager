@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:async';
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
@@ -8,32 +7,31 @@ import 'package:easy_manager/custom_widgets/custom_list_tile.dart';
 import 'package:easy_manager/custom_widgets/custom_search_text_field.dart';
 import 'package:easy_manager/custom_widgets/empty_widget.dart';
 import 'package:easy_manager/main.dart';
-import 'package:easy_manager/models/product_provider_model.dart';
-import 'package:easy_manager/screens/crud_provider_screen.dart';
+import 'package:easy_manager/models/product_model.dart';
+import 'package:easy_manager/screens/product/crud_product_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class ProvidersScreen extends StatefulWidget {
-  const ProvidersScreen({Key? key}) : super(key: key);
-  static String name = 'Fornecedores';
+class ProductsScreen extends StatefulWidget {
+  const ProductsScreen({Key? key}) : super(key: key);
+  static String name = 'Produtos';
 
   @override
-  State<ProvidersScreen> createState() => _ProvidersScreenState();
+  State<ProductsScreen> createState() => _ProductsScreenState();
 }
 
-class _ProvidersScreenState extends State<ProvidersScreen> {
+class _ProductsScreenState extends State<ProductsScreen> {
   late Stream<List<Map<String, String>>?> stream;
   bool showFabVisible = true;
   bool listReverse = false;
-
   bool isSearching = false;
   FocusNode focusNode = FocusNode();
   TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
-    stream = gSheetDb.getAllProviders();
+    stream = gSheetDb.getStreamProducts();
     super.initState();
   }
 
@@ -47,13 +45,13 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: providerBackgroundColor,
+        backgroundColor: productBackgroundColor,
         appBar: CustomAppBar(
-            title: ProvidersScreen.name,
-            backgroundColor: providerBackgroundColor,
+            title: ProductsScreen.name,
+            backgroundColor: productBackgroundColor,
             callback: () async => Navigator.pop(context),
             svgImage: kpathSvgFactory,
-            heroAnimation: ProvidersScreen.name),
+            heroAnimation: ProductsScreen.name),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5),
           child: Column(
@@ -81,6 +79,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                         listReverse
                             ? mapList = mapList.reversed.toList()
                             : null;
+
                         isSearching
                             ? mapList = mapList
                                 .where((element) => element['nome']
@@ -110,27 +109,27 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                           child: ListView.builder(
                               itemCount: mapList.toList().length,
                               itemBuilder: (context, index) {
-                                ProductProvider productProvider =
-                                    ProductProvider.fromMap(mapList[index]);
+                                
+                                Product product =
+                                    Product.fromMap(mapList[index]);
 
                                 return CustomListTile(
                                     deleteCallback: () async {
                                       await _showDeleteAlertDialog(
-                                          context, productProvider);
+                                          context, product);
                                     },
                                     editCallback: () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              CrudProviderScreen(
-                                                  id: productProvider.id),
+                                              CrudProductScreen(id: product.id),
                                         ),
                                       );
                                     },
-                                    title: productProvider.nome!,
-                                    icon: Icons.factory,
-                                    subtitle: productProvider.documento!);
+                                    title: product.nome!,
+                                    icon: Icons.catching_pokemon,
+                                    subtitle: 'R\$ ${product.valorVenda}');
                               }),
                         );
                       } else {
@@ -164,13 +163,13 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                 callback: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => CrudProviderScreen())),
+                        builder: (context) => CrudProductScreen())),
                 shadowColor: woodSmoke,
                 iconPath: kpathSvgPlus)
             : null);
   }
 
-  _showDeleteAlertDialog(context, ProductProvider productProvider) {
+  _showDeleteAlertDialog(context, Product product) {
     // set up the buttons
 
     Widget cancelButton = TextButton(
@@ -182,14 +181,14 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
     Widget continueButton = TextButton(
       child: Text("Confirmar"),
       onPressed: () async {
-        await gSheetDb.deleteProvider(productProvider.id!);
+        await gSheetDb.deleteProduct(product.id!);
         Navigator.of(context).pop();
       },
     );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text(productProvider.nome!),
+      title: Text(product.nome!),
       content: Text("Confirma a exclusão do cadastro?"),
       actions: [
         cancelButton,

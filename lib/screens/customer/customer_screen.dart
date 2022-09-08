@@ -1,17 +1,17 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
+import 'package:easy_manager/custom_widgets/custom_list_tile.dart';
 import 'package:easy_manager/custom_widgets/custom_search_text_field.dart';
 import 'package:easy_manager/custom_widgets/empty_widget.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/customer_model.dart';
-import 'package:easy_manager/screens/crud_customer_screen.dart';
+import 'package:easy_manager/screens/customer/crud_customer_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import '../consts.dart';
-import '../custom_widgets/custom_list_tile.dart';
 
 class CustomerScreen extends StatefulWidget {
   const CustomerScreen({Key? key}) : super(key: key);
@@ -31,7 +31,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
 
   @override
   void initState() {
-    stream = gSheetDb.getAllCustomers();
+    stream = gSheetDb.getStreamCustomers();
     super.initState();
   }
 

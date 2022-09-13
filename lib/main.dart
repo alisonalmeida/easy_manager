@@ -7,6 +7,7 @@ import 'package:easy_manager/screens/home_page_screen.dart';
 import 'package:easy_manager/screens/login_screen.dart';
 import 'package:easy_manager/screens/product/product_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 late GSheetDb gSheetDb;
 Future main() async {
@@ -18,16 +19,11 @@ Future main() async {
   runApp( const MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: AddBudgetScreen(),

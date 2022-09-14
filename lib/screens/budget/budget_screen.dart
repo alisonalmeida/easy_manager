@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'dart:async';
 import 'package:easy_manager/consts.dart';
@@ -13,40 +13,25 @@ import 'package:easy_manager/screens/budget/add_budget_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class BudgetsScreen extends StatefulWidget {
-  const BudgetsScreen({Key? key}) : super(key: key);
+class BudgetsScreen extends ConsumerWidget {
+  BudgetsScreen({Key? key}) : super(key: key);
   static String name = 'Orçamentos';
 
-  @override
-  State<BudgetsScreen> createState() => _BudgetsScreenState();
-}
-
-class _BudgetsScreenState extends State<BudgetsScreen> {
-  late Stream<List<Map<String, String>>?> stream;
   bool showFabVisible = true;
   bool listReverse = false;
   bool isSearch = false;
   bool isSearching = false;
   FocusNode focusNode = FocusNode();
   TextEditingController searchController = TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
-  void initState() {
-    stream = gSheetDb.getStreamBudgets();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    focusNode.dispose();
-    searchController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    var budgetList = ref.watch(budgetsProvider);
     return Scaffold(
+        key: _scaffoldKey,
         backgroundColor: budgetBackgroundColor,
         appBar: CustomAppBar(
             title: BudgetsScreen.name,
@@ -60,97 +45,97 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
             children: [
               isSearching
                   ? SearchTextField(
-                      clearField: () =>
-                          setState(() => searchController.clear()),
+                      clearField: () {
+                        searchController.clear();
+                      },
                       focusNode: focusNode,
                       searchController: searchController,
                     )
                   : Container(),
               Expanded(
-                child: StreamBuilder(
-                  stream: stream,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
+                child: budgetList.when(
+                    data: (data) {
+                      List<Map<String, String>> mapList = data;
+                      listReverse ? mapList = mapList.reversed.toList() : null;
+                      isSearching
+                          ? mapList = mapList
+                              .where((element) => element['id']
+                                  .toString()
+                                  .toLowerCase()
+                                  .contains(
+                                      searchController.text.toLowerCase()))
+                              .toList()
+                          : null;
+
+                      return NotificationListener<UserScrollNotification>(
+                        onNotification: (notification) {
+                          if (notification.direction ==
+                              ScrollDirection.reverse) {
+                            showFabVisible = false;
+                          }
+                          if (notification.direction ==
+                              ScrollDirection.forward) {
+                            showFabVisible = true;
+                          }
+                          return true;
+                        },
+                        child: mapList == null
+                            ? EmptyWidget()
+                            : ListView.builder(
+                                itemCount: mapList.toList().length,
+                                itemBuilder: (context, index) {
+                                  Budget budget =
+                                      Budget.fromMap(mapList[index]);
+
+                                  return CustomListTile(
+                                      deleteCallback: () async {
+                                        await _showDeleteAlertDialog(
+                                            context, budget);
+                                      },
+                                      editCallback: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                AddBudgetScreen(),
+                                          ),
+                                        );
+                                      },
+                                      title: budget.nomeCliente!,
+                                      icon: Icons.list,
+                                      subtitle: budget.valorTotal.toString());
+                                }),
+                      );
+                    },
+                    error: (error, stackTrace) => Center(
+                          child: Column(
+                            children: [
+                              Text(stackTrace.toString()),
+                              Text(error.toString()),
+                            ],
+                          ),
+                        ),
+                    loading: () {
                       return Center(
                         child: CircularProgressIndicator(color: black),
                       );
-                    } else {
-                      if (snapshot.hasData) {
-                        List<Map<String, String>> mapList =
-                            snapshot.data as List<Map<String, String>>;
-                        listReverse
-                            ? mapList = mapList.reversed.toList()
-                            : null;
-                        isSearching
-                            ? mapList = mapList
-                                .where((element) => element['nome']
-                                    .toString()
-                                    .toLowerCase()
-                                    .contains(
-                                        searchController.text.toLowerCase()))
-                                .toList()
-                            : null;
-
-                        return NotificationListener<UserScrollNotification>(
-                          onNotification: (notification) {
-                            if (notification.direction ==
-                                ScrollDirection.reverse) {
-                              setState(() {
-                                showFabVisible = false;
-                              });
-                            }
-                            if (notification.direction ==
-                                ScrollDirection.forward) {
-                              setState(() {
-                                showFabVisible = true;
-                              });
-                            }
-                            return true;
-                          },
-                          child: ListView.builder(
-                              itemCount: mapList.toList().length,
-                              itemBuilder: (context, index) {
-                                Budget budget = Budget.fromMap(mapList[index]);
-
-                                return CustomListTile(
-                                    deleteCallback: () async {
-                                      await _showDeleteAlertDialog(
-                                          context, budget);
-                                    },
-                                    editCallback: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              AddBudgetScreen(),
-                                        ),
-                                      );
-                                    },
-                                    title: budget.nomeCliente!,
-                                    icon: Icons.factory,
-                                    subtitle: budget.valorTotal.toString());
-                              }),
-                        );
-                      } else {
-                        return EmptyWidget();
-                      }
-                    }
-                  },
-                ),
+                    }),
               ),
             ],
           ),
         ),
         persistentFooterButtons: [
           IconButton(
-              onPressed: () => listReverse = !listReverse,
+              onPressed: () {
+                listReverse = !listReverse;
+                ref.refresh(budgetsProvider);
+              },
               icon: Icon(Icons.filter_alt)),
           IconButton(
               onPressed: () {
-                setState(() {
-                  isSearching = !isSearching;
-                  focusNode.requestFocus();
-                });
+                isSearching = !isSearching;
+                ref.refresh(budgetsProvider);
+                focusNode.requestFocus();
               },
               icon: Icon(Icons.search))
         ],
@@ -166,21 +151,22 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
             : null);
   }
 
-  _showDeleteAlertDialog(context, Budget budget) {
+  Future _showDeleteAlertDialog(context, Budget budget) async {
     // set up the buttons
 
-    Widget cancelButton = TextButton(
-      child: Text("Cancelar"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
+    Widget cancelButton = Consumer(
+      builder: (context, ref, child) => TextButton(
+          child: Text("Cancelar"), onPressed: () => Navigator.pop(context)),
     );
-    Widget continueButton = TextButton(
-      child: Text("Confirmar"),
-      onPressed: () async {
-        await gSheetDb.deleteProvider(budget.id!);
-        Navigator.of(context).pop();
-      },
+    Widget continueButton = Consumer(
+      builder: (context, ref, child) => TextButton(
+        child: Text("Confirmar"),
+        onPressed: () async {
+          await gSheetDb.deleteBudget(budget.id!);
+          Navigator.pop(context);
+          ref.refresh(budgetsProvider);
+        },
+      ),
     );
 
     // set up the AlertDialog
@@ -196,9 +182,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
     // show the dialog
     showDialog(
       context: context,
-      builder: (BuildContext dialogContext) {
-        return alert;
-      },
+      builder: (context) => alert,
     );
   }
 }

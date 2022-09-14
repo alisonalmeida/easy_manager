@@ -15,7 +15,7 @@ class Budget {
     this.id,
     this.nomeCliente,
     this.data,
-    this.produtos,
+    this.listaProdutos,
     this.valorTotal,
     this.status,
   });
@@ -23,26 +23,29 @@ class Budget {
   String? id;
   String? nomeCliente;
   String? data;
-  List<Product>? produtos;
+  List<Product>? listaProdutos;
   double? valorTotal;
   String? status;
 
-  factory Budget.fromMap(Map<String, dynamic> json) => Budget(
-        id: json["id"],
-        nomeCliente: json["nomeCliente"],
-        data: json["data"],
-        produtos:
-            List<Product>.from(json["produtos"].map((x) => Product.fromMap(x))),
-        valorTotal: json["valorTotal"].toDouble(),
-        status: json["status"],
-      );
+  factory Budget.fromMap(Map<String, dynamic> json) {
+    return Budget(
+      id: json["id"],
+      nomeCliente: json["nomeCliente"],
+      data: json["data"],
+      listaProdutos: List<Product>.from([]),
+      valorTotal: double.parse(json["valorTotal"]),
+      status: json["status"],
+    );
+  }
 
-  Map<String, dynamic> toMap() => {
-        "id": id,
-        "nomeCliente": nomeCliente,
-        "data": data,
-        "produtos": List<dynamic>.from(produtos!.map((x) => x.toMap())),
-        "valorTotal": valorTotal,
-        "status": status,
-      };
+  Map<String, dynamic> toMap() {
+    return {
+      "id": id,
+      "nomeCliente": nomeCliente,
+      "data": data,
+      "Product": List<Product>.from(listaProdutos!.map((x) => x.toMap())),
+      "valorTotal": valorTotal,
+      "status": status,
+    };
+  }
 }

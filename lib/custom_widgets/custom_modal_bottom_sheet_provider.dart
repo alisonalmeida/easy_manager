@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 
 Future<String> showProviderChoiceDialog(BuildContext context) async {
   DraggableScrollableController controller = DraggableScrollableController();
-  Stream<List<Map<String, String>>?> stream;
-  stream = gSheetDb.getStreamProviders();
+  Future<List<Map<String, String>>>? listProviders;
+  listProviders = gSheetDb.getProviders();
 
   String returnedValue = '';
   await showModalBottomSheet(
@@ -48,8 +48,8 @@ Future<String> showProviderChoiceDialog(BuildContext context) async {
                       fontWeight: FontWeight.w700),
                 )),
                 Expanded(
-                  child: StreamBuilder(
-                    stream: stream,
+                  child: FutureBuilder(
+                    future: listProviders,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(

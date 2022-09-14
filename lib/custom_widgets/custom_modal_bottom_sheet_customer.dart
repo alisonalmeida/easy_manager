@@ -10,8 +10,8 @@ import 'package:flutter/material.dart';
 
 Future<String> showCustomerChoiceDialog(BuildContext context) async {
   DraggableScrollableController controller = DraggableScrollableController();
-  Stream<List<Map<String, String>>?> stream;
-  stream = gSheetDb.getStreamCustomers();
+  Future<List<Map<String, String>>>? listCustomers;
+  listCustomers = gSheetDb.getCustomers();
 
   String returnedValue = '';
   await showModalBottomSheet(
@@ -60,9 +60,9 @@ Future<String> showCustomerChoiceDialog(BuildContext context) async {
                           ));
                     }),
                 Expanded(
-                  child: StreamBuilder(
-                    stream: stream,
+                  child: FutureBuilder(future: listCustomers,
                     builder: (context, snapshot) {
+                    
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(
                           child: CircularProgressIndicator(color: black),
@@ -102,8 +102,8 @@ Future<String> showCustomerChoiceDialog(BuildContext context) async {
                           return EmptyWidget();
                         }
                       }
-                    },
-                  ),
+                  },)
+                  
                 ),
               ],
             ),

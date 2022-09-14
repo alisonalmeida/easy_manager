@@ -1,126 +1,112 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/user_model.dart';
 import 'package:easy_manager/screens/home_page_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
-
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  late List<Map<String, String>>? userList;
+class LoginPage extends ConsumerWidget {
+  LoginPage({Key? key}) : super(key: key);
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final users = ref.watch(usersProvider);
+    final providedLoggedUser = ref.watch(loggedUser);
 
-  _tryLogin() async {
-    bool isLogged = false;
-    try {
+    tryLogin() async {
       showGeneralWaitingDialog(context);
-      userList = await gSheetDb.getUsers();
-      for (var element in userList!) {
-        User user = User.fromMap(element);
-        if (user.email == _emailController.text &&
-            user.senha == _passwordController.text) {
-          if (mounted) {
-            Navigator.pop(context);
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const HomePage()));
-            isLogged = true;
+
+      bool userFound = false;
+
+      users.when(
+        data: (data) {
+          for (var i = 0; i < data.length; i++) {
+            var user = User.fromMap(data[i]);
+            if (user.email == emailController.text &&
+                user.senha == passwordController.text) {
+              userFound = true;
+              providedLoggedUser.email = user.email;
+              providedLoggedUser.senha = user.senha;
+              break;
+            }
           }
-        }
-        break;
-      }
-      if (mounted && isLogged == false) {
-        Navigator.pop(context);
-        showGeneralInformationDialogErrorMessage(
-            'Usuário ou senha incorretos!', context);
-      }
-    } catch (e) {
-      showGeneralInformationDialogErrorMessage(e.toString(), context);
+          if (userFound) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(),
+              ),
+            );
+          } else {
+            Navigator.pop(context);
+            showGeneralInformationDialogErrorMessage(
+                'Usuário ou Senha incorretos', context);
+          }
+        },
+        error: (error, stackTrace) {
+          showGeneralInformationDialogErrorMessage(error.toString(), context);
+        },
+        loading: () {
+          Future.delayed(Duration(seconds: 2));
+          showGeneralWaitingDialog(context);
+          Future.delayed(Duration(seconds: 2));
+        },
+      );
     }
-  }
 
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 80.0),
-                child: Center(
-                  child: SizedBox(
-                      width: 200,
-                      height: 150,
-                      child: Image.asset(kpathMainLogo)),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: TextField(
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _emailController,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Email',
-                      hintText: 'Ex. abc@gmail.com'),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 15.0, right: 15.0, top: 15, bottom: 40),
-                child: TextField(
-                  onEditingComplete: () => _tryLogin(),
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(), labelText: 'Senha'),
-                ),
-              ),
-              Container(
-                height: 50,
-                width: 250,
-                decoration: BoxDecoration(
-                    color: Colors.red, borderRadius: BorderRadius.circular(20)),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 155, 205, 255),
-                  ),
-                  onPressed: () async => _tryLogin(),
-                  child: const Text(
-                    'Acessar',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25,
-                        color: black),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 100,
-              ),
-            ],
+        body: Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 80.0),
+          child: Center(
+            child: SizedBox(
+                width: 200, height: 150, child: Image.asset(kpathMainLogo)),
           ),
         ),
-      ),
-    );
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: TextField(
+            keyboardType: TextInputType.emailAddress,
+            controller: emailController,
+            decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Email',
+                hintText: 'Ex. abc@gmail.com'),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(
+              left: 15.0, right: 15.0, top: 15, bottom: 40),
+          child: TextField(
+            onEditingComplete: () => tryLogin(),
+            controller: passwordController,
+            obscureText: true,
+            decoration: const InputDecoration(
+                border: OutlineInputBorder(), labelText: 'Senha'),
+          ),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            fixedSize: Size(250, 50),
+            backgroundColor: const Color.fromARGB(255, 155, 205, 255),
+          ),
+          onPressed: () async => tryLogin(),
+          child: const Text(
+            'Acessar',
+            style: TextStyle(
+                fontWeight: FontWeight.bold, fontSize: 25, color: black),
+          ),
+        ),
+        const SizedBox(
+          height: 100,
+        ),
+      ],
+    ));
   }
 }

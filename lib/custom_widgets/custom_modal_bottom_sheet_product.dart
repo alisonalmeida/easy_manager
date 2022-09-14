@@ -9,76 +9,80 @@ import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/screens/product/crud_product_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-Future<List<Product>> showProductChoiceDialog(BuildContext context) async {
-  DraggableScrollableController controller = DraggableScrollableController();
-  TextEditingController searchController = TextEditingController();
+class CustomModalBottomSheetProducts {
+  CustomModalBottomSheetProducts({Key? key});
 
-  List<Product> listBudget = [];
+  Future<Budget?>? showProductChoiceDialog(BuildContext context) async {
+    DraggableScrollableController controller = DraggableScrollableController();
+    TextEditingController searchController = TextEditingController();
 
-  await showModalBottomSheet(
-    backgroundColor: productBackgroundColor,
-    isScrollControlled: true,
-    shape: RoundedRectangleBorder(
-      side: BorderSide.none,
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(20),
+    FocusNode focusNode = FocusNode();
+    Budget? budget;
+
+    await showModalBottomSheet(
+      backgroundColor: productBackgroundColor,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        side: BorderSide.none,
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
       ),
-    ),
-    context: context,
-    builder: (context) {
-      return StatefulBuilder(
-        builder: (context, setState) => DraggableScrollableSheet(
-          expand: false,
-          controller: controller,
-          initialChildSize: 0.9,
-          builder: (context, scrollController) {
-            return Container(
-              margin: EdgeInsets.all(10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 10),
-                    height: 5,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: black,
-                    ),
-                  ),
-                  CustomAddButton(
-                      text: 'Adicionar Novo Produto',
-                      onTap: () {
-                        Navigator.pop(context);
-                        Navigator.push(
+      context: context,
+      builder: (context) {
+        return Consumer(
+          builder: (context, ref, child) {
+            var listProducts = ref.watch(productsProvider);
+            var listBudgets = ref.watch(budgetsProvider);
+
+            return DraggableScrollableSheet(
+              expand: false,
+              controller: controller,
+              initialChildSize: 0.9,
+              builder: (context, scrollController) {
+                return Container(
+                  margin: EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 10),
+                        height: 5,
+                        width: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: black,
+                        ),
+                      ),
+                      CustomAddButton(
+                        text: 'Adicionar Novo Produto',
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => CrudProductScreen(),
-                            ));
-                      }),
-                  SearchTextField(
-                    onChanged: (p0) {
-                      setState.call(() {});
-                    },
-                    clearField: () {
-                      setState.call(() {
-                        searchController.clear();
-                      });
-                    },
-                    searchController: searchController,
-                  ),
-                  Expanded(
-                    child: FutureBuilder(
-                      future: gSheetDb.getProducts(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
-                        }
-                        if (snapshot.hasData) {
-                          List<Map<String, String>> mapList =
-                              snapshot.data as List<Map<String, String>>;
+                            ),
+                          );
+                        },
+                      ),
+                      SearchTextField(
+                        clearField: () {
+                          searchController.clear();
+                          ref.refresh(productsProvider);
+                        },
+                        focusNode: focusNode,
+                        searchController: searchController,
+                        onChanged: (v) {
+                          ref.refresh(productsProvider);
+                        },
+                      ),
+                      Expanded(
+                          child: listProducts.when(
+                        data: (data) {
+                          List<Map<String, String>> mapList = data;
                           mapList = mapList
                               .where((element) => element['nome']
                                   .toString()
@@ -101,38 +105,46 @@ Future<List<Product>> showProductChoiceDialog(BuildContext context) async {
                                     ),
                                   )
                                 ], color: white, shape: Border.all()),
-                                child: CheckboxListTile(
+                                child: ListTile(
                                   title: Text(product.nome!),
-                                  value: listBudget.contains(product),
-                                  onChanged: (v) {
-                                    if (v!) {
-                                      listBudget.add(product);
-                                    } else {
-                                      listBudget.remove(product);
-                                    }
-
-                                    setState(() {});
-                                    for (var i = 0;
-                                        i < listBudget.length;
-                                        i++) {}
-                                  },
+                                  trailing: Wrap(
+                                    children: [
+                                      TextButton(
+                                        onPressed: () {},
+                                        child: Text('-'),
+                                      ),
+                                      Text('0'),
+                                      TextButton(
+                                        onPressed: () {},
+                                        child: Text('+'),
+                                      ),
+                                    ],
+                                  ),
+                                  //budget.listaProdutos!.contains(product)
                                 ),
                               );
                             },
                           );
-                        }
-                        return Text(snapshot.connectionState.toString());
-                      },
-                    ),
+                        },
+                        error: (error, stackTrace) {
+                          return Center();
+                        },
+                        loading: () => Center(
+                          child: CircularProgressIndicator(
+                            color: black,
+                          ),
+                        ),
+                      ))
+                    ],
                   ),
-                ],
-              ),
+                );
+              },
             );
           },
-        ),
-      );
-    },
-  );
+        );
+      },
+    );
 
-  return listBudget;
+    return budget;
+  }
 }

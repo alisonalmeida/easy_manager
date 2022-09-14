@@ -5,7 +5,6 @@ import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_modal_bottom_sheet_customer.dart';
 import 'package:easy_manager/custom_widgets/custom_modal_bottom_sheet_product.dart';
 import 'package:easy_manager/main.dart';
-import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/screens/budget/budget_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -125,8 +124,9 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                     foregroundColor: black),
                 child: Text('Adicionar Produto'),
                 onPressed: () async {
-                  var v = await showProductChoiceDialog(context);
-                  print(v);
+                  await CustomModalBottomSheetProducts()
+                      .showProductChoiceDialog(context);
+                  
                 },
               ),
               Table(

@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
@@ -12,17 +12,12 @@ import 'package:easy_manager/screens/customer/crud_customer_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CustomerScreen extends StatefulWidget {
-  const CustomerScreen({Key? key}) : super(key: key);
+class CustomerScreen extends ConsumerWidget {
+  CustomerScreen({Key? key}) : super(key: key);
   static String name = 'Clientes';
 
-  @override
-  State<CustomerScreen> createState() => _CustomerScreenState();
-}
-
-class _CustomerScreenState extends State<CustomerScreen> {
-  late Stream<List<Map<String, String>>?> stream;
   bool showFabVisible = true;
   bool listReverse = false;
   bool isSearching = false;
@@ -30,20 +25,8 @@ class _CustomerScreenState extends State<CustomerScreen> {
   TextEditingController searchController = TextEditingController();
 
   @override
-  void initState() {
-    stream = gSheetDb.getStreamCustomers();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    focusNode.dispose();
-    searchController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    var customerList = ref.watch(customersProvider);
     return Scaffold(
       backgroundColor: customerBackgroundColor,
       appBar: CustomAppBar(
@@ -58,93 +41,89 @@ class _CustomerScreenState extends State<CustomerScreen> {
           children: [
             isSearching
                 ? SearchTextField(
-                    clearField: () => setState(() => searchController.clear()),
+                    clearField: () {
+                      searchController.clear();
+                      ref.refresh(customersProvider);
+                    },
                     focusNode: focusNode,
                     searchController: searchController,
+                    onChanged: (p0) => ref.refresh(customersProvider),
                   )
                 : Container(),
             Expanded(
-              child: StreamBuilder(
-                stream: stream,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
+              child: customerList.when(
+                  data: (data) {
+                    List<Map<String, String>> mapList = data;
+                    listReverse ? mapList = mapList.reversed.toList() : null;
+                    isSearching
+                        ? mapList = mapList
+                            .where((element) => element['nome']
+                                .toString()
+                                .toLowerCase()
+                                .contains(searchController.text.toLowerCase()))
+                            .toList()
+                        : null;
+
+                    return NotificationListener<UserScrollNotification>(
+                      onNotification: (notification) {
+                        if (notification.direction == ScrollDirection.reverse) {
+                          showFabVisible = false;
+                        }
+                        if (notification.direction == ScrollDirection.forward) {
+                          showFabVisible = true;
+                        }
+                        return true;
+                      },
+                      child: mapList == null
+                          ? EmptyWidget()
+                          : ListView.builder(
+                              itemCount: mapList.toList().length,
+                              itemBuilder: (context, index) {
+                                Customer customer =
+                                    Customer.fromMap(mapList[index]);
+
+                                return CustomListTile(
+                                    deleteCallback: () async =>
+                                        await _showDeleteAlertDialog(
+                                            context, customer),
+                                    editCallback: () async {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  CrudCustomerScreen(
+                                                      id: customer.id)));
+                                    },
+                                    title: customer.nome!,
+                                    icon: Icons.person,
+                                    subtitle: customer.documento!);
+                              }),
+                    );
+                  },
+                  error: (error, stackTrace) => Center(
+                        child: Text(error.toString()),
+                      ),
+                  loading: () {
                     return Center(
                       child: CircularProgressIndicator(color: black),
                     );
-                  } else {
-                    if (snapshot.hasData) {
-                      List<Map<String, String>> mapList =
-                          snapshot.data as List<Map<String, String>>;
-                      listReverse ? mapList = mapList.reversed.toList() : null;
-                      isSearching
-                          ? mapList = mapList
-                              .where((element) => element['nome']
-                                  .toString()
-                                  .toLowerCase()
-                                  .contains(
-                                      searchController.text.toLowerCase()))
-                              .toList()
-                          : null;
-
-                      return NotificationListener<UserScrollNotification>(
-                        onNotification: (notification) {
-                          if (notification.direction ==
-                              ScrollDirection.reverse) {
-                            setState(() {
-                              showFabVisible = false;
-                            });
-                          }
-                          if (notification.direction ==
-                              ScrollDirection.forward) {
-                            setState(() {
-                              showFabVisible = true;
-                            });
-                          }
-                          return true;
-                        },
-                        child: ListView.builder(
-                            itemCount: mapList.toList().length,
-                            itemBuilder: (context, index) {
-                              Customer customer =
-                                  Customer.fromMap(mapList[index]);
-
-                              return CustomListTile(
-                                  deleteCallback: () async {
-                                    _showDeleteAlertDialog(context, customer);
-                                  },
-                                  editCallback: () async {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                CrudCustomerScreen(
-                                                    id: customer.id)));
-                                  },
-                                  title: customer.nome!,
-                                  icon: Icons.person,
-                                  subtitle: customer.documento!);
-                            }),
-                      );
-                    } else {
-                      return EmptyWidget();
-                    }
-                  }
-                },
-              ),
+                  }),
             ),
           ],
         ),
       ),
       persistentFooterButtons: [
         IconButton(
-            onPressed: () => listReverse = !listReverse,
+            onPressed: () {
+              listReverse = !listReverse;
+              ref.refresh(customersProvider);
+            },
             icon: Icon(Icons.filter_alt)),
         IconButton(
             onPressed: () {
-              setState(() {
-                isSearching = !isSearching;
-                focusNode.requestFocus();
-              });
+              isSearching = !isSearching;
+              ref.refresh(customersProvider);
+              focusNode.requestFocus();
             },
             icon: Icon(Icons.search))
       ],
@@ -163,21 +142,24 @@ class _CustomerScreenState extends State<CustomerScreen> {
     );
   }
 
-  _showDeleteAlertDialog(context, Customer customer) {
+  Future _showDeleteAlertDialog(context, Customer customer) async {
     // set up the buttons
 
-    Widget cancelButton = TextButton(
-      child: Text("Cancelar"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
+    Widget cancelButton = Consumer(
+      builder: (context, ref, child) => TextButton(
+        child: Text("Cancelar"),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
     );
-    Widget continueButton = TextButton(
-      child: Text("Confirmar"),
-      onPressed: () async {
-        await gSheetDb.deleteCustomer(customer.id!);
-        Navigator.of(context).pop();
-      },
+    Widget continueButton = Consumer(
+      builder: (context, ref, child) => TextButton(
+        child: Text("Confirmar"),
+        onPressed: () async {
+          await gSheetDb.deleteCustomer(customer.id!);
+          Navigator.of(context).pop();
+          ref.refresh(customersProvider);
+        },
+      ),
     );
 
     // set up the AlertDialog

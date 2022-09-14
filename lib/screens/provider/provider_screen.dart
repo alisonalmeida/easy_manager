@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'dart:async';
 import 'package:easy_manager/consts.dart';
@@ -13,16 +13,11 @@ import 'package:easy_manager/screens/provider/crud_provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProvidersScreen extends StatefulWidget {
-  const ProvidersScreen({Key? key}) : super(key: key);
+class ProvidersScreen extends ConsumerWidget {
+  ProvidersScreen({Key? key}) : super(key: key);
   static String name = 'Fornecedores';
-
-  @override
-  State<ProvidersScreen> createState() => _ProvidersScreenState();
-}
-
-class _ProvidersScreenState extends State<ProvidersScreen> {
   late Stream<List<Map<String, String>>?> stream;
   bool showFabVisible = true;
   bool listReverse = false;
@@ -32,20 +27,9 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
   TextEditingController searchController = TextEditingController();
 
   @override
-  void initState() {
-    stream = gSheetDb.getStreamProviders();
-    super.initState();
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
+    var productProviderList = ref.watch(productProvidersProvider);
 
-  @override
-  void dispose() {
-    focusNode.dispose();
-    searchController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: providerBackgroundColor,
         appBar: CustomAppBar(
@@ -60,64 +44,51 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
             children: [
               isSearching
                   ? SearchTextField(
-                      clearField: () =>
-                          setState(() => searchController.clear()),
+                      clearField: () {
+                        searchController.clear();
+                        ref.refresh(productProvidersProvider);
+                      },
                       focusNode: focusNode,
                       searchController: searchController,
+                      onChanged: (p0) => ref.refresh(productProvidersProvider),
                     )
                   : Container(),
               Expanded(
-                child: StreamBuilder(
-                  stream: stream,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child: CircularProgressIndicator(color: black),
-                      );
-                    } else {
-                      if (snapshot.hasData) {
-                        List<Map<String, String>> mapList =
-                            snapshot.data as List<Map<String, String>>;
-                        listReverse
-                            ? mapList = mapList.reversed.toList()
-                            : null;
-                        isSearching
-                            ? mapList = mapList
-                                .where((element) => element['nome']
-                                    .toString()
-                                    .toLowerCase()
-                                    .contains(
-                                        searchController.text.toLowerCase()))
-                                .toList()
-                            : null;
+                child: productProviderList.when(
+                  data: (data) {
+                    List<Map<String, String>> mapList = data;
+                    listReverse ? mapList = mapList.reversed.toList() : null;
+                    isSearching
+                        ? mapList = mapList
+                            .where((element) => element['nome']
+                                .toString()
+                                .toLowerCase()
+                                .contains(searchController.text.toLowerCase()))
+                            .toList()
+                        : null;
 
-                        return NotificationListener<UserScrollNotification>(
-                          onNotification: (notification) {
-                            if (notification.direction ==
-                                ScrollDirection.reverse) {
-                              setState(() {
-                                showFabVisible = false;
-                              });
-                            }
-                            if (notification.direction ==
-                                ScrollDirection.forward) {
-                              setState(() {
-                                showFabVisible = true;
-                              });
-                            }
-                            return true;
-                          },
-                          child: ListView.builder(
+                    return NotificationListener<UserScrollNotification>(
+                      onNotification: (notification) {
+                        if (notification.direction == ScrollDirection.reverse) {
+                          showFabVisible = false;
+                        }
+                        if (notification.direction == ScrollDirection.forward) {
+                          showFabVisible = true;
+                        }
+                        return true;
+                      },
+                      child: mapList == null
+                          ? EmptyWidget()
+                          : ListView.builder(
                               itemCount: mapList.toList().length,
                               itemBuilder: (context, index) {
                                 ProductProvider productProvider =
                                     ProductProvider.fromMap(mapList[index]);
 
                                 return CustomListTile(
-                                    deleteCallback: () async {
-                                      await _showDeleteAlertDialog(
-                                          context, productProvider);
-                                    },
+                                    deleteCallback: () async =>
+                                        await _showDeleteAlertDialog(
+                                            context, productProvider),
                                     editCallback: () {
                                       Navigator.push(
                                         context,
@@ -131,12 +102,21 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                                     title: productProvider.nome!,
                                     icon: Icons.factory,
                                     subtitle: productProvider.documento!);
-                              }),
-                        );
-                      } else {
-                        return EmptyWidget();
-                      }
-                    }
+                              },
+                            ),
+                    );
+                  },
+                  error: (error, stackTrace) {
+                    return Center(
+                      child: Text(error.toString()),
+                    );
+                  },
+                  loading: () {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: black,
+                      ),
+                    );
                   },
                 ),
               ),
@@ -145,14 +125,16 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
         ),
         persistentFooterButtons: [
           IconButton(
-              onPressed: () => listReverse = !listReverse,
+              onPressed: () {
+                listReverse = !listReverse;
+                ref.refresh(productProvidersProvider);
+              },
               icon: Icon(Icons.filter_alt)),
           IconButton(
               onPressed: () {
-                setState(() {
-                  isSearching = !isSearching;
-                  focusNode.requestFocus();
-                });
+                isSearching = !isSearching;
+                ref.refresh(productProvidersProvider);
+                focusNode.requestFocus();
               },
               icon: Icon(Icons.search))
         ],
@@ -170,21 +152,25 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
             : null);
   }
 
-  _showDeleteAlertDialog(context, ProductProvider productProvider) {
+  Future _showDeleteAlertDialog(
+      context, ProductProvider productProvider) async {
     // set up the buttons
 
-    Widget cancelButton = TextButton(
-      child: Text("Cancelar"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
+    Widget cancelButton = Consumer(
+      builder: (context, ref, child) => TextButton(
+        child: Text("Cancelar"),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
     );
-    Widget continueButton = TextButton(
-      child: Text("Confirmar"),
-      onPressed: () async {
-        await gSheetDb.deleteProvider(productProvider.id!);
-        Navigator.of(context).pop();
-      },
+    Widget continueButton = Consumer(
+      builder: (context, ref, child) => TextButton(
+        child: Text("Confirmar"),
+        onPressed: () async {
+          await gSheetDb.deleteProvider(productProvider.id!);
+          Navigator.of(context).pop();
+          ref.refresh(productProvidersProvider);
+        },
+      ),
     );
 
     // set up the AlertDialog

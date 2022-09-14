@@ -9,7 +9,7 @@ import 'package:gsheets/gsheets.dart';
 class GSheetDb {
   late final GSheets gSheets;
   late final Spreadsheet ss;
-  final int _delaySecondsUpdate = 2;
+
   final String _usersSheetTitle = 'usuarios';
   final String _providersSheetTitle = 'fornecedores';
   final String _customersSheetTitle = 'clientes';
@@ -25,7 +25,7 @@ class GSheetDb {
   }
 
 //USERS
-  Future<List<Map<String, String>>>? getUsers() async {
+  Future<List<Map<String, String>>> getUsers() async {
     Worksheet? sheet = ss.worksheetByTitle(_usersSheetTitle);
     var users = await sheet!.values.map.allRows();
     return users!;
@@ -85,21 +85,10 @@ class GSheetDb {
     }
   }
 
-  Future<List<Map<String, String>>>? getProviders() async {
+  Future<List<Map<String, String>>> getProviders() async {
     Worksheet? sheet = ss.worksheetByTitle(_providersSheetTitle);
     var providers = await sheet!.values.map.allRows();
     return providers!;
-  }
-
-  Stream<List<Map<String, String>>?> getStreamProviders() async* {
-    Worksheet? sheet = ss.worksheetByTitle(_providersSheetTitle);
-    while (true) {
-      await Future.delayed(Duration(seconds: _delaySecondsUpdate));
-      Stream<List<Map<String, String>>?> providers =
-          sheet!.values.map.allRows().asStream();
-
-      yield* providers;
-    }
   }
 
   deleteProvider(String id) async {
@@ -182,20 +171,10 @@ class GSheetDb {
     }
   }
 
-  Future<List<Map<String, String>>>? getCustomers() async {
+  Future<List<Map<String, String>>> getCustomers() async {
     Worksheet? sheet = ss.worksheetByTitle(_customersSheetTitle);
     var customers = await sheet!.values.map.allRows();
     return customers!;
-  }
-
-  Stream<List<Map<String, String>>?> getStreamCustomers() async* {
-    Worksheet? sheet = ss.worksheetByTitle(_customersSheetTitle);
-    while (true) {
-      await Future.delayed(Duration(seconds: _delaySecondsUpdate));
-      Stream<List<Map<String, String>>?> customers =
-          sheet!.values.map.allRows().asStream();
-      yield* customers;
-    }
   }
 
   deleteCustomer(String id) async {
@@ -224,7 +203,7 @@ class GSheetDb {
   }
 
 //PRODUCTS
-  Future<List<Map<String, String>>>? getProducts() async {
+  Future<List<Map<String, String>>> getProducts() async {
     Worksheet? sheet = ss.worksheetByTitle(_productsSheetTitle);
     var products = await sheet!.values.map.allRows();
     return products!;
@@ -276,16 +255,6 @@ class GSheetDb {
     }
   }
 
-  Stream<List<Map<String, String>>?> getStreamProducts() async* {
-    Worksheet? sheet = ss.worksheetByTitle(_productsSheetTitle);
-    while (true) {
-      await Future.delayed(Duration(seconds: _delaySecondsUpdate));
-      Stream<List<Map<String, String>>?> products =
-          sheet!.values.map.allRows().asStream();
-      yield* products;
-    }
-  }
-
   deleteProduct(String id) async {
     Worksheet? sheet = ss.worksheetByTitle(_productsSheetTitle);
     var list = await sheet!.values.map.allRows();
@@ -313,6 +282,13 @@ class GSheetDb {
 
   //BUDGETS
 
+  Future<List<Map<String, String>>> getBudgets() async {
+    Worksheet? sheet = ss.worksheetByTitle(_budgetsSheetTitle);
+    var budgets = await sheet!.values.map.allRows();
+
+    return budgets!;
+  }
+
   Future putBudget(Budget budget) async {
     Worksheet? sheet = ss.worksheetByTitle(_budgetsSheetTitle);
 
@@ -322,7 +298,7 @@ class GSheetDb {
         newId,
         budget.nomeCliente,
         budget.data,
-        budget.produtos,
+        budget.listaProdutos,
         budget.valorTotal,
         budget.status,
       ]);
@@ -339,24 +315,13 @@ class GSheetDb {
             testeBudget.id,
             budget.nomeCliente,
             budget.data,
-            budget.produtos,
+            budget.listaProdutos,
             budget.valorTotal,
             budget.status,
           ]);
           break;
         }
       }
-    }
-  }
-
-  Stream<List<Map<String, String>>?> getStreamBudgets() async* {
-    Worksheet? sheet = ss.worksheetByTitle(_budgetsSheetTitle);
-    while (true) {
-      await Future.delayed(Duration(seconds: _delaySecondsUpdate));
-      Stream<List<Map<String, String>>?> budgets =
-          sheet!.values.map.allRows().asStream();
-
-      yield* budgets;
     }
   }
 

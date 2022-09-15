@@ -96,7 +96,7 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
   }
 
   _getCep() async {
-    showGeneralWaitingDialog(context);
+    showGeneralLoading(context);
     try {
       Address address = await CepHelper.getData(
           _cepController.text.replaceAll(RegExp(r'[^0-9]'), '').toUpperCase());

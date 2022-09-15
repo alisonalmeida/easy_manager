@@ -285,8 +285,7 @@ class GSheetDb {
   Future<List<Map<String, String>>> getBudgets() async {
     Worksheet? sheet = ss.worksheetByTitle(_budgetsSheetTitle);
     var budgets = await sheet!.values.map.allRows();
-
-    return budgets!;
+    return budgets ?? [];
   }
 
   Future putBudget(Budget budget) async {
@@ -298,7 +297,7 @@ class GSheetDb {
         newId,
         budget.nomeCliente,
         budget.data,
-        budget.listaProdutos,
+        budget.listaprodutos,
         budget.valorTotal,
         budget.status,
       ]);
@@ -315,7 +314,7 @@ class GSheetDb {
             testeBudget.id,
             budget.nomeCliente,
             budget.data,
-            budget.listaProdutos,
+            budget.listaprodutos,
             budget.valorTotal,
             budget.status,
           ]);

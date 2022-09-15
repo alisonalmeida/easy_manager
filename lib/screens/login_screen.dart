@@ -19,7 +19,7 @@ class LoginPage extends ConsumerWidget {
     final providedLoggedUser = ref.watch(loggedUser);
 
     tryLogin() async {
-      showGeneralWaitingDialog(context);
+      showGeneralLoading(context);
 
       bool userFound = false;
 
@@ -53,7 +53,7 @@ class LoginPage extends ConsumerWidget {
         },
         loading: () {
           Future.delayed(Duration(seconds: 2));
-          showGeneralWaitingDialog(context);
+          showGeneralLoading(context);
           Future.delayed(Duration(seconds: 2));
         },
       );

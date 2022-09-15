@@ -14,12 +14,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class CustomModalBottomSheetProducts {
   CustomModalBottomSheetProducts({Key? key});
 
-  Future<Budget?>? showProductChoiceDialog(BuildContext context) async {
+  void showProductChoiceBottomSheet(BuildContext context) async {
     DraggableScrollableController controller = DraggableScrollableController();
     TextEditingController searchController = TextEditingController();
 
     FocusNode focusNode = FocusNode();
-    Budget? budget;
 
     await showModalBottomSheet(
       backgroundColor: productBackgroundColor,
@@ -89,7 +88,7 @@ class CustomModalBottomSheetProducts {
                                   .toLowerCase()
                                   .contains(searchController.text))
                               .toList();
-                          for (var i = 0; i < mapList.length; i++) {}
+
                           return ListView.builder(
                             itemCount: mapList.length,
                             itemBuilder: (context, index) {
@@ -107,20 +106,43 @@ class CustomModalBottomSheetProducts {
                                 ], color: white, shape: Border.all()),
                                 child: ListTile(
                                   title: Text(product.nome!),
-                                  trailing: Wrap(
-                                    children: [
-                                      TextButton(
-                                        onPressed: () {},
-                                        child: Text('-'),
-                                      ),
-                                      Text('0'),
-                                      TextButton(
-                                        onPressed: () {},
-                                        child: Text('+'),
-                                      ),
-                                    ],
+                                  trailing: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                          color: productBackgroundColorShadow),
+                                      shape: BoxShape.rectangle,
+                                    ),
+                                    child: Wrap(
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {},
+                                          child: Text('-',
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                  color:
+                                                      productBackgroundColorShadow)),
+                                        ),
+                                        Text(
+                                          '0',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                          },
+                                          child: Text('+',
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                  color:
+                                                      productBackgroundColorShadow)),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  //budget.listaProdutos!.contains(product)
                                 ),
                               );
                             },
@@ -144,7 +166,5 @@ class CustomModalBottomSheetProducts {
         );
       },
     );
-
-    return budget;
   }
 }

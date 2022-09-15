@@ -1,6 +1,10 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: prefer_const_constructors
 
-const String appName='HB Estilo Manager';
+import 'package:easy_manager/utils/colors.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+const String appName = 'HB Estilo Manager';
 
 const String kpathSvgCheck = 'lib/assets/svg/check-mark.svg';
 const String kpathSvgPlus = 'lib/assets/svg/plus.svg';
@@ -42,15 +46,21 @@ showGeneralInformationDialogErrorMessage(String message, BuildContext context) {
       });
 }
 
-showGeneralWaitingDialog(BuildContext context) {
+showGeneralLoading(BuildContext context) {
+  final spinkit = SpinKitPulse(
+    itemBuilder: (BuildContext context, int index) {
+      return DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(5)),
+          color: flamingo,
+        ),
+      );
+    },
+  );
   showDialog(
       context: context,
-      builder: (context) {
-        return const AlertDialog(
-          title: SizedBox(
-              height: 50, width: 50, child: CircularProgressIndicator()),
-        );
-      });
+      builder: (context) => Container(
+          width: 50, height: 50, color: Colors.white70, child: spinkit));
 }
 
 Future<bool?> showGeneralConfirmationExitDialog(BuildContext context) async =>

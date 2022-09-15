@@ -53,73 +53,66 @@ class BudgetsScreen extends ConsumerWidget {
                     )
                   : Container(),
               Expanded(
-                child: budgetList.when(
-                    data: (data) {
-                      List<Map<String, String>> mapList = data;
-                      listReverse ? mapList = mapList.reversed.toList() : null;
-                      isSearching
-                          ? mapList = mapList
-                              .where((element) => element['id']
-                                  .toString()
-                                  .toLowerCase()
-                                  .contains(
-                                      searchController.text.toLowerCase()))
-                              .toList()
-                          : null;
-
-                      return NotificationListener<UserScrollNotification>(
-                        onNotification: (notification) {
-                          if (notification.direction ==
-                              ScrollDirection.reverse) {
-                            showFabVisible = false;
-                          }
-                          if (notification.direction ==
-                              ScrollDirection.forward) {
-                            showFabVisible = true;
-                          }
-                          return true;
-                        },
-                        child: mapList == null
-                            ? EmptyWidget()
-                            : ListView.builder(
-                                itemCount: mapList.toList().length,
-                                itemBuilder: (context, index) {
-                                  Budget budget =
-                                      Budget.fromMap(mapList[index]);
-
-                                  return CustomListTile(
-                                      deleteCallback: () async {
-                                        await _showDeleteAlertDialog(
-                                            context, budget);
-                                      },
-                                      editCallback: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                AddBudgetScreen(),
-                                          ),
-                                        );
-                                      },
-                                      title: budget.nomeCliente!,
-                                      icon: Icons.list,
-                                      subtitle: budget.valorTotal.toString());
-                                }),
-                      );
+                child: budgetList.when(data: (data) {
+                  List<Map<String, String>> mapList = data;
+                  listReverse ? mapList = mapList.reversed.toList() : null;
+                  isSearching
+                      ? mapList = mapList
+                          .where((element) => element['id']
+                              .toString()
+                              .toLowerCase()
+                              .contains(searchController.text.toLowerCase()))
+                          .toList()
+                      : null;
+                  return NotificationListener<UserScrollNotification>(
+                    onNotification: (notification) {
+                      if (notification.direction == ScrollDirection.reverse) {
+                        showFabVisible = false;
+                      }
+                      if (notification.direction == ScrollDirection.forward) {
+                        showFabVisible = true;
+                      }
+                      return true;
                     },
-                    error: (error, stackTrace) => Center(
-                          child: Column(
-                            children: [
-                              Text(stackTrace.toString()),
-                              Text(error.toString()),
-                            ],
-                          ),
-                        ),
-                    loading: () {
-                      return Center(
-                        child: CircularProgressIndicator(color: black),
-                      );
-                    }),
+                    child: mapList.isEmpty
+                        ? EmptyWidget()
+                        : ListView.builder(
+                            itemCount: mapList.toList().length,
+                            itemBuilder: (context, index) {
+                              Budget budget = Budget.fromMap(mapList[index]);
+
+                              return CustomListTile(
+                                  deleteCallback: () async {
+                                    await _showDeleteAlertDialog(
+                                        context, budget);
+                                  },
+                                  editCallback: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => AddBudgetScreen(),
+                                      ),
+                                    );
+                                  },
+                                  title: budget.nomeCliente!,
+                                  icon: Icons.list,
+                                  subtitle: budget.valorTotal.toString());
+                            }),
+                  );
+                }, error: (error, stackTrace) {
+                  return Center(
+                    child: Column(
+                      children: [
+                        Text(stackTrace.toString()),
+                        Text(error.toString()),
+                      ],
+                    ),
+                  );
+                }, loading: () {
+                  return Center(
+                    child: CircularProgressIndicator(color: black),
+                  );
+                }),
               ),
             ],
           ),
@@ -144,8 +137,12 @@ class BudgetsScreen extends ConsumerWidget {
                 size: 60,
                 borderColor: woodSmoke,
                 color: white,
-                callback: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AddBudgetScreen())),
+                callback: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddBudgetScreen()));
+                },
                 shadowColor: woodSmoke,
                 iconPath: kpathSvgPlus)
             : null);

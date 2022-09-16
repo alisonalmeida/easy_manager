@@ -3,10 +3,12 @@
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_button_add.dart';
+import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
 import 'package:easy_manager/custom_widgets/custom_modal_bottom_sheet_customer.dart';
 
 import 'package:easy_manager/custom_widgets/custom_search_text_field.dart';
 import 'package:easy_manager/main.dart';
+import 'package:easy_manager/models/budget_model.dart';
 import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/screens/budget/budget_screen.dart';
 import 'package:easy_manager/screens/crud_product_screen.dart';
@@ -63,9 +65,8 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
     super.initState();
   }
 
-  Future<List<Map<String, String>>> getListProducts() async {
+  void getListProducts() async {
     listProducts = await gSheetDb.getProducts();
-    return [];
   }
 
   @override
@@ -191,10 +192,13 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
       ),
       context: context,
       builder: (context) {
+        Budget budget = Budget();
+
         return Consumer(
           builder: (context, ref, child) {
             var listProducts = ref.watch(productsProvider);
             var listBudgets = ref.watch(budgetsProvider);
+            ref.refresh(productsProvider);
 
             return DraggableScrollableSheet(
               expand: false,
@@ -239,83 +243,104 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                         },
                       ),
                       Expanded(
-                          child: listProducts.when(
-                        data: (data) {
-                          List<Map<String, String>> mapList = data;
-                          mapList = mapList
-                              .where((element) => element['nome']
-                                  .toString()
-                                  .toLowerCase()
-                                  .contains(searchController.text))
-                              .toList();
+                        child: listProducts.when(
+                          data: (data) {
+                            List<Map<String, String>> mapList = data;
+                            mapList = mapList
+                                .where((element) => element['nome']
+                                    .toString()
+                                    .toLowerCase()
+                                    .contains(searchController.text))
+                                .toList();
 
-                          return ListView.builder(
-                            itemCount: mapList.length,
-                            itemBuilder: (context, index) {
-                              Product product = Product.fromMap(mapList[index]);
+                            return ListView.builder(
+                              itemCount: mapList.length,
+                              itemBuilder: (context, index) {
+                                Product product =
+                                    Product.fromMap(mapList[index]);
 
-                              return Container(
-                                decoration: ShapeDecoration(shadows: const [
-                                  BoxShadow(
-                                    color: Colors.black,
-                                    offset: Offset(
-                                      3.0,
-                                      4.0,
-                                    ),
-                                  )
-                                ], color: white, shape: Border.all()),
-                                child: ListTile(
-                                  title: Text(product.nome!),
-                                  trailing: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                          color: productBackgroundColorShadow),
-                                      shape: BoxShape.rectangle,
-                                    ),
-                                    child: Wrap(
-                                      children: [
-                                        TextButton(
-                                          onPressed: () {},
-                                          child: Text('-',
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  color:
-                                                      productBackgroundColorShadow)),
-                                        ),
-                                        Text(
-                                          '0',
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {},
-                                          child: Text('+',
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  color:
-                                                      productBackgroundColorShadow)),
-                                        ),
-                                      ],
+                                return Container(
+                                  decoration: ShapeDecoration(shadows: const [
+                                    BoxShadow(
+                                      color: Colors.black,
+                                      offset: Offset(
+                                        3.0,
+                                        4.0,
+                                      ),
+                                    )
+                                  ], color: white, shape: Border.all()),
+                                  child: ListTile(
+                                    title: Text(product.nome!),
+                                    subtitle: Text(
+                                        'R\$ ${product.valorVenda.toString()}'),
+                                    trailing: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                            color:
+                                                productBackgroundColorShadow),
+                                        shape: BoxShape.rectangle,
+                                      ),
+                                      child: Wrap(
+                                        children: [
+                                          TextButton(
+                                            onPressed: () {},
+                                            child: Text('-',
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                    color:
+                                                        productBackgroundColorShadow)),
+                                          ),
+                                          Text(
+                                            budget.listaProdutos![index]
+                                                        [product] ==
+                                                    null
+                                                ? '0'
+                                                : budget.listaProdutos![index]
+                                                        [product]
+                                                    .toString(),
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              budget
+                                                  .addIncrementProduct(product);
+                                            },
+                                            child: Text('+',
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                    color:
+                                                        productBackgroundColorShadow)),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        error: (error, stackTrace) {
-                          return Center();
-                        },
-                        loading: () => Center(
-                          child: CircularProgressIndicator(
-                            color: black,
+                                );
+                              },
+                            );
+                          },
+                          error: (error, stackTrace) {
+                            return Center();
+                          },
+                          loading: () => Center(
+                            child: CircularProgressIndicator(
+                              color: black,
+                            ),
                           ),
                         ),
-                      ))
+                      ),
+                      CustomButtonConfirm(
+                        isEnabled: true,
+                        text: 'Salvar',
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                      ),
                     ],
                   ),
                 );

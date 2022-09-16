@@ -297,7 +297,7 @@ class GSheetDb {
         newId,
         budget.nomeCliente,
         budget.data,
-        budget.listaprodutos,
+        budget.listaProdutos,
         budget.valorTotal,
         budget.status,
       ]);
@@ -314,7 +314,7 @@ class GSheetDb {
             testeBudget.id,
             budget.nomeCliente,
             budget.data,
-            budget.listaprodutos,
+            budget.listaProdutos,
             budget.valorTotal,
             budget.status,
           ]);

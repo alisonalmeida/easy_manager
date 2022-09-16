@@ -47,13 +47,13 @@ showGeneralInformationDialogErrorMessage(String message, BuildContext context) {
 }
 
 showGeneralLoading(BuildContext context) {
-  final spinkit = SpinKitPulse(
+  final spinkit = SpinKitFadingCube(
     itemBuilder: (BuildContext context, int index) {
       return DecoratedBox(
         decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(5)),
-          color: flamingo,
-        ),
+            borderRadius: const BorderRadius.all(Radius.circular(5)),
+            color:
+                index.isEven ? productBackgroundColor : budgetBackgroundColor),
       );
     },
   );

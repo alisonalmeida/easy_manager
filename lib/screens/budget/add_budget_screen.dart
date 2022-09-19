@@ -197,11 +197,15 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
 
         return Consumer(
           builder: (context, ref, child) {
-            var listProducts = ref.watch(productsProvider);
+            //var listProducts = ref.watch(productsProvider);
             //var listBudgets = ref.watch(budgetsProvider);
-            
 
-            ref.refresh(productsProvider);
+            for (var i = 0; i < listProduct.length; i++) {
+              Product product = Product();
+              product = Product.fromMap(listProduct[i]);
+
+              budget.listaProdutos!.add({product: 0});
+            }
 
             return DraggableScrollableSheet(
               expand: false,
@@ -246,93 +250,75 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                         },
                       ),
                       Expanded(
-                        child: listProducts.when(
-                          data: (data) {
-                            List<Map<String, String>> mapList = data;
-                            mapList = mapList
-                                .where((element) => element['nome']
-                                    .toString()
-                                    .toLowerCase()
-                                    .contains(searchController.text))
-                                .toList();
-
-                            return ListView.builder(
-                              itemCount: mapList.length,
-                              itemBuilder: (context, index) {
-                                Product product =
-                                    Product.fromMap(mapList[index]);
-
-                                return Container(
-                                  decoration: ShapeDecoration(shadows: const [
-                                    BoxShadow(
-                                      color: Colors.black,
-                                      offset: Offset(
-                                        3.0,
-                                        4.0,
-                                      ),
-                                    )
-                                  ], color: white, shape: Border.all()),
-                                  child: ListTile(
-                                    title: Text(product.nome!),
-                                    subtitle: Text(
-                                        'R\$ ${product.valorVenda.toString()}'),
-                                    trailing: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(
-                                            color:
-                                                productBackgroundColorShadow),
-                                        shape: BoxShape.rectangle,
-                                      ),
-                                      child: Wrap(
-                                        children: [
-                                          TextButton(
-                                            onPressed: () {},
-                                            child: Text('-',
-                                                style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.bold,
-                                                    color:
-                                                        productBackgroundColorShadow)),
-                                          ),
-                                          Text(
-                                            budget.listaProdutos!.isEmpty
-                                                ? '0'
-                                                : budget.listaProdutos![index]
-                                                        [product]
-                                                    .toString(),
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              budget
-                                                  .addIncrementProduct(product);
-                                            },
-                                            child: Text('+',
-                                                style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.bold,
-                                                    color:
-                                                        productBackgroundColorShadow)),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
+                        child: ListView.builder(
+                          itemCount: budget.listaProdutos!.length,
+                          itemBuilder: (context, index) {
+                            Iterable<Product> iterableProducts =
+                                budget.listaProdutos!.expand(
+                              (element) {
+                                return element.keys;
                               },
                             );
+                            Iterable<int> iterableQuantity = budget
+                                .listaProdutos!
+                                .expand((element) => element.values);
+
+                            return Container(
+                              decoration: ShapeDecoration(shadows: const [
+                                BoxShadow(
+                                  color: Colors.black,
+                                  offset: Offset(
+                                    3.0,
+                                    4.0,
+                                  ),
+                                )
+                              ], color: white, shape: Border.all()),
+                              child: ListTile(
+                                title: Text(
+                                    iterableProducts.elementAt(index).nome!),
+                                subtitle: Text(
+                                    'R\$ ${iterableProducts.elementAt(index).valorVenda}'),
+                                trailing: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                        color: productBackgroundColorShadow),
+                                    shape: BoxShape.rectangle,
+                                  ),
+                                  child: Wrap(
+                                    children: [
+                                      TextButton(
+                                        onPressed: () {},
+                                        child: Text('-',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                                color:
+                                                    productBackgroundColorShadow)),
+                                      ),
+                                      Text(
+                                        iterableQuantity
+                                            .elementAt(index)
+                                            .toString(),
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {},
+                                        child: Text('+',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                                color:
+                                                    productBackgroundColorShadow)),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
                           },
-                          error: (error, stackTrace) {
-                            return Center();
-                          },
-                          loading: () => Center(
-                            child: CircularProgressIndicator(
-                              color: black,
-                            ),
-                          ),
                         ),
                       ),
                       CustomButtonConfirm(

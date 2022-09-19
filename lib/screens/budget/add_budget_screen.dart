@@ -193,11 +193,14 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
       context: context,
       builder: (context) {
         Budget budget = Budget();
+        budget.listaProdutos ??= [];
 
         return Consumer(
           builder: (context, ref, child) {
             var listProducts = ref.watch(productsProvider);
-            var listBudgets = ref.watch(budgetsProvider);
+            //var listBudgets = ref.watch(budgetsProvider);
+            
+
             ref.refresh(productsProvider);
 
             return DraggableScrollableSheet(
@@ -293,9 +296,7 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                                                         productBackgroundColorShadow)),
                                           ),
                                           Text(
-                                            budget.listaProdutos![index]
-                                                        [product] ==
-                                                    null
+                                            budget.listaProdutos!.isEmpty
                                                 ? '0'
                                                 : budget.listaProdutos![index]
                                                         [product]

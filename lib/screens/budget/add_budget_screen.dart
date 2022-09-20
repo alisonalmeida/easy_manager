@@ -206,6 +206,7 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
 
               budget.listaProdutos!.add({product: 0});
             }
+            print(budget);
 
             return DraggableScrollableSheet(
               expand: false,
@@ -305,7 +306,13 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                                             fontWeight: FontWeight.bold),
                                       ),
                                       TextButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          budget.addIncrementProduct(
+                                              iterableProducts
+                                                  .elementAt(index));
+                                          print(budget);
+                                          ref.refresh(productsProvider);
+                                        },
                                         child: Text('+',
                                             style: TextStyle(
                                                 fontSize: 20,

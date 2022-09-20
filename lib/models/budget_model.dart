@@ -29,9 +29,11 @@ class Budget {
 
   void addIncrementProduct(Product product) {
     listaProdutos ??= [];
-    if (listaProdutos!.isEmpty) {
+    /**
+     * if (listaProdutos!.isEmpty) {
       listaProdutos!.add({product: 1});
     }
+     */
 
     print('button');
 

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 
 class Product {
   String? id;
@@ -62,6 +62,6 @@ class Product {
 
   @override
   String toString() {
-    return 'Product{id: $id, nome: $nome, codigo: $codigo, fornecedorDocumento: $fornecedorDocumento, valorCusto: $valorCusto, valorVenda: $valorVenda, marca: $marca, categoria: $categoria, unidadeMedida: $unidadeMedida, quantidadeMinima: $quantidadeMinima, descricao: $descricao}';
+    return '{id: $id, nome: $nome, codigo: $codigo, fornecedorDocumento: $fornecedorDocumento, valorCusto: $valorCusto, valorVenda: $valorVenda, marca: $marca, categoria: $categoria, unidadeMedida: $unidadeMedida, quantidadeMinima: $quantidadeMinima, descricao: $descricao}';
   }
 }

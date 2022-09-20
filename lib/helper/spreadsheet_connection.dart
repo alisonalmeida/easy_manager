@@ -206,6 +206,7 @@ class GSheetDb {
   Future<List<Map<String, String>>> getProducts() async {
     Worksheet? sheet = ss.worksheetByTitle(_productsSheetTitle);
     var products = await sheet!.values.map.allRows();
+
     return products!;
   }
 
@@ -290,8 +291,9 @@ class GSheetDb {
 
   Future putBudget(Budget budget) async {
     Worksheet? sheet = ss.worksheetByTitle(_budgetsSheetTitle);
-
+    budget.id ??= '';
     if (budget.id!.isEmpty) {
+      print('empyy');
       String newId = await WorldTime.getDateFormatted();
       await sheet!.values.appendRow([
         newId,
@@ -301,13 +303,15 @@ class GSheetDb {
         budget.valorTotal,
         budget.status,
       ]);
+
+      return newId;
     } else {
       var list = await sheet!.values.map.allRows();
 
       for (var i = 0; i < list!.toList().length; i++) {
         Budget testeBudget = Budget.fromMap(list.toList()[i]);
 
-        if (testeBudget.id == testeBudget.id) {
+        if (testeBudget.id == budget.id) {
           await sheet.deleteRow(i + 2);
 
           await sheet.values.appendRow([
@@ -318,7 +322,7 @@ class GSheetDb {
             budget.valorTotal,
             budget.status,
           ]);
-          break;
+          return testeBudget.id;
         }
       }
     }

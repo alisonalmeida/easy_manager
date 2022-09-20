@@ -28,22 +28,13 @@ class Budget {
   String? status;
 
   void addIncrementProduct(Product product) {
-    listaProdutos ??= [];
-    /**
-     * if (listaProdutos!.isEmpty) {
-      listaProdutos!.add({product: 1});
-    }
-     */
-
-    print('button');
-
     var keysList = listaProdutos!.expand((element) => element.keys);
     var valuesList = listaProdutos!.expand((element) => element.values);
     var lenghtList = listaProdutos!.length;
 
     for (var i = 0; i < lenghtList; i++) {
-      if (keysList.elementAt(i) == product) {
-        listaProdutos!.insert(i, {product: valuesList.elementAt(i) + 1});
+      if (product.id == keysList.elementAt(i).id) {
+        listaProdutos![i][keysList.elementAt(i)] = valuesList.elementAt(i) + 1;
       }
     }
   }
@@ -61,13 +52,13 @@ class Budget {
         "id": id,
         "nomeCliente": nomeCliente,
         "data": data,
-        "listaprodutos": listaProdutos,
+        "listaProdutos": List<dynamic>.from(listaProdutos!.map((x) => x)),
         "valorTotal": valorTotal,
         "status": status,
       };
 
   @override
   String toString() {
-    return 'Budget{id: $id, nomeCliente: $nomeCliente, data: $data, listaprodutos: $listaProdutos, valorTotal: $valorTotal, status: $status}';
+    return 'Budget{id: $id, nomeCliente: $nomeCliente, data: $data, listaProdutos: $listaProdutos, valorTotal: $valorTotal, status: $status}';
   }
 }

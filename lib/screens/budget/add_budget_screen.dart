@@ -1,9 +1,13 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:async';
+
 import 'package:easy_manager/consts.dart';
+import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_button_add.dart';
 import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
+import 'package:easy_manager/custom_widgets/custom_list_tile.dart';
 import 'package:easy_manager/custom_widgets/custom_modal_bottom_sheet_customer.dart';
 
 import 'package:easy_manager/custom_widgets/custom_search_text_field.dart';
@@ -13,6 +17,7 @@ import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/screens/budget/budget_screen.dart';
 import 'package:easy_manager/screens/crud_product_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,80 +30,85 @@ class AddBudgetScreen extends StatefulWidget {
 
 class _AddBudgetScreenState extends State<AddBudgetScreen> {
   String customerName = '';
-
-  List<Map<String, String>> listProducts = [];
-  List<Widget> list = [
-    Text(
-      'Descrasasdasdasdsad ao',
-    ),
-    Text(
-      '1',
-      textAlign: TextAlign.center,
-    ),
-    Text(
-      'Valor Unitário',
-      textAlign: TextAlign.center,
-    ),
-  ];
-
-  TableRow titleTableRow = TableRow(children: [
-    Text(
-      'Produtos',
-      textAlign: TextAlign.center,
-      style: TextStyle(fontWeight: FontWeight.bold),
-    ),
-    Text(
-      'Qtd',
-      textAlign: TextAlign.center,
-      style: TextStyle(fontWeight: FontWeight.bold),
-    ),
-    Text(
-      'Valor Unitário',
-      textAlign: TextAlign.center,
-      style: TextStyle(fontWeight: FontWeight.bold),
-    ),
-  ]);
+  Budget budget = Budget();
+  TextEditingController searchController = TextEditingController();
+  FocusNode focusNode = FocusNode();
 
   @override
   void initState() {
-    getListProducts();
+    print('inittttt');
+    createNewBudget();
     super.initState();
   }
 
-  void getListProducts() async {
-    listProducts = await gSheetDb.getProducts();
+  void createNewBudget() async {
+    budget.id = await gSheetDb.putBudget(budget);
+    print('WWWWWWWWWWWWWWWWWWWWWWWWWWWWW $budget');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: white,
-      appBar: CustomAppBar(
-          title: BudgetsScreen.name,
-          backgroundColor: white,
-          callback: () async => Navigator.pop(context),
-          svgImage: kpathSvgBudgets,
-          heroAnimation: BudgetsScreen.name),
+      backgroundColor: budgetBackgroundColor,
+      appBar: AppBar(
+        backgroundColor: budgetBackgroundColor,
+        elevation: 0,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 16),
+          child: ButtonRoundWithShadow(
+              borderColor: black,
+              shadowColor: black,
+              color: white,
+              iconPath: kpathSvgArrowBack,
+              size: 30,
+              callback: () => Navigator.pop(context)),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Flexible(
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Flexible(
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: ShapeDecoration(shadows: const [
+                      BoxShadow(
+                        color: Colors.black,
+                        offset: Offset(
+                          3.0,
+                          4.0,
+                        ),
+                      )
+                    ], color: Colors.white, shape: Border.all()),
                     child: SizedBox(
                         height: 100,
                         width: 200,
                         child: Image.asset(kpathMainLogo)),
                   ),
-                ],
-              ),
-              Row(
+                ),
+              ],
+            ),
+            Container(
+              padding: EdgeInsets.all(10),
+              decoration: ShapeDecoration(shadows: const [
+                BoxShadow(
+                  color: Colors.black,
+                  offset: Offset(
+                    3.0,
+                    4.0,
+                  ),
+                )
+              ], color: Colors.white, shape: Border.all()),
+              child: Row(
                 children: [
                   Flexible(
-                    child: Text('Cliente: '),
+                    child: Text(
+                      'Cliente: ',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                   customerName.isNotEmpty
                       ? Flexible(
@@ -128,41 +138,140 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                           onPressed: () async {
                             customerName =
                                 await showCustomerChoiceDialog(context);
+                            budget.nomeCliente = customerName;
+                            await gSheetDb.putBudget(budget);
+
                             setState(() {});
                           },
                           icon: Icon(Icons.person),
                         ),
                 ],
               ),
-              Divider(color: black),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: productBackgroundColor,
-                    foregroundColor: black),
-                child: Text('Adicionar Produto'),
-                onPressed: () async {
-                  showProductChoiceBottomSheet(context, listProducts);
-                },
-              ),
-              Table(
-                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                columnWidths: {
-                  0: FlexColumnWidth(2.0),
-                  1: FlexColumnWidth(0.5),
-                  2: FlexColumnWidth(0.5),
-                },
-                border: TableBorder.all(),
-                children: [
-                  titleTableRow,
-                  TableRow(children: list),
-                ],
-              ),
-            ],
-          ),
+            ),
+            SearchTextField(
+              clearField: () {
+                searchController.clear();
+              },
+              focusNode: focusNode,
+              searchController: searchController,
+              onChanged: (v) {
+                setState(() {});
+              },
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: white, foregroundColor: black),
+              child: Text('Adicionar Novo Produto'),
+              onPressed: () {
+                // showProductChoiceBottomSheet(context, listProducts);
+              },
+            ),
+            Expanded(
+                child: FutureBuilder(
+              future: gSheetDb.getProducts(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<Map<String, String>>? list;
+
+                  list = snapshot.data as List<Map<String, String>>;
+
+                  if (budget.listaProdutos == null) {
+                    budget.listaProdutos = [];
+                    for (var element in list) {
+                      budget.listaProdutos!.add({Product.fromMap(element): 0});
+                    }
+                  } else {}
+
+                  var iterableProducts = budget.listaProdutos!.expand(
+                    (element) {
+                      return element.keys;
+                    },
+                  );
+                  var iterableQuantity =
+                      budget.listaProdutos!.expand((element) => element.values);
+                  var lenghtList = budget.listaProdutos!.length;
+
+                  return ListView.builder(
+                    itemCount: lenghtList,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          Card(
+                            child: ListTile(
+                              title:
+                                  Text(iterableProducts.elementAt(index).nome!),
+                              subtitle: Text(
+                                  'R\$ ${iterableProducts.elementAt(index).valorVenda}'),
+                              trailing: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                      color: productBackgroundColorShadow),
+                                  shape: BoxShape.rectangle,
+                                ),
+                                child: Wrap(
+                                  children: [
+                                    TextButton(
+                                      onPressed: () {},
+                                      child: Text('-',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color:
+                                                  productBackgroundColorShadow)),
+                                    ),
+                                    Text(
+                                      iterableQuantity
+                                          .elementAt(index)
+                                          .toString(),
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        budget.addIncrementProduct(
+                                            iterableProducts.elementAt(index));
+                                        showGeneralLoading(context);
+                                        await gSheetDb.putBudget(budget);
+
+                                        if (mounted) {
+                                          Navigator.pop(context);
+                                        }
+                                        setState(() {});
+                                      },
+                                      child: Text(
+                                        '+',
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                            color:
+                                                productBackgroundColorShadow),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  return Center(
+                      child: CircularProgressIndicator(
+                    color: black,
+                  ));
+                }
+              },
+            ))
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
+          setState(() {});
           showGeneralLoading(context);
 
           if (mounted) {
@@ -171,178 +280,6 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
         },
         child: Icon(Icons.save),
       ),
-    );
-  }
-
-  void showProductChoiceBottomSheet(
-      BuildContext context, List<Map<String, String>> listProduct) {
-    DraggableScrollableController controller = DraggableScrollableController();
-    TextEditingController searchController = TextEditingController();
-
-    FocusNode focusNode = FocusNode();
-
-    showModalBottomSheet(
-      backgroundColor: productBackgroundColor,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        side: BorderSide.none,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
-        ),
-      ),
-      context: context,
-      builder: (context) {
-        Budget budget = Budget();
-        budget.listaProdutos ??= [];
-
-        return Consumer(
-          builder: (context, ref, child) {
-            //var listProducts = ref.watch(productsProvider);
-            //var listBudgets = ref.watch(budgetsProvider);
-
-            for (var i = 0; i < listProduct.length; i++) {
-              Product product = Product();
-              product = Product.fromMap(listProduct[i]);
-
-              budget.listaProdutos!.add({product: 0});
-            }
-            print(budget);
-
-            return DraggableScrollableSheet(
-              expand: false,
-              controller: controller,
-              initialChildSize: 0.9,
-              builder: (context, scrollController) {
-                return Container(
-                  margin: EdgeInsets.all(10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.symmetric(vertical: 10),
-                        height: 5,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: black,
-                        ),
-                      ),
-                      CustomAddButton(
-                        text: 'Adicionar Novo Produto',
-                        onTap: () {
-                          Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CrudProductScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                      SearchTextField(
-                        clearField: () {
-                          searchController.clear();
-                          ref.refresh(productsProvider);
-                        },
-                        focusNode: focusNode,
-                        searchController: searchController,
-                        onChanged: (v) {
-                          ref.refresh(productsProvider);
-                        },
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: budget.listaProdutos!.length,
-                          itemBuilder: (context, index) {
-                            Iterable<Product> iterableProducts =
-                                budget.listaProdutos!.expand(
-                              (element) {
-                                return element.keys;
-                              },
-                            );
-                            Iterable<int> iterableQuantity = budget
-                                .listaProdutos!
-                                .expand((element) => element.values);
-
-                            return Container(
-                              decoration: ShapeDecoration(shadows: const [
-                                BoxShadow(
-                                  color: Colors.black,
-                                  offset: Offset(
-                                    3.0,
-                                    4.0,
-                                  ),
-                                )
-                              ], color: white, shape: Border.all()),
-                              child: ListTile(
-                                title: Text(
-                                    iterableProducts.elementAt(index).nome!),
-                                subtitle: Text(
-                                    'R\$ ${iterableProducts.elementAt(index).valorVenda}'),
-                                trailing: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                        color: productBackgroundColorShadow),
-                                    shape: BoxShape.rectangle,
-                                  ),
-                                  child: Wrap(
-                                    children: [
-                                      TextButton(
-                                        onPressed: () {},
-                                        child: Text('-',
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold,
-                                                color:
-                                                    productBackgroundColorShadow)),
-                                      ),
-                                      Text(
-                                        iterableQuantity
-                                            .elementAt(index)
-                                            .toString(),
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          budget.addIncrementProduct(
-                                              iterableProducts
-                                                  .elementAt(index));
-                                          print(budget);
-                                          ref.refresh(productsProvider);
-                                        },
-                                        child: Text('+',
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold,
-                                                color:
-                                                    productBackgroundColorShadow)),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      CustomButtonConfirm(
-                        isEnabled: true,
-                        text: 'Salvar',
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
-          },
-        );
-      },
     );
   }
 }

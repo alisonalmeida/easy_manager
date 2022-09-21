@@ -12,7 +12,7 @@ import 'package:easy_manager/custom_widgets/custom_modal_bottom_sheet_provider.d
 import 'package:easy_manager/custom_widgets/custom_text_field.dart';
 import 'package:easy_manager/custom_widgets/custom_text_field_with_data.dart';
 import 'package:easy_manager/main.dart';
-import 'package:easy_manager/models/product_model.dart';
+import 'package:easy_manager/models/product.dart';
 import 'package:easy_manager/screens/qr_scan_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:easy_mask/easy_mask.dart';

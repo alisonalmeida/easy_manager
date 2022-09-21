@@ -1,5 +1,5 @@
 // ignore_for_file: prefer_const_constructors
-
+// flutter pub run build_runner build --delete-conflicting-outputs
 import 'package:easy_manager/helper/spreadsheet_connection.dart';
 import 'package:easy_manager/models/user_model.dart';
 import 'package:easy_manager/screens/budget/budget_screen.dart';
@@ -22,14 +22,13 @@ final productsProvider = FutureProvider(
 );
 
 final customersProvider = FutureProvider(
-  (_) => gSheetDb.getCustomers(),
+  (_) {
+    return gSheetDb.getCustomers();
+  },
 );
 final budgetsProvider = FutureProvider(
   (_) => gSheetDb.getBudgets(),
 );
-
-
-
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();

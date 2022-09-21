@@ -1,16 +1,12 @@
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/central_grid_button.dart';
-import 'package:easy_manager/models/product_model.dart';
 import 'package:easy_manager/screens/budget/budget_screen.dart';
 import 'package:easy_manager/screens/customer/customer_screen.dart';
-
 import 'package:easy_manager/screens/configurations_screen.dart';
-import 'package:easy_manager/screens/pdv_screen.dart';
 import 'package:easy_manager/screens/product/product_screen.dart';
 import 'package:easy_manager/screens/provider/provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
-import '../custom_widgets/custom_home_app_bar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,54 +17,38 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _animationController;
-  late bool _checked;
   int numbergrid = 1;
-
-  @override
-  initState() {
-    _animationController =
-        AnimationController(duration: const Duration(seconds: 1), vsync: this);
-    _checked = true;
-    _animationController.forward();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  void changeAnimation() {
-    _checked = !_checked;
-    _checked ? _animationController.forward() : _animationController.reverse();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: selago,
-      appBar: CustomHomeAppBar(
-        callback: changeAnimation,
-        controller: _animationController,
-        title: appName,
-        lottie: kpathLottieCheck,
+      backgroundColor: white,
+      appBar: AppBar(
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: black,
+        title: const Text(
+          appName,
+          style: TextStyle(color: white, fontWeight: FontWeight.bold),
+        ),
       ),
-      endDrawer: ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('data')),
+      drawer: Drawer(
+        child: ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: black),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('data')),
+      ),
       body: Container(
-        color: selago,
+        color: white,
         padding: const EdgeInsets.all(5),
         child: GridView(
           padding: const EdgeInsets.all(8.0),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount:
-                (numbergrid * MediaQuery.of(context).size.width ~/ 200) < 1
-                    ? 1
+                (numbergrid * MediaQuery.of(context).size.width ~/ 200) < 2
+                    ? 2
                     : (numbergrid * MediaQuery.of(context).size.width ~/ 200),
           ),
           children: [
@@ -121,7 +101,7 @@ class _HomePageState extends State<HomePage>
                 callback: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>  BudgetsScreen(),
+                      builder: (context) => BudgetsScreen(),
                     )),
                 title: BudgetsScreen.name,
                 hero: BudgetsScreen.name),

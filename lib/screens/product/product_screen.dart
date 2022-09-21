@@ -7,7 +7,7 @@ import 'package:easy_manager/custom_widgets/custom_list_tile.dart';
 import 'package:easy_manager/custom_widgets/custom_search_text_field.dart';
 import 'package:easy_manager/custom_widgets/empty_widget.dart';
 import 'package:easy_manager/main.dart';
-import 'package:easy_manager/models/product_model.dart';
+import 'package:easy_manager/models/product.dart';
 import 'package:easy_manager/screens/product/crud_product_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +82,7 @@ class ProductsScreen extends ConsumerWidget {
                               itemCount: mapList.toList().length,
                               itemBuilder: (context, index) {
                                 Product product =
-                                    Product.fromMap(mapList[index]);
+                                    Product.fromJson(mapList[index]);
 
                                 return CustomListTile(
                                     deleteCallback: () async =>

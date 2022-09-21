@@ -4,25 +4,17 @@ import 'dart:async';
 
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
-import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
-import 'package:easy_manager/custom_widgets/custom_button_add.dart';
-import 'package:easy_manager/custom_widgets/custom_button_confirm.dart';
-import 'package:easy_manager/custom_widgets/custom_list_tile.dart';
 import 'package:easy_manager/custom_widgets/custom_modal_bottom_sheet_customer.dart';
-
 import 'package:easy_manager/custom_widgets/custom_search_text_field.dart';
 import 'package:easy_manager/main.dart';
-import 'package:easy_manager/models/budget_model.dart';
-import 'package:easy_manager/models/product_model.dart';
-import 'package:easy_manager/screens/budget/budget_screen.dart';
-import 'package:easy_manager/screens/crud_product_screen.dart';
+import 'package:easy_manager/models/budget.dart';
+import 'package:easy_manager/models/product.dart';
 import 'package:easy_manager/utils/colors.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AddBudgetScreen extends StatefulWidget {
-  const AddBudgetScreen({Key? key}) : super(key: key);
+  const AddBudgetScreen({Key? key, this.budgetId}) : super(key: key);
+  final String? budgetId;
 
   @override
   State<AddBudgetScreen> createState() => _AddBudgetScreenState();
@@ -36,14 +28,8 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
 
   @override
   void initState() {
-    print('inittttt');
-    createNewBudget();
+    budget.id = widget.budgetId == null ? '' : widget.budgetId!;
     super.initState();
-  }
-
-  void createNewBudget() async {
-    budget.id = await gSheetDb.putBudget(budget);
-    print('WWWWWWWWWWWWWWWWWWWWWWWWWWWWW $budget');
   }
 
   @override
@@ -136,10 +122,15 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                               foregroundColor: black),
                           label: Text('Escolher'),
                           onPressed: () async {
+                            showGeneralLoading(context);
                             customerName =
                                 await showCustomerChoiceDialog(context);
+
                             budget.nomeCliente = customerName;
                             await gSheetDb.putBudget(budget);
+                            if (mounted) {
+                              Navigator.pop(context);
+                            }
 
                             setState(() {});
                           },
@@ -171,14 +162,12 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
               future: gSheetDb.getProducts(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  List<Map<String, String>>? list;
-
-                  list = snapshot.data as List<Map<String, String>>;
+                  var listProducts = snapshot.data as List<Map<String, String>>;
 
                   if (budget.listaProdutos == null) {
                     budget.listaProdutos = [];
-                    for (var element in list) {
-                      budget.listaProdutos!.add({Product.fromMap(element): 0});
+                    for (var element in listProducts) {
+                      budget.listaProdutos!.add({element['nome']!: 0});
                     }
                   } else {}
 
@@ -190,7 +179,6 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                   var iterableQuantity =
                       budget.listaProdutos!.expand((element) => element.values);
                   var lenghtList = budget.listaProdutos!.length;
-
                   return ListView.builder(
                     itemCount: lenghtList,
                     itemBuilder: (context, index) {
@@ -198,10 +186,9 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                         children: [
                           Card(
                             child: ListTile(
-                              title:
-                                  Text(iterableProducts.elementAt(index).nome!),
+                              title: Text(iterableProducts.elementAt(index)),
                               subtitle: Text(
-                                  'R\$ ${iterableProducts.elementAt(index).valorVenda}'),
+                                  'R\$ ${listProducts.elementAt(index)['valorVenda']}'),
                               trailing: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
@@ -259,10 +246,7 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                     },
                   );
                 } else {
-                  return Center(
-                      child: CircularProgressIndicator(
-                    color: black,
-                  ));
+                  return Center(child: CircularProgressIndicator(color: black));
                 }
               },
             ))

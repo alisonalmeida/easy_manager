@@ -1,8 +1,8 @@
 import 'package:easy_manager/credentials.dart';
 import 'package:easy_manager/helper/world_time.dart';
-import 'package:easy_manager/models/budget_model.dart';
+import 'package:easy_manager/models/budget.dart';
 import 'package:easy_manager/models/customer_model.dart';
-import 'package:easy_manager/models/product_model.dart';
+import 'package:easy_manager/models/product.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:gsheets/gsheets.dart';
 
@@ -232,7 +232,7 @@ class GSheetDb {
       var list = await sheet!.values.map.allRows();
 
       for (var i = 0; i < list!.toList().length; i++) {
-        Product testProduct = Product.fromMap(list.toList()[i]);
+        Product testProduct = Product.fromJson(list.toList()[i]);
 
         if (testProduct.id == product.id) {
           await sheet.deleteRow(i + 2);
@@ -274,7 +274,7 @@ class GSheetDb {
 
     for (var i = 0; i < list!.toList().length; i++) {
       if (list.toList()[i]['id'] == id) {
-        Product product = Product.fromMap(list.toList()[i]);
+        Product product = Product.fromJson(list.toList()[i]);
         return product;
       }
     }
@@ -293,13 +293,14 @@ class GSheetDb {
     Worksheet? sheet = ss.worksheetByTitle(_budgetsSheetTitle);
     budget.id ??= '';
     if (budget.id!.isEmpty) {
-      print('empyy');
       String newId = await WorldTime.getDateFormatted();
       await sheet!.values.appendRow([
         newId,
         budget.nomeCliente,
         budget.data,
-        budget.listaProdutos,
+        budget.listaProdutos.toString(),
+        budget.listaValoresProdutos.toString(),
+        budget.valorTotal,
         budget.valorTotal,
         budget.status,
       ]);
@@ -309,20 +310,21 @@ class GSheetDb {
       var list = await sheet!.values.map.allRows();
 
       for (var i = 0; i < list!.toList().length; i++) {
-        Budget testeBudget = Budget.fromMap(list.toList()[i]);
+        Budget testBudget = Budget.fromJson(list.toList()[i]);
 
-        if (testeBudget.id == budget.id) {
+        if (testBudget.id == budget.id) {
           await sheet.deleteRow(i + 2);
 
           await sheet.values.appendRow([
-            testeBudget.id,
+            testBudget.id,
             budget.nomeCliente,
             budget.data,
-            budget.listaProdutos,
+            budget.listaProdutos.toString(),
+            budget.listaValoresProdutos.toString(),
             budget.valorTotal,
             budget.status,
           ]);
-          return testeBudget.id;
+          return testBudget.id;
         }
       }
     }
@@ -346,7 +348,7 @@ class GSheetDb {
 
     for (var i = 0; i < list!.toList().length; i++) {
       if (list.toList()[i]['id'] == id) {
-        Budget budget = Budget.fromMap(list.toList()[i]);
+        Budget budget = Budget.fromJson(list.toList()[i]);
         return budget;
       }
     }

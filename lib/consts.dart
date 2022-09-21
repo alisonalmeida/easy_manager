@@ -30,6 +30,7 @@ const List<String> kpathLottieIntro = [
 const String kpathMainLogo = 'lib/assets/img/logo-HBEstilo-sem-fundo.png';
 
 enum UserType { administrator, employee }
+enum BudgetStatus { pending, approved, canceled, finished }
 
 showGeneralInformationDialogErrorMessage(String message, BuildContext context) {
   showDialog(

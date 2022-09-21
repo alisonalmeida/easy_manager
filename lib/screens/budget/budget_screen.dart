@@ -8,7 +8,7 @@ import 'package:easy_manager/custom_widgets/custom_list_tile.dart';
 import 'package:easy_manager/custom_widgets/custom_search_text_field.dart';
 import 'package:easy_manager/custom_widgets/empty_widget.dart';
 import 'package:easy_manager/main.dart';
-import 'package:easy_manager/models/budget_model.dart';
+import 'package:easy_manager/models/budget.dart';
 import 'package:easy_manager/screens/budget/add_budget_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +29,12 @@ class BudgetsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    Future createUpdateBudget(Budget budget) async {
+      showGeneralLoading(context);
+      budget.id = await gSheetDb.putBudget(budget);
+      Navigator.pop(context);
+    }
+
     var budgetList = ref.watch(budgetsProvider);
     return Scaffold(
         key: _scaffoldKey,
@@ -54,7 +60,7 @@ class BudgetsScreen extends ConsumerWidget {
                   : Container(),
               Expanded(
                 child: budgetList.when(data: (data) {
-                  List<Map<String, String>> mapList = data;
+                  var mapList = data;
                   listReverse ? mapList = mapList.reversed.toList() : null;
                   isSearching
                       ? mapList = mapList
@@ -79,7 +85,9 @@ class BudgetsScreen extends ConsumerWidget {
                         : ListView.builder(
                             itemCount: mapList.toList().length,
                             itemBuilder: (context, index) {
-                              Budget budget = Budget.fromMap(mapList[index]);
+                              print(mapList[index]);
+                              
+                              Budget budget = Budget.fromJson(mapList[index]);
 
                               return CustomListTile(
                                   deleteCallback: () async {
@@ -90,7 +98,8 @@ class BudgetsScreen extends ConsumerWidget {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => AddBudgetScreen(),
+                                        builder: (context) => AddBudgetScreen(
+                                            budgetId: budget.id!),
                                       ),
                                     );
                                   },
@@ -137,14 +146,24 @@ class BudgetsScreen extends ConsumerWidget {
                 size: 60,
                 borderColor: woodSmoke,
                 color: white,
-                callback: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AddBudgetScreen()));
+                callback: () async {
+                  try {
+                    Budget budget = Budget();
+                    await createUpdateBudget(budget);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddBudgetScreen(
+                                  budgetId: budget.id,
+                                )));
+                  } catch (e) {
+                    showGeneralInformationDialogErrorMessage(
+                        e.toString(), context);
+                  }
                 },
                 shadowColor: woodSmoke,
-                iconPath: kpathSvgPlus)
+                iconPath: kpathSvgPlus,
+              )
             : null);
   }
 

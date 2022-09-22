@@ -16,6 +16,7 @@ import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CrudCustomerScreen extends StatefulWidget {
   const CrudCustomerScreen({Key? key, this.id}) : super(key: key);
@@ -48,10 +49,7 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
   void initState() {
     _focusNode = FocusNode();
     isUpdate = widget.id == null ? false : true;
-
-    //update
     isUpdate ? _fillFields() : null;
-
     super.initState();
   }
 
@@ -73,7 +71,7 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
     _observationsController.text = customer.observacoes!;
   }
 
-  _saveUpdate() {
+  Future? _saveUpdate() async {
     Customer customer = Customer(
         id: isUpdate ? widget.id : '',
         nome: _nameController.text,
@@ -89,8 +87,10 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
         bairro: _districtController.text,
         complemento: _complementController.text,
         observacoes: _observationsController.text);
-    gSheetDb.putCustomer(customer);
+    showGeneralLoading(context);
+    await gSheetDb.putCustomer(customer);
     if (mounted) {
+      Navigator.pop(context);
       Navigator.pop(context);
     }
   }
@@ -136,103 +136,112 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        final shouldPop = await _showConfirmationExitDialog();
-        return shouldPop ?? false;
-      },
-      child: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: Scaffold(
-          backgroundColor: customerBackgroundColor,
-          appBar: CustomAppBar(
-            heroAnimation: CustomerScreen.name,
-            svgImage: kpathSvgPerson,
-            callback: () async => showGeneralConfirmationExitDialog(context),
+    return Consumer(
+      builder: (context, ref, child) => WillPopScope(
+        onWillPop: () async {
+          final shouldPop = await _showConfirmationExitDialog();
+          shouldPop == true ? ref.refresh(customersProvider) : null;
+
+          return shouldPop ?? false;
+        },
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Scaffold(
             backgroundColor: customerBackgroundColor,
-            title: CustomerScreen.name,
-          ),
-          body: Container(
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            color: customerBackgroundColor,
-            child: ListView(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              children: [
-                SizedBox(height: 5),
-                CustomTextField(
-                    textInputFormatterList: [UpperCaseTextFormatter()],
-                    textInputType: TextInputType.name,
-                    controller: _nameController,
-                    name: 'Nome',
-                    textInputAction: TextInputAction.next),
-                SizedBox(height: 5),
-                CustomTextField(
-                    textInputType: TextInputType.number,
-                    textInputFormatterList: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      TextInputMask(mask: '999.999.999-99')
+            appBar: CustomAppBar(
+              heroAnimation: CustomerScreen.name,
+              svgImage: kpathSvgPerson,
+              callback: () async =>
+                  await showGeneralConfirmationExitDialog(context),
+              backgroundColor: customerBackgroundColor,
+              title: CustomerScreen.name,
+            ),
+            body: Container(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              color: customerBackgroundColor,
+              child: ListView(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                children: [
+                  SizedBox(height: 5),
+                  CustomTextField(
+                      textInputFormatterList: [UpperCaseTextFormatter()],
+                      textInputType: TextInputType.name,
+                      controller: _nameController,
+                      name: 'Nome',
+                      textInputAction: TextInputAction.next),
+                  SizedBox(height: 5),
+                  CustomTextField(
+                      textInputType: TextInputType.number,
+                      textInputFormatterList: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        TextInputMask(mask: '999.999.999-99')
+                      ],
+                      controller: _cpfController,
+                      name: 'CPF',
+                      textInputAction: TextInputAction.next),
+                  SizedBox(height: 5),
+                  CustomTextField(
+                      textInputType: TextInputType.emailAddress,
+                      controller: _emailController,
+                      name: 'Email',
+                      textInputAction: TextInputAction.next),
+                  SizedBox(height: 5),
+                  CustomTextField(
+                      textInputType: TextInputType.emailAddress,
+                      controller: _phoneNumber1Controller,
+                      name: 'Telefone 1',
+                      textInputAction: TextInputAction.next),
+                  SizedBox(height: 5),
+                  CustomTextField(
+                      textInputType: TextInputType.emailAddress,
+                      controller: _phoneNumber2Controller,
+                      name: 'Telefone 2',
+                      textInputAction: TextInputAction.next),
+                  SizedBox(height: 5),
+                  CustomAddressArea(
+                      cepController: _cepController,
+                      callback: _getCep,
+                      ufController: _ufController,
+                      cityController: _cityController,
+                      streetController: _streetController,
+                      districtController: _districtController,
+                      numberController: _numberController,
+                      complementController: _complementController,
+                      focusNode: _focusNode),
+                  SizedBox(height: 10),
+                  CustomTextField(
+                      minLines: 3,
+                      maxLines: 6,
+                      textInputFormatterList: [UpperCaseTextFormatter()],
+                      controller: _observationsController,
+                      name: 'Observações',
+                      textInputAction: TextInputAction.done),
+                  SizedBox(height: 40),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                          flex: 4,
+                          child: CustomButtonCancel(
+                              text: 'Cancelar',
+                              onTap: () => Navigator.pop(context))),
+                      Spacer(flex: 1),
+                      Expanded(
+                          flex: 4,
+                          child: CustomButtonConfirm(
+                            isEnabled: true,
+                            text: 'Salvar',
+                            onTap: () async {
+                              await _saveUpdate();
+                              ref.refresh(customersProvider);
+                            },
+                          ))
                     ],
-                    controller: _cpfController,
-                    name: 'CPF',
-                    textInputAction: TextInputAction.next),
-                SizedBox(height: 5),
-                CustomTextField(
-                    textInputType: TextInputType.emailAddress,
-                    controller: _emailController,
-                    name: 'Email',
-                    textInputAction: TextInputAction.next),
-                SizedBox(height: 5),
-                CustomTextField(
-                    textInputType: TextInputType.emailAddress,
-                    controller: _phoneNumber1Controller,
-                    name: 'Telefone 1',
-                    textInputAction: TextInputAction.next),
-                SizedBox(height: 5),
-                CustomTextField(
-                    textInputType: TextInputType.emailAddress,
-                    controller: _phoneNumber2Controller,
-                    name: 'Telefone 2',
-                    textInputAction: TextInputAction.next),
-                SizedBox(height: 5),
-                CustomAddressArea(
-                    cepController: _cepController,
-                    callback: _getCep,
-                    ufController: _ufController,
-                    cityController: _cityController,
-                    streetController: _streetController,
-                    districtController: _districtController,
-                    numberController: _numberController,
-                    complementController: _complementController,
-                    focusNode: _focusNode),
-                SizedBox(height: 10),
-                CustomTextField(
-                    minLines: 3,
-                    maxLines: 6,
-                    textInputFormatterList: [UpperCaseTextFormatter()],
-                    controller: _observationsController,
-                    name: 'Observações',
-                    textInputAction: TextInputAction.done),
-                SizedBox(height: 40),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                        flex: 4,
-                        child: CustomButtonCancel(
-                            text: 'Cancelar',
-                            onTap: () => Navigator.pop(context))),
-                    Spacer(flex: 1),
-                    Expanded(
-                        flex: 4,
-                        child: CustomButtonConfirm(
-                          isEnabled: true,
-                          text: 'Salvar',
-                          onTap: _saveUpdate,
-                        ))
-                  ],
-                ),
-                SizedBox(height: 50),
-              ],
+                  ),
+                  SizedBox(height: 50),
+                ],
+              ),
             ),
           ),
         ),

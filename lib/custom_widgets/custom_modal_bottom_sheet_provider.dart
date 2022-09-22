@@ -3,13 +3,13 @@
 import 'package:easy_manager/custom_widgets/empty_widget.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
+import 'package:easy_manager/screens/provider/crud_provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 Future<String> showProviderChoiceDialog(BuildContext context) async {
   DraggableScrollableController controller = DraggableScrollableController();
-  Future<List<Map<String, String>>>? listProviders;
-  listProviders = gSheetDb.getProviders();
 
   String returnedValue = '';
   await showModalBottomSheet(
@@ -19,46 +19,44 @@ Future<String> showProviderChoiceDialog(BuildContext context) async {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
     context: context,
     builder: (context) {
-      return DraggableScrollableSheet(
-        expand: false,
-        controller: controller,
-        initialChildSize: 0.9,
-        builder: (context, scrollController) {
-          return Padding(
-            padding: EdgeInsets.all(10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 10),
-                  height: 5,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: black,
-                  ),
-                ),
-                Flexible(
-                    child: Text(
-                  'Escolha um fornecedor ou adicone um novo',
-                  style: TextStyle(
-                      color: woodSmoke,
-                      fontSize: 20,
-                      fontFamily: 'JosefinsSans',
-                      fontWeight: FontWeight.w700),
-                )),
-                Expanded(
-                  child: FutureBuilder(
-                    future: listProviders,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: CircularProgressIndicator(color: black),
-                        );
-                      } else {
-                        if (snapshot.hasData) {
-                          List<Map<String, String>> mapList =
-                              snapshot.data as List<Map<String, String>>;
+      return Consumer(
+        builder: (context, ref, child) {
+          var listProviders = ref.watch(productProvidersProvider);
+          return DraggableScrollableSheet(
+            expand: false,
+            controller: controller,
+            initialChildSize: 0.9,
+            builder: (context, scrollController) {
+              return Padding(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 10),
+                      height: 5,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: black,
+                      ),
+                    ),
+                    Flexible(
+                        child: Text(
+                      'Escolha um fornecedor ou adicone um novo',
+                      style: TextStyle(
+                          color: woodSmoke,
+                          fontSize: 20,
+                          fontFamily: 'JosefinsSans',
+                          fontWeight: FontWeight.w700),
+                    )),
+                    Expanded(
+                      child: listProviders.when(
+                        data: (data) {
+                          List<Map<String, String>> mapList = data;
+                          if (mapList.isEmpty) {
+                            return EmptyWidget();
+                          }
                           mapList = mapList.reversed.toList();
 
                           return ListView.builder(
@@ -87,15 +85,40 @@ Future<String> showProviderChoiceDialog(BuildContext context) async {
                                           Text(productProvider.documento!)),
                                 );
                               });
-                        } else {
-                          return EmptyWidget();
-                        }
-                      }
-                    },
-                  ),
+                        },
+                        error: (error, stackTrace) => Center(
+                          child: Text(error.toString() + stackTrace.toString()),
+                        ),
+                        loading: () => Center(
+                          child: CircularProgressIndicator(color: black),
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  minimumSize: Size(10, 50),
+                                  backgroundColor: black),
+                              onPressed: () {
+                                Navigator.pop(context);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          CrudProviderScreen(),
+                                    ));
+                              },
+                              child: Text('Adicionar Fornecedor')),
+                        ),
+                      ],
+                    )
+                  ],
                 ),
-              ],
-            ),
+              );
+            },
           );
         },
       );

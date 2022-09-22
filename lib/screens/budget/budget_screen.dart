@@ -21,11 +21,10 @@ class BudgetsScreen extends ConsumerWidget {
 
   bool showFabVisible = true;
   bool listReverse = false;
-  bool isSearch = false;
+  bool isSearch = true;
   bool isSearching = false;
   FocusNode focusNode = FocusNode();
   TextEditingController searchController = TextEditingController();
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,7 +36,6 @@ class BudgetsScreen extends ConsumerWidget {
 
     var budgetList = ref.watch(budgetsProvider);
     return Scaffold(
-        key: _scaffoldKey,
         backgroundColor: budgetBackgroundColor,
         appBar: CustomAppBar(
             title: BudgetsScreen.name,
@@ -59,69 +57,65 @@ class BudgetsScreen extends ConsumerWidget {
                     )
                   : Container(),
               Expanded(
-                child: budgetList.when(data: (data) {
-                  var mapList = data;
-                  listReverse ? mapList = mapList.reversed.toList() : null;
-                  isSearching
-                      ? mapList = mapList
-                          .where((element) => element['id']
-                              .toString()
-                              .toLowerCase()
-                              .contains(searchController.text.toLowerCase()))
-                          .toList()
-                      : null;
-                  return NotificationListener<UserScrollNotification>(
-                    onNotification: (notification) {
-                      if (notification.direction == ScrollDirection.reverse) {
-                        showFabVisible = false;
-                      }
-                      if (notification.direction == ScrollDirection.forward) {
-                        showFabVisible = true;
-                      }
-                      return true;
-                    },
-                    child: mapList.isEmpty
-                        ? EmptyWidget()
-                        : ListView.builder(
-                            itemCount: mapList.toList().length,
-                            itemBuilder: (context, index) {
-                              print(mapList[index]);
-                              
-                              Budget budget = Budget.fromJson(mapList[index]);
+                child: budgetList.when(
+                    data: (data) {
+                      List<Map<String, String>> mapList = data;
+                      listReverse ? mapList = mapList.reversed.toList() : null;
+                      isSearching
+                          ? mapList = mapList
+                              .where((element) => element['nomeCliente']
+                                  .toString()
+                                  .toLowerCase()
+                                  .contains(
+                                      searchController.text.toLowerCase()))
+                              .toList()
+                          : null;
+                      return NotificationListener<UserScrollNotification>(
+                        onNotification: (notification) {
+                          if (notification.direction ==
+                              ScrollDirection.reverse) {
+                            showFabVisible = false;
+                          }
+                          if (notification.direction ==
+                              ScrollDirection.forward) {
+                            showFabVisible = true;
+                          }
+                          return true;
+                        },
+                        child: mapList.isEmpty
+                            ? EmptyWidget()
+                            : ListView.builder(
+                                itemCount: mapList.toList().length,
+                                itemBuilder: (context, index) {
+                                  Budget budget =
+                                      Budget.fromJson(mapList[index]);
 
-                              return CustomListTile(
-                                  deleteCallback: () async {
-                                    await _showDeleteAlertDialog(
-                                        context, budget);
-                                  },
-                                  editCallback: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => AddBudgetScreen(
-                                            budgetId: budget.id!),
-                                      ),
-                                    );
-                                  },
-                                  title: budget.nomeCliente!,
-                                  icon: Icons.list,
-                                  subtitle: budget.valorTotal.toString());
-                            }),
-                  );
-                }, error: (error, stackTrace) {
-                  return Center(
-                    child: Column(
-                      children: [
-                        Text(stackTrace.toString()),
-                        Text(error.toString()),
-                      ],
-                    ),
-                  );
-                }, loading: () {
-                  return Center(
-                    child: CircularProgressIndicator(color: black),
-                  );
-                }),
+                                  return CustomListTile(
+                                      deleteCallback: () async {
+                                        await _showDeleteAlertDialog(
+                                            context, budget);
+                                      },
+                                      editCallback: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                AddBudgetScreen(
+                                                    budgetId: budget.id!,
+                                                    isUpdate: false),
+                                          ),
+                                        );
+                                      },
+                                      title: budget.nomeCliente!,
+                                      icon: Icons.list,
+                                      subtitle: budget.valorTotal.toString());
+                                }),
+                      );
+                    },
+                    error: (error, stackTrace) => Center(
+                        child: Text(error.toString() + stackTrace.toString())),
+                    loading: () =>
+                        Center(child: CircularProgressIndicator(color: black))),
               ),
             ],
           ),
@@ -135,8 +129,9 @@ class BudgetsScreen extends ConsumerWidget {
               icon: Icon(Icons.filter_alt)),
           IconButton(
               onPressed: () {
-                isSearching = !isSearching;
                 ref.refresh(budgetsProvider);
+
+                isSearching = !isSearching;
                 focusNode.requestFocus();
               },
               icon: Icon(Icons.search))
@@ -154,6 +149,7 @@ class BudgetsScreen extends ConsumerWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => AddBudgetScreen(
+                                  isUpdate: false,
                                   budgetId: budget.id,
                                 )));
                   } catch (e) {
@@ -170,17 +166,19 @@ class BudgetsScreen extends ConsumerWidget {
   Future _showDeleteAlertDialog(context, Budget budget) async {
     // set up the buttons
 
-    Widget cancelButton = Consumer(
-      builder: (context, ref, child) => TextButton(
-          child: Text("Cancelar"), onPressed: () => Navigator.pop(context)),
-    );
+    Widget cancelButton = TextButton(
+        child: Text("Cancelar"), onPressed: () => Navigator.pop(context));
+
     Widget continueButton = Consumer(
       builder: (context, ref, child) => TextButton(
         child: Text("Confirmar"),
         onPressed: () async {
+          showGeneralLoading(context);
           await gSheetDb.deleteBudget(budget.id!);
-          Navigator.pop(context);
+          searchController.clear();
           ref.refresh(budgetsProvider);
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
         },
       ),
     );

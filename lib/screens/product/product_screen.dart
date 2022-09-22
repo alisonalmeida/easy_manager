@@ -19,7 +19,7 @@ class ProductsScreen extends ConsumerWidget {
   static String name = 'Produtos';
 
   bool showFabVisible = true;
-  bool listReverse = false;
+  bool listReverse = true;
   bool isSearching = false;
   FocusNode focusNode = FocusNode();
   TextEditingController searchController = TextEditingController();
@@ -27,13 +27,14 @@ class ProductsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var productList = ref.watch(productsProvider);
+
     return Scaffold(
         backgroundColor: productBackgroundColor,
         appBar: CustomAppBar(
             title: ProductsScreen.name,
             backgroundColor: productBackgroundColor,
             callback: () async => Navigator.pop(context),
-            svgImage: kpathSvgFactory,
+            svgImage: kpathSvgProduct,
             heroAnimation: ProductsScreen.name),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -47,9 +48,7 @@ class ProductsScreen extends ConsumerWidget {
                       },
                       focusNode: focusNode,
                       searchController: searchController,
-                      onChanged: (v) {
-                        ref.refresh(productsProvider);
-                      },
+                      onChanged: (v) => ref.refresh(productsProvider),
                     )
                   : Container(),
               Expanded(
@@ -76,7 +75,7 @@ class ProductsScreen extends ConsumerWidget {
                         }
                         return true;
                       },
-                      child: mapList == null
+                      child: mapList.isEmpty
                           ? EmptyWidget()
                           : ListView.builder(
                               itemCount: mapList.toList().length,
@@ -85,9 +84,10 @@ class ProductsScreen extends ConsumerWidget {
                                     Product.fromJson(mapList[index]);
 
                                 return CustomListTile(
-                                    deleteCallback: () async =>
-                                        await _showDeleteAlertDialog(
-                                            context, product),
+                                    deleteCallback: () async {
+                                      await _showDeleteAlertDialog(
+                                          context, product);
+                                    },
                                     editCallback: () {
                                       Navigator.push(
                                         context,
@@ -98,20 +98,18 @@ class ProductsScreen extends ConsumerWidget {
                                       );
                                     },
                                     title: product.nome!,
-                                    icon: Icons.factory,
+                                    icon: Icons.dry_cleaning_rounded,
                                     subtitle: 'R\$ ${product.valorVenda}');
                               },
                             ),
                     );
                   },
                   error: (error, stackTrace) => Center(
-                    child: Text(error.toString()),
+                    child: Text(error.toString() + stackTrace.toString()),
                   ),
                   loading: () {
                     return Center(
-                      child: CircularProgressIndicator(
-                        color: black,
-                      ),
+                      child: CircularProgressIndicator(color: black),
                     );
                   },
                 ),
@@ -121,12 +119,15 @@ class ProductsScreen extends ConsumerWidget {
         ),
         persistentFooterButtons: [
           IconButton(
-              onPressed: () => listReverse = !listReverse,
+              onPressed: () {
+                listReverse = !listReverse;
+                ref.refresh(productsProvider);
+              },
               icon: Icon(Icons.filter_alt)),
           IconButton(
               onPressed: () {
-                ref.refresh(productsProvider);
                 isSearching = !isSearching;
+                ref.refresh(productsProvider);
                 focusNode.requestFocus();
               },
               icon: Icon(Icons.search))
@@ -148,19 +149,20 @@ class ProductsScreen extends ConsumerWidget {
   Future _showDeleteAlertDialog(context, Product product) async {
     // set up the buttons
 
-    Widget cancelButton = Consumer(
-      builder: (context, ref, child) => TextButton(
-        child: Text("Cancelar"),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      ),
+    Widget cancelButton = TextButton(
+      child: Text("Cancelar"),
+      onPressed: () => Navigator.of(context).pop(),
     );
+
     Widget continueButton = Consumer(
       builder: (context, ref, child) => TextButton(
         child: Text("Confirmar"),
         onPressed: () async {
+          showGeneralLoading(context);
           await gSheetDb.deleteProduct(product.id!);
+          searchController.clear();
+          ref.refresh(productsProvider);
+          Navigator.of(context).pop();
           Navigator.of(context).pop();
         },
       ),

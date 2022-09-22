@@ -1,3 +1,4 @@
+import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomListTile extends StatelessWidget {
@@ -33,15 +34,15 @@ class CustomListTile extends StatelessWidget {
           children: [
             IconButton(
                 icon: const Icon(
-                  Icons.edit,
-                  color: Colors.blue,
+                  Icons.mode_edit_outline_outlined,
+                  color: black,
                 ),
                 onPressed: editCallback),
             const VerticalDivider(),
             IconButton(
                 icon: const Icon(
-                  Icons.delete,
-                  color: Colors.red,
+                  Icons.delete_outline_outlined,
+                  color: black,
                 ),
                 onPressed: deleteCallback),
           ],

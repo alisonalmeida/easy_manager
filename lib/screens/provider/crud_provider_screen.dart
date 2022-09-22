@@ -16,6 +16,7 @@ import 'package:easy_manager/utils/colors.dart';
 import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CrudProviderScreen extends StatefulWidget {
   const CrudProviderScreen({Key? key, this.id}) : super(key: key);
@@ -137,112 +138,119 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        final shouldPop = await _showConfirmationExitDialog();
-        return shouldPop ?? false;
-      },
-      child: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: Scaffold(
-          backgroundColor: providerBackgroundColor,
-          appBar: CustomAppBar(
-              callback: () async => showGeneralConfirmationExitDialog(context),
-              heroAnimation: ProvidersScreen.name,
-              svgImage: kpathSvgFactory,
-              title: ProvidersScreen.name,
-              backgroundColor: providerBackgroundColor),
-          body: Container(
-            color: providerBackgroundColor,
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            child: ListView(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              children: [
-                SizedBox(height: 5),
-                CustomTextField(
-                    textInputFormatterList: [UpperCaseTextFormatter()],
-                    textInputType: TextInputType.name,
-                    controller: _providerNameController,
-                    name: 'Nome do Fornecedor',
-                    textInputAction: TextInputAction.next),
-                SizedBox(height: 5),
-                CustomTextField(
+    return Consumer(
+      builder: (context, ref, child) => WillPopScope(
+        onWillPop: () async {
+          final shouldPop = await _showConfirmationExitDialog();
+          return shouldPop ?? false;
+        },
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Scaffold(
+            backgroundColor: providerBackgroundColor,
+            appBar: CustomAppBar(
+                callback: () async =>
+                    showGeneralConfirmationExitDialog(context),
+                heroAnimation: ProvidersScreen.name,
+                svgImage: kpathSvgFactory,
+                title: ProvidersScreen.name,
+                backgroundColor: providerBackgroundColor),
+            body: Container(
+              color: providerBackgroundColor,
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: ListView(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                children: [
+                  SizedBox(height: 5),
+                  CustomTextField(
+                      textInputFormatterList: [UpperCaseTextFormatter()],
+                      textInputType: TextInputType.name,
+                      controller: _providerNameController,
+                      name: 'Nome do Fornecedor',
+                      textInputAction: TextInputAction.next),
+                  SizedBox(height: 5),
+                  CustomTextField(
+                      textInputType: TextInputType.number,
+                      textInputFormatterList: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        TextInputMask(
+                            mask: ['999.999.999-99', '99.999.999/9999-99'])
+                      ],
+                      controller: _cpfCnpjController,
+                      name: 'CPF/CNPJ',
+                      textInputAction: TextInputAction.next),
+                  SizedBox(height: 5),
+                  CustomTextField(
                     textInputType: TextInputType.number,
                     textInputFormatterList: [
                       FilteringTextInputFormatter.digitsOnly,
-                      TextInputMask(
-                          mask: ['999.999.999-99', '99.999.999/9999-99'])
+                      TextInputMask(mask: ['(99) 9 9999-9999)'])
                     ],
-                    controller: _cpfCnpjController,
-                    name: 'CPF/CNPJ',
-                    textInputAction: TextInputAction.next),
-                SizedBox(height: 5),
-                CustomTextField(
-                  textInputType: TextInputType.number,
-                  textInputFormatterList: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    TextInputMask(mask: ['(99) 9 9999-9999)'])
-                  ],
-                  controller: _phoneNumberController1,
-                  name: 'Telefone 1',
-                  textInputAction: TextInputAction.next,
-                ),
-                CustomTextField(
-                  textInputType: TextInputType.number,
-                  textInputFormatterList: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    TextInputMask(mask: ['(99) 9 9999-9999)'])
-                  ],
-                  controller: _phoneNumberController2,
-                  name: 'Telefone 2',
-                  textInputAction: TextInputAction.next,
-                ),
-                SizedBox(height: 5),
-                CustomTextField(
-                    textInputType: TextInputType.emailAddress,
-                    controller: _emailController,
-                    name: 'E-mail',
-                    textInputAction: TextInputAction.next),
-                SizedBox(height: 5),
-                CustomAddressArea(
-                    cepController: _cepController,
-                    callback: _getCep,
-                    ufController: _ufController,
-                    cityController: _cityController,
-                    streetController: _streetController,
-                    districtController: _districtController,
-                    numberController: _numberController,
-                    complementController: _complementController,
-                    focusNode: _focusNode),
-                SizedBox(height: 5),
-                CustomTextField(
-                    minLines: 3,
-                    maxLines: 6,
-                    textInputFormatterList: [UpperCaseTextFormatter()],
-                    controller: _observationsController,
-                    name: 'Observações',
-                    textInputAction: TextInputAction.done),
-                SizedBox(height: 40),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                        flex: 4,
-                        child: CustomButtonCancel(
-                            text: 'Cancelar',
-                            onTap: () => Navigator.pop(context))),
-                    Spacer(flex: 1),
-                    Expanded(
-                        flex: 4,
-                        child: CustomButtonConfirm(
-                          isEnabled: true,
-                          text: 'Salvar',
-                          onTap: _saveUpdate,
-                        ))
-                  ],
-                ),
-                SizedBox(height: 40),
-              ],
+                    controller: _phoneNumberController1,
+                    name: 'Telefone 1',
+                    textInputAction: TextInputAction.next,
+                  ),
+                  CustomTextField(
+                    textInputType: TextInputType.number,
+                    textInputFormatterList: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      TextInputMask(mask: ['(99) 9 9999-9999)'])
+                    ],
+                    controller: _phoneNumberController2,
+                    name: 'Telefone 2',
+                    textInputAction: TextInputAction.next,
+                  ),
+                  SizedBox(height: 5),
+                  CustomTextField(
+                      textInputType: TextInputType.emailAddress,
+                      controller: _emailController,
+                      name: 'E-mail',
+                      textInputAction: TextInputAction.next),
+                  SizedBox(height: 5),
+                  CustomAddressArea(
+                      cepController: _cepController,
+                      callback: _getCep,
+                      ufController: _ufController,
+                      cityController: _cityController,
+                      streetController: _streetController,
+                      districtController: _districtController,
+                      numberController: _numberController,
+                      complementController: _complementController,
+                      focusNode: _focusNode),
+                  SizedBox(height: 5),
+                  CustomTextField(
+                      minLines: 3,
+                      maxLines: 6,
+                      textInputFormatterList: [UpperCaseTextFormatter()],
+                      controller: _observationsController,
+                      name: 'Observações',
+                      textInputAction: TextInputAction.done),
+                  SizedBox(height: 40),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                          flex: 4,
+                          child: CustomButtonCancel(
+                              text: 'Cancelar',
+                              onTap: () => Navigator.pop(context))),
+                      Spacer(flex: 1),
+                      Expanded(
+                          flex: 4,
+                          child: CustomButtonConfirm(
+                            isEnabled: true,
+                            text: 'Salvar',
+                            onTap: () async {
+                              await _saveUpdate();
+                              ref.refresh(productProvidersProvider);
+                            },
+                          ))
+                    ],
+                  ),
+                  SizedBox(height: 40),
+                ],
+              ),
             ),
           ),
         ),

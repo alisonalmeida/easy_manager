@@ -52,7 +52,6 @@ Future<String> showCustomerChoiceDialog(BuildContext context) async {
                 CustomAddButton(
                     text: 'Adicionar Novo Cliente',
                     onTap: () {
-                      Navigator.pop(context);
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -60,51 +59,50 @@ Future<String> showCustomerChoiceDialog(BuildContext context) async {
                           ));
                     }),
                 Expanded(
-                  child: FutureBuilder(future: listCustomers,
-                    builder: (context, snapshot) {
-                    
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: CircularProgressIndicator(color: black),
-                        );
+                    child: FutureBuilder(
+                  future: listCustomers,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(color: black),
+                      );
+                    } else {
+                      if (snapshot.hasData) {
+                        List<Map<String, String>> mapList =
+                            snapshot.data as List<Map<String, String>>;
+                        mapList = mapList.reversed.toList();
+
+                        return ListView.builder(
+                            itemCount: mapList.toList().length,
+                            itemBuilder: (context, index) {
+                              Customer customer =
+                                  Customer.fromMap(mapList[index]);
+
+                              return Container(
+                                decoration: ShapeDecoration(shadows: const [
+                                  BoxShadow(
+                                    color: Colors.black,
+                                    offset: Offset(
+                                      3.0,
+                                      4.0,
+                                    ),
+                                  )
+                                ], color: Colors.white, shape: Border.all()),
+                                child: ListTile(
+                                    onTap: () {
+                                      returnedValue = customer.nome!;
+                                      Navigator.pop(context);
+                                    },
+                                    title: Text(customer.nome!),
+                                    subtitle: Text(customer.documento!)),
+                              );
+                            });
                       } else {
-                        if (snapshot.hasData) {
-                          List<Map<String, String>> mapList =
-                              snapshot.data as List<Map<String, String>>;
-                          mapList = mapList.reversed.toList();
-
-                          return ListView.builder(
-                              itemCount: mapList.toList().length,
-                              itemBuilder: (context, index) {
-                                Customer customer =
-                                    Customer.fromMap(mapList[index]);
-
-                                return Container(
-                                  decoration: ShapeDecoration(shadows: const [
-                                    BoxShadow(
-                                      color: Colors.black,
-                                      offset: Offset(
-                                        3.0,
-                                        4.0,
-                                      ),
-                                    )
-                                  ], color: Colors.white, shape: Border.all()),
-                                  child: ListTile(
-                                      onTap: () {
-                                        returnedValue = customer.nome!;
-                                        Navigator.pop(context);
-                                      },
-                                      title: Text(customer.nome!),
-                                      subtitle: Text(customer.documento!)),
-                                );
-                              });
-                        } else {
-                          return EmptyWidget();
-                        }
+                        return EmptyWidget();
                       }
-                  },)
-                  
-                ),
+                    }
+                  },
+                )),
               ],
             ),
           );
@@ -112,5 +110,6 @@ Future<String> showCustomerChoiceDialog(BuildContext context) async {
       );
     },
   );
+
   return returnedValue;
 }

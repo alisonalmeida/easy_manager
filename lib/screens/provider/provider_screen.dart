@@ -18,10 +18,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ProvidersScreen extends ConsumerWidget {
   ProvidersScreen({Key? key}) : super(key: key);
   static String name = 'Fornecedores';
-  late Stream<List<Map<String, String>>?> stream;
-  bool showFabVisible = true;
-  bool listReverse = false;
 
+  bool showFabVisible = true;
+  bool listReverse = true;
   bool isSearching = false;
   FocusNode focusNode = FocusNode();
   TextEditingController searchController = TextEditingController();
@@ -50,7 +49,7 @@ class ProvidersScreen extends ConsumerWidget {
                       },
                       focusNode: focusNode,
                       searchController: searchController,
-                      onChanged: (p0) => ref.refresh(productProvidersProvider),
+                      onChanged: (v) => ref.refresh(productProvidersProvider),
                     )
                   : Container(),
               Expanded(
@@ -77,7 +76,7 @@ class ProvidersScreen extends ConsumerWidget {
                         }
                         return true;
                       },
-                      child: mapList == null
+                      child: mapList.isEmpty
                           ? EmptyWidget()
                           : ListView.builder(
                               itemCount: mapList.toList().length,
@@ -106,16 +105,12 @@ class ProvidersScreen extends ConsumerWidget {
                             ),
                     );
                   },
-                  error: (error, stackTrace) {
-                    return Center(
-                      child: Text(error.toString()),
-                    );
-                  },
+                  error: (error, stackTrace) => Center(
+                    child: Text(error.toString() + stackTrace.toString()),
+                  ),
                   loading: () {
                     return Center(
-                      child: CircularProgressIndicator(
-                        color: black,
-                      ),
+                      child: CircularProgressIndicator(color: black),
                     );
                   },
                 ),
@@ -166,9 +161,12 @@ class ProvidersScreen extends ConsumerWidget {
       builder: (context, ref, child) => TextButton(
         child: Text("Confirmar"),
         onPressed: () async {
+          showGeneralLoading(context);
           await gSheetDb.deleteProvider(productProvider.id!);
-          Navigator.of(context).pop();
+          searchController.clear();
           ref.refresh(productProvidersProvider);
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
         },
       ),
     );

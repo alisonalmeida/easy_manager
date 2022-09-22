@@ -1,7 +1,7 @@
 import 'dart:math';
 
 const _validChars =
-    'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    'abcdefghijklmnopqrstuvwxyZz1234567890';
 String generateRandomString() {
   Random r = Random();
 

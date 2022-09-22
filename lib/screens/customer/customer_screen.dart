@@ -19,7 +19,7 @@ class CustomerScreen extends ConsumerWidget {
   static String name = 'Clientes';
 
   bool showFabVisible = true;
-  bool listReverse = false;
+  bool listReverse = true;
   bool isSearching = false;
   FocusNode focusNode = FocusNode();
   TextEditingController searchController = TextEditingController();
@@ -28,30 +28,31 @@ class CustomerScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     var customerList = ref.watch(customersProvider);
     return Scaffold(
-      backgroundColor: customerBackgroundColor,
-      appBar: CustomAppBar(
-          heroAnimation: CustomerScreen.name,
-          svgImage: kpathSvgPerson,
+        backgroundColor: customerBackgroundColor,
+        appBar: CustomAppBar(
           title: CustomerScreen.name,
           backgroundColor: customerBackgroundColor,
-          callback: () async => Navigator.pop(context)),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 5),
-        child: Column(
-          children: [
-            isSearching
-                ? SearchTextField(
-                    clearField: () {
-                      searchController.clear();
-                      ref.refresh(customersProvider);
-                    },
-                    focusNode: focusNode,
-                    searchController: searchController,
-                    onChanged: (p0) => ref.refresh(customersProvider),
-                  )
-                : Container(),
-            Expanded(
-              child: customerList.when(
+          callback: () async => Navigator.pop(context),
+          svgImage: kpathSvgPerson,
+          heroAnimation: CustomerScreen.name,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: Column(
+            children: [
+              isSearching
+                  ? SearchTextField(
+                      clearField: () {
+                        searchController.clear();
+                        ref.refresh(customersProvider);
+                      },
+                      focusNode: focusNode,
+                      searchController: searchController,
+                      onChanged: (v) => ref.refresh(customersProvider),
+                    )
+                  : Container(),
+              Expanded(
+                child: customerList.when(
                   data: (data) {
                     List<Map<String, String>> mapList = data;
                     listReverse ? mapList = mapList.reversed.toList() : null;
@@ -74,7 +75,7 @@ class CustomerScreen extends ConsumerWidget {
                         }
                         return true;
                       },
-                      child: mapList == null
+                      child: mapList.isEmpty
                           ? EmptyWidget()
                           : ListView.builder(
                               itemCount: mapList.toList().length,
@@ -101,45 +102,45 @@ class CustomerScreen extends ConsumerWidget {
                     );
                   },
                   error: (error, stackTrace) => Center(
-                        child: Text(error.toString()),
-                      ),
+                    child: Text(error.toString() + stackTrace.toString()),
+                  ),
                   loading: () {
                     return Center(
                       child: CircularProgressIndicator(color: black),
                     );
-                  }),
-            ),
-          ],
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-      persistentFooterButtons: [
-        IconButton(
-            onPressed: () {
-              listReverse = !listReverse;
-              ref.refresh(customersProvider);
-            },
-            icon: Icon(Icons.filter_alt)),
-        IconButton(
-            onPressed: () {
-              isSearching = !isSearching;
-              ref.refresh(customersProvider);
-              focusNode.requestFocus();
-            },
-            icon: Icon(Icons.search))
-      ],
-      floatingActionButton: ButtonRoundWithShadow(
-          size: 60,
-          borderColor: woodSmoke,
-          color: white,
-          callback: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => CrudCustomerScreen()),
-            );
-          },
-          shadowColor: woodSmoke,
-          iconPath: kpathSvgPlus),
-    );
+        persistentFooterButtons: [
+          IconButton(
+              onPressed: () {
+                listReverse = !listReverse;
+                ref.refresh(customersProvider);
+              },
+              icon: Icon(Icons.filter_alt)),
+          IconButton(
+              onPressed: () {
+                ref.refresh(customersProvider);
+                isSearching = !isSearching;
+                focusNode.requestFocus();
+              },
+              icon: Icon(Icons.search))
+        ],
+        floatingActionButton: showFabVisible
+            ? ButtonRoundWithShadow(
+                size: 60,
+                borderColor: woodSmoke,
+                color: white,
+                callback: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CrudCustomerScreen())),
+                shadowColor: woodSmoke,
+                iconPath: kpathSvgPlus)
+            : null);
   }
 
   Future _showDeleteAlertDialog(context, Customer customer) async {
@@ -155,9 +156,12 @@ class CustomerScreen extends ConsumerWidget {
       builder: (context, ref, child) => TextButton(
         child: Text("Confirmar"),
         onPressed: () async {
+          showGeneralLoading(context);
           await gSheetDb.deleteCustomer(customer.id!);
-          Navigator.of(context).pop();
+          searchController.clear();
           ref.refresh(customersProvider);
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
         },
       ),
     );

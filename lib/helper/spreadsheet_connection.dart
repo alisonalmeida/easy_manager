@@ -28,7 +28,7 @@ class GSheetDb {
   Future<List<Map<String, String>>> getUsers() async {
     Worksheet? sheet = ss.worksheetByTitle(_usersSheetTitle);
     var users = await sheet!.values.map.allRows();
-    return users!;
+    return users ?? [];
   }
 
 //PROVIDERS
@@ -88,7 +88,7 @@ class GSheetDb {
   Future<List<Map<String, String>>> getProviders() async {
     Worksheet? sheet = ss.worksheetByTitle(_providersSheetTitle);
     var providers = await sheet!.values.map.allRows();
-    return providers!;
+    return providers ?? [];
   }
 
   deleteProvider(String id) async {
@@ -174,7 +174,7 @@ class GSheetDb {
   Future<List<Map<String, String>>> getCustomers() async {
     Worksheet? sheet = ss.worksheetByTitle(_customersSheetTitle);
     var customers = await sheet!.values.map.allRows();
-    return customers!;
+    return customers ?? [];
   }
 
   deleteCustomer(String id) async {
@@ -206,8 +206,7 @@ class GSheetDb {
   Future<List<Map<String, String>>> getProducts() async {
     Worksheet? sheet = ss.worksheetByTitle(_productsSheetTitle);
     var products = await sheet!.values.map.allRows();
-
-    return products!;
+    return products ?? [];
   }
 
   Future putProduct(Product product) async {
@@ -234,7 +233,7 @@ class GSheetDb {
       for (var i = 0; i < list!.toList().length; i++) {
         Product testProduct = Product.fromJson(list.toList()[i]);
 
-        if (testProduct.id == product.id) {
+        if (testProduct.codigo == product.codigo) {
           await sheet.deleteRow(i + 2);
 
           await sheet.values.appendRow([
@@ -263,6 +262,7 @@ class GSheetDb {
     for (var i = 0; i < list!.toList().length; i++) {
       if (list.toList()[i]['id'] == id) {
         await sheet.deleteRow(i + 2);
+
         break;
       }
     }

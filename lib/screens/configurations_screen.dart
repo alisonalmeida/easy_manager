@@ -1,7 +1,5 @@
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
-import 'package:easy_manager/helper/world_time.dart';
-import 'package:easy_manager/main.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,8 +10,6 @@ class Configurations extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(loggedUser);
-
     return Scaffold(
         appBar: CustomAppBar(
           callback: () async => Navigator.pop(context),
@@ -26,11 +22,8 @@ class Configurations extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-                onPressed: () async {
-                  var v = await WorldTime.getDateFormatted();
-                  print(v);
-                },
-                child: Center(child: Text('teste')))
+                onPressed: () async {},
+                child: const Center(child: Text('teste')))
           ],
         ));
   }

@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, must_be_immutable
 
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';

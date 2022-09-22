@@ -96,12 +96,13 @@ class BudgetsScreen extends ConsumerWidget {
                                             context, budget);
                                       },
                                       editCallback: () {
+                                        print('ON EDIT $budget');
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 AddBudgetScreen(
-                                                    budgetId: budget.id!,
+                                                    budget: budget,
                                                     isUpdate: false),
                                           ),
                                         );
@@ -145,12 +146,13 @@ class BudgetsScreen extends ConsumerWidget {
                   try {
                     Budget budget = Budget();
                     await createUpdateBudget(budget);
+                    print('ON NEW BUDGET $budget');
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => AddBudgetScreen(
                                   isUpdate: false,
-                                  budgetId: budget.id,
+                                  budget: budget,
                                 )));
                   } catch (e) {
                     showGeneralInformationDialogErrorMessage(

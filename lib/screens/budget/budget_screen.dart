@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, must_be_immutable
 
 import 'dart:async';
 import 'package:easy_manager/consts.dart';
@@ -96,7 +96,6 @@ class BudgetsScreen extends ConsumerWidget {
                                             context, budget);
                                       },
                                       editCallback: () {
-                                        print('ON EDIT $budget');
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -146,7 +145,6 @@ class BudgetsScreen extends ConsumerWidget {
                   try {
                     Budget budget = Budget();
                     await createUpdateBudget(budget);
-                    print('ON NEW BUDGET $budget');
                     Navigator.push(
                         context,
                         MaterialPageRoute(

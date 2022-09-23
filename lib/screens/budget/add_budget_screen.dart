@@ -6,6 +6,7 @@ import 'package:easy_manager/custom_widgets/custom_modal_bottom_sheet_customer.d
 import 'package:easy_manager/custom_widgets/custom_search_text_field.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/budget.dart';
+import 'package:easy_manager/models/item_budget.dart';
 import 'package:easy_manager/screens/product/crud_product_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,11 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
 
   @override
   void initState() {
-    print('ON INIT ${widget.budget}');
+    ItemBudget itemBudget =
+        ItemBudget(produtoNome: 'nnnsad', produtoValor: 0, quantidade: 0);
+    widget.budget!.itens = [];
+    widget.budget!.itens!.add(itemBudget);
+    print(widget.budget);
     super.initState();
   }
 
@@ -176,7 +181,7 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                             showGeneralLoading(context);
                             widget.budget!.nomeCliente =
                                 await showCustomerChoiceDialog(context);
-
+                            print(widget.budget!);
                             await gSheetDb.putBudget(widget.budget!);
                             if (mounted) {
                               Navigator.pop(context);
@@ -239,38 +244,18 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
         if (snapshot.hasData) {
           var listProducts = snapshot.data as List<Map<String, String>>;
 
-          if (widget.budget!.listaProdutos == null) {
-            print('IFFFF');
-            widget.budget!.listaProdutos = [];
-            widget.budget!.listaValoresProdutos = [];
-            for (var element in listProducts) {
-              widget.budget!.listaProdutos!.add(
-                {'''"${element['nome']!}"''': 0},
-              );
-              widget.budget!.listaValoresProdutos!
-                  .add(double.parse(element['valorVenda']!));
-            }
-          } else {
-            
-            print('ELSE');
+          if (widget.budget!.itens == null) {
+            widget.budget!.itens = [];
           }
-          print(
-              'widget.budget!.listaProdutos:::::: ${widget.budget!.listaProdutos}');
 
-          var iterableProducts = widget.budget!.listaProdutos!.expand(
-            (element) => element.keys,
-          );
-          var iterableQuantity =
-              widget.budget!.listaProdutos!.expand((element) => element.values);
-          var lenghtList = widget.budget!.listaProdutos!.length;
           return ListView.builder(
-            itemCount: lenghtList,
+            itemCount: listProducts.length,
             itemBuilder: (context, index) {
               return Column(
                 children: [
                   Card(
                     child: ListTile(
-                      title: Text(iterableProducts.elementAt(index)),
+                      title: Text('NOME PRODUTO'),
                       subtitle: Text(
                           'R\$ ${listProducts.elementAt(index)['valorVenda']}'),
                       trailing: Container(
@@ -284,7 +269,8 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                           children: [
                             TextButton(
                               onPressed: () async {
-                                widget.budget!.decrementProduct(
+                                /**
+                                 * widget.budget!.decrementProduct(
                                     iterableProducts.elementAt(index),
                                     double.parse(listProducts
                                         .elementAt(index)['valorVenda']!));
@@ -296,6 +282,7 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                                   Navigator.pop(context);
                                 }
                                 setState(() {});
+                                 */
                               },
                               child: SizedBox(
                                   height: 15,
@@ -303,12 +290,14 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                                   child: SvgPicture.asset(kpathSvgMinus)),
                             ),
                             Text(
-                              iterableQuantity.elementAt(index).toString(),
+                              '0',
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                             TextButton(
                                 onPressed: () async {
+                                  /**
+                                   * 
                                   widget.budget!.addIncrementProduct(
                                       iterableProducts.elementAt(index),
                                       double.parse(listProducts
@@ -320,6 +309,7 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                                     Navigator.pop(context);
                                   }
                                   setState(() {});
+                                   */
                                 },
                                 child: SizedBox(
                                     height: 15,

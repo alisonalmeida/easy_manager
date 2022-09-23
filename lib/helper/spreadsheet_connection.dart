@@ -298,9 +298,7 @@ class GSheetDb {
         newId,
         budget.nomeCliente,
         budget.data,
-        budget.listaProdutos.toString(),
-        budget.listaValoresProdutos.toString(),
-        budget.valorTotal,
+        "[]",
         budget.valorTotal,
         budget.status,
       ]);
@@ -319,8 +317,7 @@ class GSheetDb {
             testBudget.id,
             budget.nomeCliente,
             budget.data,
-            budget.listaProdutos.toString(),
-            budget.listaValoresProdutos.toString(),
+            "budget.itens",
             budget.valorTotal,
             budget.status,
           ]);

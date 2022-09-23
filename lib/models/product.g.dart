@@ -11,12 +11,12 @@ Product _$ProductFromJson(Map<String, dynamic> json) => Product(
       codigo: json['codigo'] as String?,
       nome: json['nome'] as String?,
       fornecedorDocumento: json['fornecedorDocumento'] as String?,
-      valorCusto: (double.parse(json['valorCusto']) ),
-      valorVenda: (double.parse(json['valorVenda'])),
+      valorCusto: (json['valorCusto'] as num?)?.toDouble(),
+      valorVenda: (json['valorVenda'] as num?)?.toDouble(),
       marca: json['marca'] as String?,
       categoria: json['categoria'] as String?,
       unidadeMedida: json['unidadeMedida'] as String?,
-      quantidadeMinima: int.parse(json['quantidadeMinima']) ,
+      quantidadeMinima: json['quantidadeMinima'] as int?,
       descricao: json['descricao'] as String?,
     );
 

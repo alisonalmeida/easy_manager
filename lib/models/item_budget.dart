@@ -1,14 +1,15 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'item_budget.g.dart';
 
 @JsonSerializable()
 class ItemBudget {
+  String? idProduct;
   String? produtoNome;
   double? produtoValor;
   int? quantidade;
 
   ItemBudget({
+    this.idProduct,
     this.produtoNome,
     this.produtoValor,
     this.quantidade,
@@ -21,6 +22,6 @@ class ItemBudget {
 
   @override
   String toString() {
-    return 'produtoNome: $produtoNome, produtoValor: $produtoValor, quantidade: $quantidade';
+    return 'ItemBudget{idProduct: $idProduct, produtoNome: $produtoNome, produtoValor: $produtoValor, quantidade: $quantidade}';
   }
 }

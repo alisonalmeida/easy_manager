@@ -7,6 +7,7 @@ import 'package:easy_manager/custom_widgets/custom_search_text_field.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/budget.dart';
 import 'package:easy_manager/models/item_budget.dart';
+import 'package:easy_manager/models/product.dart';
 import 'package:easy_manager/screens/product/crud_product_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -30,17 +31,11 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
 
   @override
   void initState() {
-    ItemBudget itemBudget =
-        ItemBudget(produtoNome: 'nnnsad', produtoValor: 0, quantidade: 0);
-    widget.budget!.itens = [];
-    widget.budget!.itens!.add(itemBudget);
-    print(widget.budget);
     super.initState();
   }
 
   @override
   void dispose() {
-    print('ON DISPOSE ${widget.budget}');
     focusNode.dispose();
     searchController.dispose();
     super.dispose();
@@ -179,9 +174,10 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                           label: Text('Escolher'),
                           onPressed: () async {
                             showGeneralLoading(context);
-                            widget.budget!.nomeCliente =
-                                await showCustomerChoiceDialog(context);
-                            print(widget.budget!);
+
+                            var name = await showCustomerChoiceDialog(context);
+                            widget.budget!.changeCustomerName(name);
+
                             await gSheetDb.putBudget(widget.budget!);
                             if (mounted) {
                               Navigator.pop(context);
@@ -251,13 +247,14 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
           return ListView.builder(
             itemCount: listProducts.length,
             itemBuilder: (context, index) {
+              Product product = Product.fromJson(listProducts[index]);
+
               return Column(
                 children: [
                   Card(
                     child: ListTile(
-                      title: Text('NOME PRODUTO'),
-                      subtitle: Text(
-                          'R\$ ${listProducts.elementAt(index)['valorVenda']}'),
+                      title: Text(product.nome!),
+                      subtitle: Text('R\$ ${product.valorVenda}'),
                       trailing: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
@@ -296,12 +293,8 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                             ),
                             TextButton(
                                 onPressed: () async {
-                                  /**
-                                   * 
-                                  widget.budget!.addIncrementProduct(
-                                      iterableProducts.elementAt(index),
-                                      double.parse(listProducts
-                                          .elementAt(index)['valorVenda']!));
+                                  
+                                  widget.budget!.incrementItem(product);
                                   showGeneralLoading(context);
                                   await gSheetDb.putBudget(widget.budget!);
 
@@ -309,7 +302,7 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                                     Navigator.pop(context);
                                   }
                                   setState(() {});
-                                   */
+                                  
                                 },
                                 child: SizedBox(
                                     height: 15,

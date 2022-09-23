@@ -292,7 +292,36 @@ class GSheetDb {
   Future putBudget(Budget budget) async {
     Worksheet? sheet = ss.worksheetByTitle(_budgetsSheetTitle);
     budget.id ??= '';
-    if (budget.id!.isEmpty) {
+    if (budget.id!.isNotEmpty) {
+      var list = await sheet!.values.map.allRows();
+
+      for (var i = 0; i < list!.toList().length; i++) {
+        Budget testBudget = Budget.fromJson(list.toList()[i]);
+
+        if (testBudget.id == budget.id) {
+          await sheet.deleteRow(i + 2);
+          List<String> list = [];
+          for (var item in budget.itens!) {
+            list.add(
+                '''{"idProduct":${item.idProduct},"produtoNome":${item.produtoNome},"produtoValor":${item.produtoValor},"quantidade":${item.quantidade}''');
+                list.last += "}";
+          }
+
+          
+          print('SPREADSHOT: $list');
+
+          await sheet.values.appendRow([
+            testBudget.id,
+            budget.nomeCliente,
+            budget.data,
+            budget.itens!.isEmpty ? "[]" : "$list",
+            budget.valorTotal,
+            budget.status,
+          ]);
+          return testBudget.id;
+        }
+      }
+    } else {
       String newId = await WorldTime.getDateFormatted();
       await sheet!.values.appendRow([
         newId,
@@ -304,26 +333,6 @@ class GSheetDb {
       ]);
 
       return newId;
-    } else {
-      var list = await sheet!.values.map.allRows();
-
-      for (var i = 0; i < list!.toList().length; i++) {
-        Budget testBudget = Budget.fromJson(list.toList()[i]);
-
-        if (testBudget.id == budget.id) {
-          await sheet.deleteRow(i + 2);
-
-          await sheet.values.appendRow([
-            testBudget.id,
-            budget.nomeCliente,
-            budget.data,
-            "budget.itens",
-            budget.valorTotal,
-            budget.status,
-          ]);
-          return testBudget.id;
-        }
-      }
     }
   }
 

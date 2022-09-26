@@ -60,9 +60,9 @@ class GSheetDb {
         ProductProvider testeProvider =
             ProductProvider.fromMap(list.toList()[i]);
         if (testeProvider.id == productProvider.id) {
-          await sheet.deleteRow(i + 2);
+          await sheet.clearRow(i + 2);
 
-          await sheet.values.appendRow([
+          await sheet.values.insertRow(i + 2, [
             productProvider.id,
             productProvider.nome,
             productProvider.documento,
@@ -147,9 +147,9 @@ class GSheetDb {
         Customer testCustomer = Customer.fromMap(list.toList()[i]);
 
         if (testCustomer.id == customer.id) {
-          await sheet.deleteRow(i + 2);
+          await sheet.clearRow(i + 2);
 
-          await sheet.values.appendRow([
+          await sheet.values.insertRow(i + 2, [
             customer.id,
             customer.nome,
             customer.documento,
@@ -234,9 +234,9 @@ class GSheetDb {
         Product testProduct = Product.fromJson(list.toList()[i]);
 
         if (testProduct.codigo == product.codigo) {
-          await sheet.deleteRow(i + 2);
+          await sheet.clearRow(i + 2);
 
-          await sheet.values.appendRow([
+          await sheet.values.insertRow(i + 2, [
             product.id,
             product.codigo,
             product.nome,
@@ -299,18 +299,15 @@ class GSheetDb {
         Budget testBudget = Budget.fromJson(list.toList()[i]);
 
         if (testBudget.id == budget.id) {
-          await sheet.deleteRow(i + 2);
+          await sheet.clearRow(i + 2);
           List<String> list = [];
           for (var item in budget.itens!) {
             list.add(
                 '''{"idProduct":${item.idProduct},"produtoNome":${item.produtoNome},"produtoValor":${item.produtoValor},"quantidade":${item.quantidade}''');
-                list.last += "}";
+            list.last += "}";
           }
 
-          
-          print('SPREADSHOT: $list');
-
-          await sheet.values.appendRow([
+          await sheet.values.insertRow(i + 2, [
             testBudget.id,
             budget.nomeCliente,
             budget.data,

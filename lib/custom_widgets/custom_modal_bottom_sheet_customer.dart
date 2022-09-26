@@ -58,8 +58,7 @@ Future<String> showCustomerChoiceDialog(BuildContext context) async {
                             builder: (context) => CrudCustomerScreen(),
                           ));
                     }),
-                Expanded(
-                    child: FutureBuilder(
+                FutureBuilder(
                   future: listCustomers,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -73,6 +72,7 @@ Future<String> showCustomerChoiceDialog(BuildContext context) async {
                         mapList = mapList.reversed.toList();
 
                         return ListView.builder(
+                            shrinkWrap: true,
                             itemCount: mapList.toList().length,
                             itemBuilder: (context, index) {
                               Customer customer =
@@ -102,7 +102,7 @@ Future<String> showCustomerChoiceDialog(BuildContext context) async {
                       }
                     }
                   },
-                )),
+                ),
               ],
             ),
           );

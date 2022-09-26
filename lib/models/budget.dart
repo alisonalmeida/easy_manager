@@ -31,67 +31,56 @@ class Budget {
   }
 
   void incrementItem(Product product) {
-    print('INSERT');
+    ItemBudget newItem = ItemBudget(
+      idProduct: '"${product.id}"',
+      produtoNome: '"${product.nome}"',
+      produtoValor: product.valorVenda,
+      quantidade: 1,
+    );
     if (itens!.isNotEmpty) {
       for (var i = 0; i < itens!.length; i++) {
-        ItemBudget newItem = ItemBudget(
-            idProduct: '"${product.id}"',
-            produtoNome: '"${product.nome}"',
-            produtoValor: product.valorVenda,
-            quantidade: itens!.elementAt(i).quantidade!);
-
-        if (itens!.elementAt(i).idProduct == '"${product.id}"') {
-          print('IF 1');
-
+        if (itens!.elementAt(i).idProduct == newItem.idProduct) {
+          int quantidade = itens!.elementAt(i).quantidade!;
           itens!.removeAt(i);
-          newItem.quantidade = newItem.quantidade! + 1;
+          newItem.quantidade = newItem.quantidade! + quantidade;
           itens!.add(newItem);
-          break;
-        }
-        var v = itens!.map((e) => e.idProduct);
-        if (v.contains(itens!.elementAt(i).idProduct)) {
-          print('IF 2');
-          ItemBudget newItem = ItemBudget(
-            idProduct: '"${product.id}"',
-            produtoNome: '"${product.nome}"',
-            produtoValor: product.valorVenda,
-            quantidade: itens!.elementAt(i).quantidade,
-          );
-
-          newItem.quantidade = newItem.quantidade! + 1;
-          itens!.insert(i, newItem);
-          break;
+          calculateTotalValue();
+          return;
         }
       }
+      itens!.add(newItem);
+      calculateTotalValue();
+      return;
     }
+
     if (itens!.isEmpty) {
-      ItemBudget itemBudget = ItemBudget(
-        idProduct: '"${product.id}"',
-        produtoNome: '"${product.nome}"',
-        produtoValor: product.valorVenda,
-        quantidade: 1,
-      );
-      itens!.add(itemBudget);
+      itens!.add(newItem);
+      calculateTotalValue();
       return;
     }
   }
 
-  void decrementItem(String productName, double productValue) {
-    /**
-     *  var keysList = listaProdutos!.expand((element) => element.keys);
-    var quantityList = listaProdutos!.expand((element) => element.values);
-    var lenghtList = listaProdutos!.length;
-
-    for (var i = 0; i < lenghtList; i++) {
-      if (productName == keysList.elementAt(i) &&
-          quantityList.elementAt(i) > 0) {
-        listaProdutos![i][keysList.elementAt(i)] =
-            quantityList.elementAt(i) - 1;
-        valorTotal = valorTotal! - productValue;
-        break;
+  void decrementItem(Product product) {
+    for (var i = 0; i < itens!.length; i++) {
+      if (itens!.elementAt(i).idProduct == '"${product.id}"') {
+        if (itens!.elementAt(i).quantidade! > 0) {
+          itens!.elementAt(i).quantidade = itens!.elementAt(i).quantidade! - 1;
+          break;
+        }
+        if (itens!.elementAt(i).quantidade == 0) {
+          itens!.remove(itens!.elementAt(i));
+          break;
+        }
       }
     }
-     */
+    calculateTotalValue();
+  }
+
+  void calculateTotalValue() {
+    valorTotal = 0;
+    for (var element in itens!) {
+      valorTotal = element.produtoValor! * element.quantidade! + valorTotal;
+    }
   }
 
   @override

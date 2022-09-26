@@ -28,6 +28,9 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
   TextEditingController searchController = TextEditingController();
   FocusNode focusNode = FocusNode();
   double totalValue = 0;
+  bool listReverse = true;
+  bool isSearching = false;
+  List<Map<String, String>> listProducts = [];
 
   @override
   void initState() {
@@ -38,6 +41,7 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
   void dispose() {
     focusNode.dispose();
     searchController.dispose();
+
     super.dispose();
   }
 
@@ -78,49 +82,13 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
               color: white,
               iconPath: kpathSvgArrowBack,
               size: 30,
-              callback: () => Navigator.pop(context)),
+              callback: () async => Navigator.of(context).pop(true)),
         ),
-        actions: [
-          Consumer(
-            builder: (context, ref, child) => Padding(
-              padding: const EdgeInsets.only(right: 16),
-              child: ButtonRoundWithShadow(
-                  borderColor: black,
-                  shadowColor: black,
-                  color: white,
-                  iconPath: kpathSvgRefresh,
-                  size: 40,
-                  callback: () async {}),
-            ),
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Column(
           children: [
-            Row(
-              children: [
-                Flexible(
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: ShapeDecoration(shadows: const [
-                      BoxShadow(
-                        color: Colors.black,
-                        offset: Offset(
-                          3.0,
-                          4.0,
-                        ),
-                      )
-                    ], color: Colors.white, shape: Border.all()),
-                    child: SizedBox(
-                        height: 100,
-                        width: 200,
-                        child: Image.asset(kpathMainLogo)),
-                  ),
-                ),
-              ],
-            ),
             Container(
               padding: EdgeInsets.all(10),
               decoration: ShapeDecoration(shadows: const [
@@ -216,20 +184,25 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
           ],
         ),
       ),
-      floatingActionButton: ButtonRoundWithShadow(
-          borderColor: black,
-          shadowColor: black,
-          color: white,
-          iconPath: kpathSvgSave,
-          size: 50,
-          callback: () async {
-            setState(() {});
-            showGeneralLoading(context);
-
-            if (mounted) {
-              Navigator.pop(context);
-            }
-          }),
+      persistentFooterButtons: [
+        Consumer(
+          builder: (context, ref, child) => IconButton(
+              onPressed: () {
+                listReverse = !listReverse;
+                ref.refresh(productsProvider);
+              },
+              icon: Icon(Icons.filter_alt)),
+        ),
+        Consumer(
+          builder: (context, ref, child) => IconButton(
+              onPressed: () {
+                ref.refresh(productsProvider);
+                isSearching = !isSearching;
+                focusNode.requestFocus();
+              },
+              icon: Icon(Icons.search)),
+        )
+      ],
     );
   }
 
@@ -238,7 +211,16 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
       future: gSheetDb.getProducts(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          var listProducts = snapshot.data as List<Map<String, String>>;
+          listProducts = snapshot.data as List<Map<String, String>>;
+          listReverse ? listProducts = listProducts.reversed.toList() : null;
+          isSearching
+              ? listProducts = listProducts
+                  .where((element) => element['nome']
+                      .toString()
+                      .toLowerCase()
+                      .contains(searchController.text.toLowerCase()))
+                  .toList()
+              : null;
 
           if (widget.budget!.itens == null) {
             widget.budget!.itens = [];
@@ -248,6 +230,12 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
             itemCount: listProducts.length,
             itemBuilder: (context, index) {
               Product product = Product.fromJson(listProducts[index]);
+              ItemBudget itemBudget = ItemBudget();
+
+              try {
+                itemBudget = widget.budget!.itens!.firstWhere(
+                    (element) => '"${product.id}"' == element.idProduct);
+              } catch (e) {}
 
               return Column(
                 children: [
@@ -266,11 +254,7 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                           children: [
                             TextButton(
                               onPressed: () async {
-                                /**
-                                 * widget.budget!.decrementProduct(
-                                    iterableProducts.elementAt(index),
-                                    double.parse(listProducts
-                                        .elementAt(index)['valorVenda']!));
+                                widget.budget!.decrementItem(product);
                                 showGeneralLoading(context);
 
                                 await gSheetDb.putBudget(widget.budget!);
@@ -279,7 +263,6 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                                   Navigator.pop(context);
                                 }
                                 setState(() {});
-                                 */
                               },
                               child: SizedBox(
                                   height: 15,
@@ -287,13 +270,14 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                                   child: SvgPicture.asset(kpathSvgMinus)),
                             ),
                             Text(
-                              '0',
+                              itemBudget.quantidade == null
+                                  ? '0'
+                                  : itemBudget.quantidade.toString(),
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                             TextButton(
                                 onPressed: () async {
-                                  
                                   widget.budget!.incrementItem(product);
                                   showGeneralLoading(context);
                                   await gSheetDb.putBudget(widget.budget!);
@@ -302,7 +286,6 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                                     Navigator.pop(context);
                                   }
                                   setState(() {});
-                                  
                                 },
                                 child: SizedBox(
                                     height: 15,

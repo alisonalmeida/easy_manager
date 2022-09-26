@@ -7,14 +7,16 @@ part of 'item_budget.dart';
 // **************************************************************************
 
 ItemBudget _$ItemBudgetFromJson(Map<String, dynamic> json) => ItemBudget(
-      produtoNome: json['produtoNome'] as String?,
+      idProduct: '"${json['idProduct']}"',
+      produtoNome: '"${json['produtoNome']}"',
       produtoValor: (json['produtoValor'] as num?)?.toDouble(),
       quantidade: json['quantidade'] as int?,
     );
 
 Map<String, dynamic> _$ItemBudgetToJson(ItemBudget instance) =>
     <String, dynamic>{
-      'produtoNome': instance.produtoNome,
+      'idProduct': '"${instance.idProduct}"',
+      'produtoNome': '"${instance.produtoNome}"',
       'produtoValor': instance.produtoValor,
       'quantidade': instance.quantidade,
     };

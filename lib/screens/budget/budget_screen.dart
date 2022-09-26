@@ -20,7 +20,7 @@ class BudgetsScreen extends ConsumerWidget {
   static String name = 'Orçamentos';
 
   bool showFabVisible = true;
-  bool listReverse = false;
+  bool listReverse = true;
   bool isSearch = true;
   bool isSearching = false;
   FocusNode focusNode = FocusNode();
@@ -54,68 +54,67 @@ class BudgetsScreen extends ConsumerWidget {
                       },
                       focusNode: focusNode,
                       searchController: searchController,
+                      onChanged: (p0) => ref.refresh(budgetsProvider),
                     )
                   : Container(),
               Expanded(
                 child: budgetList.when(
-                    data: (data) {
-                      List<Map<String, String>> mapList = data;
-                      listReverse ? mapList = mapList.reversed.toList() : null;
-                      isSearching
-                          ? mapList = mapList
-                              .where((element) => element['nomeCliente']
-                                  .toString()
-                                  .toLowerCase()
-                                  .contains(
-                                      searchController.text.toLowerCase()))
-                              .toList()
-                          : null;
-                      return NotificationListener<UserScrollNotification>(
-                        onNotification: (notification) {
-                          if (notification.direction ==
-                              ScrollDirection.reverse) {
-                            showFabVisible = false;
-                          }
-                          if (notification.direction ==
-                              ScrollDirection.forward) {
-                            showFabVisible = true;
-                          }
-                          return true;
-                        },
-                        child: mapList.isEmpty
-                            ? EmptyWidget()
-                            : ListView.builder(
-                                itemCount: mapList.toList().length,
-                                itemBuilder: (context, index) {
-                                  Budget budget =
-                                      Budget.fromJson(mapList[index]);
+                  data: (data) {
+                    List<Map<String, String>> mapList = data;
+                    listReverse ? mapList = mapList.reversed.toList() : null;
+                    isSearching
+                        ? mapList = mapList
+                            .where((element) => element['nomeCliente']
+                                .toString()
+                                .toLowerCase()
+                                .contains(searchController.text.toLowerCase()))
+                            .toList()
+                        : null;
+                    return NotificationListener<UserScrollNotification>(
+                      onNotification: (notification) {
+                        if (notification.direction == ScrollDirection.reverse) {
+                          showFabVisible = false;
+                        }
+                        if (notification.direction == ScrollDirection.forward) {
+                          showFabVisible = true;
+                        }
+                        return true;
+                      },
+                      child: mapList.isEmpty
+                          ? EmptyWidget()
+                          : ListView.builder(
+                              itemCount: mapList.toList().length,
+                              itemBuilder: (context, index) {
+                                Budget budget = Budget.fromJson(mapList[index]);
 
-                                  return CustomListTile(
-                                      deleteCallback: () async {
-                                        await _showDeleteAlertDialog(
-                                            context, budget);
-                                      },
-                                      editCallback: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                AddBudgetScreen(
-                                                    budget: budget,
-                                                    isUpdate: false),
-                                          ),
-                                        );
-                                      },
-                                      title: budget.nomeCliente!,
-                                      icon: Icons.list,
-                                      subtitle: budget.valorTotal.toString());
-                                }),
-                      );
-                    },
-                    error: (error, stackTrace) => Center(
-                        child: Text(error.toString() + stackTrace.toString())),
-                    loading: () =>
-                        Center(child: CircularProgressIndicator(color: black))),
+                                return CustomListTile(
+                                    deleteCallback: () async {
+                                      await _showDeleteAlertDialog(
+                                          context, budget);
+                                    },
+                                    editCallback: () async {
+                                      var shoudRefresh =
+                                          await Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => AddBudgetScreen(
+                                              budget: budget, isUpdate: false),
+                                        ),
+                                      );
+                                      shoudRefresh
+                                          ? ref.refresh(budgetsProvider)
+                                          : null;
+                                    },
+                                    title: budget.nomeCliente!,
+                                    icon: Icons.list,
+                                    subtitle: budget.valorTotal.toString());
+                              }),
+                    );
+                  },
+                  error: (error, stackTrace) => Center(
+                      child: Text(error.toString() + stackTrace.toString())),
+                  loading: () =>
+                      Center(child: CircularProgressIndicator(color: black)),
+                ),
               ),
             ],
           ),
@@ -130,7 +129,6 @@ class BudgetsScreen extends ConsumerWidget {
           IconButton(
               onPressed: () {
                 ref.refresh(budgetsProvider);
-
                 isSearching = !isSearching;
                 focusNode.requestFocus();
               },
@@ -143,15 +141,17 @@ class BudgetsScreen extends ConsumerWidget {
                 color: white,
                 callback: () async {
                   try {
+                    bool? shoudRefresh;
                     Budget budget = Budget();
                     await createUpdateBudget(budget);
-                    Navigator.push(
+                    shoudRefresh = await Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => AddBudgetScreen(
                                   isUpdate: false,
                                   budget: budget,
                                 )));
+                    shoudRefresh == true ? ref.refresh(budgetsProvider) : null;
                   } catch (e) {
                     showGeneralInformationDialogErrorMessage(
                         e.toString(), context);

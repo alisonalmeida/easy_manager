@@ -8,11 +8,13 @@ import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/budget.dart';
 import 'package:easy_manager/models/item_budget.dart';
 import 'package:easy_manager/models/product.dart';
+import 'package:easy_manager/screens/generate_budget_report.dart';
 import 'package:easy_manager/screens/product/crud_product_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:screenshot/screenshot.dart';
 
 class AddBudgetScreen extends StatefulWidget {
   const AddBudgetScreen({Key? key, this.budget, required this.isUpdate})
@@ -29,7 +31,7 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
   FocusNode focusNode = FocusNode();
   double totalValue = 0;
   bool listReverse = true;
-  bool isSearching = false;
+  bool isSearching = true;
   List<Map<String, String>> listProducts = [];
 
   @override
@@ -158,16 +160,21 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                 ],
               ),
             ),
-            SearchTextField(
-              clearField: () {
-                searchController.clear();
-              },
-              focusNode: focusNode,
-              searchController: searchController,
-              onChanged: (v) {
-                setState(() {});
-              },
-            ),
+            isSearching
+                ? Consumer(
+                    builder: (context, ref, child) => SearchTextField(
+                      clearField: () {
+                        searchController.clear();
+                        setState(() {});
+                      },
+                      focusNode: focusNode,
+                      searchController: searchController,
+                      onChanged: (v) {
+                        ref.refresh(productsProvider);
+                      },
+                    ),
+                  )
+                : Container(),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                   backgroundColor: white, foregroundColor: black),
@@ -199,87 +206,83 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                 ref.refresh(productsProvider);
                 isSearching = !isSearching;
                 focusNode.requestFocus();
+                setState(() {});
               },
               icon: Icon(Icons.search)),
         )
       ],
+      floatingActionButton: ButtonRoundWithShadow(
+          borderColor: black,
+          shadowColor: black,
+          color: white,
+          iconPath: kpathSvgShare,
+          size: 50,
+          callback: () {
+            ScreenshotController screenshotController = ScreenshotController();
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => GenerateBudgetReport(
+                      budget: widget.budget!,
+                      screenshotController: screenshotController),
+                ));
+          }),
     );
   }
 
-  Widget _futureBuilder() {
-    return FutureBuilder(
-      future: gSheetDb.getProducts(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          listProducts = snapshot.data as List<Map<String, String>>;
-          listReverse ? listProducts = listProducts.reversed.toList() : null;
-          isSearching
-              ? listProducts = listProducts
-                  .where((element) => element['nome']
-                      .toString()
-                      .toLowerCase()
-                      .contains(searchController.text.toLowerCase()))
-                  .toList()
-              : null;
+  _futureBuilder() {
+    return Consumer(
+      builder: (context, ref, child) {
+        var list = ref.watch(productsProvider);
+        return list.when(
+          data: (data) {
+            listProducts = data;
+            listReverse ? listProducts = listProducts.reversed.toList() : null;
 
-          if (widget.budget!.itens == null) {
-            widget.budget!.itens = [];
-          }
+            isSearching
+                ? listProducts = listProducts.where((element) {
+                    return element['nome']
+                        .toString()
+                        .toLowerCase()
+                        .contains(searchController.text.toLowerCase());
+                  }).toList()
+                : null;
 
-          return ListView.builder(
-            itemCount: listProducts.length,
-            itemBuilder: (context, index) {
-              Product product = Product.fromJson(listProducts[index]);
-              ItemBudget itemBudget = ItemBudget();
+            if (widget.budget!.itens == null) {
+              widget.budget!.itens = [];
+            }
 
-              try {
-                itemBudget = widget.budget!.itens!.firstWhere(
-                    (element) => '"${product.id}"' == element.idProduct);
-              } catch (e) {}
+            return ListView.builder(
+              itemCount: listProducts.length,
+              itemBuilder: (context, index) {
+                Product product = Product.fromJson(listProducts[index]);
+                ItemBudget itemBudget = ItemBudget();
 
-              return Column(
-                children: [
-                  Card(
-                    child: ListTile(
-                      title: Text(product.nome!),
-                      subtitle: Text('R\$ ${product.valorVenda}'),
-                      trailing: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border:
-                              Border.all(color: productBackgroundColorShadow),
-                          shape: BoxShape.rectangle,
-                        ),
-                        child: Wrap(
-                          children: [
-                            TextButton(
-                              onPressed: () async {
-                                widget.budget!.decrementItem(product);
-                                showGeneralLoading(context);
+                try {
+                  itemBudget = widget.budget!.itens!.firstWhere(
+                      (element) => '"${product.id}"' == element.idProduct);
+                } catch (e) {}
 
-                                await gSheetDb.putBudget(widget.budget!);
-
-                                if (mounted) {
-                                  Navigator.pop(context);
-                                }
-                                setState(() {});
-                              },
-                              child: SizedBox(
-                                  height: 15,
-                                  width: 15,
-                                  child: SvgPicture.asset(kpathSvgMinus)),
-                            ),
-                            Text(
-                              itemBudget.quantidade == null
-                                  ? '0'
-                                  : itemBudget.quantidade.toString(),
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            TextButton(
+                return Column(
+                  children: [
+                    Card(
+                      child: ListTile(
+                        title: Text(product.nome!),
+                        subtitle: Text('R\$ ${product.valorVenda}'),
+                        trailing: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border:
+                                Border.all(color: productBackgroundColorShadow),
+                            shape: BoxShape.rectangle,
+                          ),
+                          child: Wrap(
+                            children: [
+                              TextButton(
                                 onPressed: () async {
-                                  widget.budget!.incrementItem(product);
+                                  widget.budget!.decrementItem(product);
                                   showGeneralLoading(context);
+
                                   await gSheetDb.putBudget(widget.budget!);
 
                                   if (mounted) {
@@ -290,19 +293,49 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
                                 child: SizedBox(
                                     height: 15,
                                     width: 15,
-                                    child: SvgPicture.asset(kpathSvgPlus))),
-                          ],
+                                    child: SvgPicture.asset(kpathSvgMinus)),
+                              ),
+                              Text(
+                                itemBudget.quantidade == null
+                                    ? '0'
+                                    : itemBudget.quantidade.toString(),
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                              TextButton(
+                                  onPressed: () async {
+                                    widget.budget!.incrementItem(product);
+                                    showGeneralLoading(context);
+                                    await gSheetDb.putBudget(widget.budget!);
+
+                                    if (mounted) {
+                                      Navigator.pop(context);
+                                    }
+                                    setState(() {});
+                                  },
+                                  child: SizedBox(
+                                      height: 15,
+                                      width: 15,
+                                      child: SvgPicture.asset(kpathSvgPlus))),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              );
-            },
-          );
-        } else {
-          return Center(child: CircularProgressIndicator(color: black));
-        }
+                  ],
+                );
+              },
+            );
+          },
+          error: (error, stackTrace) {
+            return Container();
+          },
+          loading: () => Center(
+            child: CircularProgressIndicator(
+              color: black,
+            ),
+          ),
+        );
       },
     );
   }

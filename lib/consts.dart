@@ -22,6 +22,7 @@ const String kpathSvgShuffle = 'lib/assets/svg/shuffle.svg';
 const String kpathSvgSettings = 'lib/assets/svg/settings.svg';
 const String kpathSvgBudgets = 'lib/assets/svg/budget.svg';
 const String kpathSvgSave = 'lib/assets/svg/save.svg';
+const String kpathSvgShare= 'lib/assets/svg/share.svg';
 
 const String kpathLottieCheck = 'lib/assets/animations/home_page_check.json';
 const List<String> kpathLottieIntro = [

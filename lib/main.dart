@@ -1,13 +1,15 @@
 // ignore_for_file: prefer_const_constructors
 // flutter pub run build_runner build --delete-conflicting-outputs
+
 import 'package:easy_manager/helper/spreadsheet_connection.dart';
 import 'package:easy_manager/models/user_model.dart';
-import 'package:easy_manager/screens/budget/budget_screen.dart';
-import 'package:easy_manager/screens/home_page_screen.dart';
+import 'package:easy_manager/screens/error_page.dart';
+import 'package:easy_manager/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-late GSheetDb gSheetDb;
+GSheetDb gSheetDb = GSheetDb();
+
 final usersProvider = FutureProvider(
   (_) => gSheetDb.getUsers(),
 );
@@ -32,11 +34,12 @@ final budgetsProvider = FutureProvider(
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  gSheetDb = GSheetDb();
-  await gSheetDb.init();
-
-  runApp(ProviderScope(child: const MyApp()));
+  try {
+    await gSheetDb.init();
+    runApp(ProviderScope(child: const MyApp()));
+  } catch (e) {
+    runApp(ErrorApp());
+  }
 }
 
 class MyApp extends ConsumerWidget {
@@ -46,7 +49,19 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: LoginPage(),
+    );
+  }
+}
+
+class ErrorApp extends ConsumerWidget {
+  const ErrorApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: ErrorPage(),
     );
   }
 }

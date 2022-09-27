@@ -4,11 +4,12 @@ import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_modal_bottom_sheet_customer.dart';
 import 'package:easy_manager/custom_widgets/custom_search_text_field.dart';
+import 'package:easy_manager/helper/world_time.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/budget.dart';
 import 'package:easy_manager/models/item_budget.dart';
 import 'package:easy_manager/models/product.dart';
-import 'package:easy_manager/screens/generate_budget_report.dart';
+import 'package:easy_manager/screens/budget/generate_budget_report.dart';
 import 'package:easy_manager/screens/product/crud_product_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -16,17 +17,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:screenshot/screenshot.dart';
 
-class AddBudgetScreen extends StatefulWidget {
-  const AddBudgetScreen({Key? key, this.budget, required this.isUpdate})
+class CrudBudgetScreen extends StatefulWidget {
+  const CrudBudgetScreen({Key? key, this.budget, required this.isUpdate})
       : super(key: key);
   final Budget? budget;
   final bool isUpdate;
 
   @override
-  State<AddBudgetScreen> createState() => _AddBudgetScreenState();
+  State<CrudBudgetScreen> createState() => _CrudBudgetScreenState();
 }
 
-class _AddBudgetScreenState extends State<AddBudgetScreen> {
+class _CrudBudgetScreenState extends State<CrudBudgetScreen> {
   TextEditingController searchController = TextEditingController();
   FocusNode focusNode = FocusNode();
   double totalValue = 0;
@@ -104,38 +105,32 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
               ], color: Colors.white, shape: Border.all()),
               child: Row(
                 children: [
-                  Flexible(
-                    child: Text(
-                      'Cliente: ',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
+                  RichText(
+                      text: TextSpan(
+                    children: [
+                      TextSpan(
+                          text: 'Cliente: ', style: TextStyle(color: black)),
+                      TextSpan(
+                        text: '${widget.budget!.nomeCliente}',
+                        style: TextStyle(
+                            color: black, fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  )),
                   widget.budget!.nomeCliente!.isNotEmpty
-                      ? Flexible(
-                          child: Row(
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  widget.budget!.nomeCliente!,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () async {
-                                  showGeneralLoading(context);
-                                  widget.budget!.nomeCliente = '';
+                      ? IconButton(
+                          onPressed: () async {
+                            showGeneralLoading(context);
+                            widget.budget!.nomeCliente = '';
 
-                                  await gSheetDb.putBudget(widget.budget!);
-                                  if (mounted) {
-                                    Navigator.pop(context);
-                                  }
+                            await gSheetDb.putBudget(widget.budget!);
+                            if (mounted) {
+                              Navigator.pop(context);
+                            }
 
-                                  setState(() {});
-                                },
-                                icon: Icon(Icons.clear),
-                              )
-                            ],
-                          ),
+                            setState(() {});
+                          },
+                          icon: Icon(Icons.clear),
                         )
                       : ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
@@ -215,10 +210,11 @@ class _AddBudgetScreenState extends State<AddBudgetScreen> {
           borderColor: black,
           shadowColor: black,
           color: white,
-          iconPath: kpathSvgShare,
+          iconPath: kpathSvgSave,
           size: 50,
           callback: () {
             ScreenshotController screenshotController = ScreenshotController();
+
             Navigator.push(
                 context,
                 MaterialPageRoute(

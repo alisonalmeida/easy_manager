@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_manager/consts.dart';
+import 'package:easy_manager/helper/check_connectivity.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/user_model.dart';
 import 'package:easy_manager/screens/home_page_screen.dart';
@@ -19,8 +21,6 @@ class LoginPage extends ConsumerWidget {
     final providedLoggedUser = ref.watch(loggedUser);
 
     tryLogin() async {
-      showGeneralLoading(context);
-
       bool userFound = false;
 
       users.when(
@@ -43,7 +43,6 @@ class LoginPage extends ConsumerWidget {
               ),
             );
           } else {
-            Navigator.pop(context);
             showGeneralInformationDialogErrorMessage(
                 'Usuário ou Senha incorretos', context);
           }
@@ -52,61 +51,78 @@ class LoginPage extends ConsumerWidget {
           showGeneralInformationDialogErrorMessage(error.toString(), context);
         },
         loading: () {
-          Future.delayed(Duration(seconds: 2));
           showGeneralLoading(context);
-          Future.delayed(Duration(seconds: 2));
         },
       );
     }
 
     return Scaffold(
-        body: Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 80.0),
-          child: Center(
-            child: SizedBox(
-                width: 200, height: 150, child: Image.asset(kpathMainLogo)),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 80.0),
+            child: Center(
+              child: SizedBox(
+                  width: 200, height: 150, child: Image.asset(kpathMainLogo)),
+            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: TextField(
-            keyboardType: TextInputType.emailAddress,
-            controller: emailController,
-            decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Email',
-                hintText: 'Ex. abc@gmail.com'),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: TextField(
+              keyboardType: TextInputType.emailAddress,
+              controller: emailController,
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Email',
+                  hintText: 'Ex. abc@gmail.com'),
+            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(
-              left: 15.0, right: 15.0, top: 15, bottom: 40),
-          child: TextField(
-            onEditingComplete: () => tryLogin(),
-            controller: passwordController,
-            obscureText: true,
-            decoration: const InputDecoration(
-                border: OutlineInputBorder(), labelText: 'Senha'),
+          Padding(
+            padding: const EdgeInsets.only(
+                left: 15.0, right: 15.0, top: 15, bottom: 40),
+            child: TextField(
+              onEditingComplete: () => tryLogin(),
+              controller: passwordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(), labelText: 'Senha'),
+            ),
           ),
-        ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            fixedSize: Size(250, 50),
-            backgroundColor: const Color.fromARGB(255, 155, 205, 255),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              fixedSize: Size(250, 50),
+              backgroundColor: const Color.fromARGB(255, 155, 205, 255),
+            ),
+            onPressed: () async => tryLogin(),
+            child: const Text(
+              'Acessar',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, fontSize: 25, color: black),
+            ),
           ),
-          onPressed: () async => tryLogin(),
-          child: const Text(
-            'Acessar',
-            style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 25, color: black),
+          const SizedBox(
+            height: 100,
           ),
-        ),
-        const SizedBox(
-          height: 100,
-        ),
-      ],
-    ));
+        ],
+      ),
+      bottomSheet: StreamBuilder(
+        stream: Connection().checkConnection(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            ConnectivityResult result = snapshot.data as ConnectivityResult;
+            if (result == ConnectivityResult.none) {
+              return Text(
+                'SEM INTERNET',
+                style: TextStyle(backgroundColor: Colors.red),
+              );
+            } else {
+              return Row();
+            }
+          } else {
+            return Row();
+          }
+        },
+      ),
+    );
   }
 }

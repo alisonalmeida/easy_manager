@@ -9,7 +9,7 @@ import 'package:easy_manager/custom_widgets/custom_search_text_field.dart';
 import 'package:easy_manager/custom_widgets/empty_widget.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/budget.dart';
-import 'package:easy_manager/screens/budget/add_budget_screen.dart';
+import 'package:easy_manager/screens/budget/crud_budget_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -96,8 +96,10 @@ class BudgetsScreen extends ConsumerWidget {
                                       var shoudRefresh =
                                           await Navigator.of(context).push(
                                         MaterialPageRoute(
-                                          builder: (context) => AddBudgetScreen(
-                                              budget: budget, isUpdate: false),
+                                          builder: (context) =>
+                                              CrudBudgetScreen(
+                                                  budget: budget,
+                                                  isUpdate: false),
                                         ),
                                       );
                                       shoudRefresh
@@ -147,7 +149,7 @@ class BudgetsScreen extends ConsumerWidget {
                     shoudRefresh = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => AddBudgetScreen(
+                            builder: (context) => CrudBudgetScreen(
                                   isUpdate: false,
                                   budget: budget,
                                 )));

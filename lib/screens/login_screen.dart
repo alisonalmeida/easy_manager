@@ -57,53 +57,55 @@ class LoginPage extends ConsumerWidget {
     }
 
     return Scaffold(
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 80.0),
-            child: Center(
-              child: SizedBox(
-                  width: 200, height: 150, child: Image.asset(kpathMainLogo)),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 80.0),
+              child: Center(
+                child: SizedBox(
+                    width: 200, height: 150, child: Image.asset(kpathMainLogo)),
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: TextField(
-              keyboardType: TextInputType.emailAddress,
-              controller: emailController,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Email',
-                  hintText: 'Ex. abc@gmail.com'),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: TextField(
+                keyboardType: TextInputType.emailAddress,
+                controller: emailController,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Email',
+                    hintText: 'Ex. abc@gmail.com'),
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(
-                left: 15.0, right: 15.0, top: 15, bottom: 40),
-            child: TextField(
-              onEditingComplete: () => tryLogin(),
-              controller: passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(), labelText: 'Senha'),
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: 15.0, right: 15.0, top: 15, bottom: 40),
+              child: TextField(
+                onEditingComplete: () => tryLogin(),
+                controller: passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(), labelText: 'Senha'),
+              ),
             ),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              fixedSize: Size(250, 50),
-              backgroundColor: const Color.fromARGB(255, 155, 205, 255),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                fixedSize: Size(250, 50),
+                backgroundColor: const Color.fromARGB(255, 155, 205, 255),
+              ),
+              onPressed: () async => tryLogin(),
+              child: const Text(
+                'Acessar',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, fontSize: 25, color: black),
+              ),
             ),
-            onPressed: () async => tryLogin(),
-            child: const Text(
-              'Acessar',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 25, color: black),
+            const SizedBox(
+              height: 100,
             ),
-          ),
-          const SizedBox(
-            height: 100,
-          ),
-        ],
+          ],
+        ),
       ),
       bottomSheet: StreamBuilder(
         stream: Connection().checkConnection(),

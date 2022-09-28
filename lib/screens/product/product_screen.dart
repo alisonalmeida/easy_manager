@@ -1,6 +1,10 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously, must_be_immutable
 
+import 'dart:io';
+
+import 'package:barcode/barcode.dart';
 import 'package:easy_manager/consts.dart';
+import 'package:easy_manager/core/generate_product_qr_code.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_list_tile.dart';
@@ -13,6 +17,10 @@ import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class ProductsScreen extends ConsumerWidget {
   ProductsScreen({Key? key}) : super(key: key);
@@ -27,6 +35,7 @@ class ProductsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var productList = ref.watch(productsProvider);
+    Product productteste = Product();
 
     return Scaffold(
         backgroundColor: productBackgroundColor,
@@ -82,6 +91,7 @@ class ProductsScreen extends ConsumerWidget {
                               itemBuilder: (context, index) {
                                 Product product =
                                     Product.fromJson(mapList[index]);
+                                productteste = product;
 
                                 return CustomListTile(
                                     deleteCallback: () async {
@@ -119,6 +129,13 @@ class ProductsScreen extends ConsumerWidget {
         ),
         persistentFooterButtons: [
           IconButton(
+              onPressed: () async {
+                // Create a DataMatrix barcode
+                final dm = Barcode.dataMatrix();
+                buildBarcode(productteste, dm, 'data');
+              },
+              icon: Icon(Icons.qr_code)),
+          IconButton(
               onPressed: () {
                 listReverse = !listReverse;
                 ref.refresh(productsProvider);
@@ -144,6 +161,28 @@ class ProductsScreen extends ConsumerWidget {
                 shadowColor: woodSmoke,
                 iconPath: kpathSvgPlus)
             : null);
+  }
+
+  void buildBarcode(
+    Product product,
+    Barcode bc,
+    String data, {
+    String? filename,
+    double? width,
+    double? height,
+    double? fontHeight,
+  }) async {
+    /// Create the Barcode
+    final svg = bc.toSvg(
+      data,
+      width: width ?? 200,
+      height: height ?? 80,
+      fontHeight: fontHeight,
+    );
+
+    // Save the image
+
+    GenerateProductQrCode(barcode: bc, product: product).generateDocument();
   }
 
   Future _showDeleteAlertDialog(context, Product product) async {

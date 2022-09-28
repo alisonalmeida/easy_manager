@@ -1,15 +1,14 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:easy_manager/consts.dart';
+import 'package:easy_manager/core/generate_budget_pdf.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_modal_bottom_sheet_customer.dart';
 import 'package:easy_manager/custom_widgets/custom_search_text_field.dart';
-import 'package:easy_manager/helper/world_time.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/budget.dart';
 import 'package:easy_manager/models/item_budget.dart';
 import 'package:easy_manager/models/product.dart';
-import 'package:easy_manager/screens/budget/generate_budget_report.dart';
 import 'package:easy_manager/screens/product/crud_product_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -212,16 +211,12 @@ class _CrudBudgetScreenState extends State<CrudBudgetScreen> {
           color: white,
           iconPath: kpathSvgSave,
           size: 50,
-          callback: () {
-            ScreenshotController screenshotController = ScreenshotController();
-
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => GenerateBudgetReport(
-                      budget: widget.budget!,
-                      screenshotController: screenshotController),
-                ));
+          callback: () async {
+            showGeneralLoading(context);
+            await GenerateBudgetPdf(budget: widget.budget!).generateDocument();
+            if (mounted) {
+              Navigator.pop(context);
+            }
           }),
     );
   }

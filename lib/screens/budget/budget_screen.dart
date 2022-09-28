@@ -93,7 +93,7 @@ class BudgetsScreen extends ConsumerWidget {
                                           context, budget);
                                     },
                                     editCallback: () async {
-                                      var shoudRefresh =
+                                      bool? shoudRefresh =
                                           await Navigator.of(context).push(
                                         MaterialPageRoute(
                                           builder: (context) =>
@@ -102,9 +102,11 @@ class BudgetsScreen extends ConsumerWidget {
                                                   isUpdate: false),
                                         ),
                                       );
-                                      shoudRefresh
-                                          ? ref.refresh(budgetsProvider)
-                                          : null;
+
+                                      if (shoudRefresh == null ||
+                                          shoudRefresh) {
+                                        ref.refresh(budgetsProvider);
+                                      }
                                     },
                                     title: budget.nomeCliente!,
                                     icon: Icons.list,

@@ -1,10 +1,10 @@
 import 'package:easy_manager/credentials.dart';
-import 'package:easy_manager/helper/world_time.dart';
 import 'package:easy_manager/models/budget.dart';
 import 'package:easy_manager/models/customer_model.dart';
 import 'package:easy_manager/models/product.dart';
 import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:gsheets/gsheets.dart';
+import 'package:intl/intl.dart';
 
 class GSheetDb {
   late final GSheets gSheets;
@@ -36,7 +36,9 @@ class GSheetDb {
     Worksheet? sheet = ss.worksheetByTitle(_providersSheetTitle);
 
     if (productProvider.id!.isEmpty) {
-      String newId = await WorldTime.getDateFormatted();
+      final DateTime now = DateTime.now();
+      String newId = DateFormat('yyyyMMddhhmms').format(now);
+
       await sheet!.values.appendRow([
         newId,
         productProvider.nome,
@@ -123,7 +125,8 @@ class GSheetDb {
     Worksheet? sheet = ss.worksheetByTitle(_customersSheetTitle);
 
     if (customer.id!.isEmpty) {
-      String newId = await WorldTime.getDateFormatted();
+      final DateTime now = DateTime.now();
+      String newId = DateFormat('yyyyMMddhhmms').format(now);
       await sheet!.values.appendRow([
         newId,
         customer.nome,
@@ -213,7 +216,8 @@ class GSheetDb {
     Worksheet? sheet = ss.worksheetByTitle(_productsSheetTitle);
 
     if (product.id!.isEmpty) {
-      String newId = await WorldTime.getDateFormatted();
+      final DateTime now = DateTime.now();
+      String newId = DateFormat('yyyyMMddhhmms').format(now);
       await sheet!.values.appendRow([
         newId,
         product.codigo,
@@ -319,7 +323,8 @@ class GSheetDb {
         }
       }
     } else {
-      String newId = await WorldTime.getDateFormatted();
+      final DateTime now = DateTime.now();
+      String newId = DateFormat('yyyyMMddhhmms').format(now);
       await sheet!.values.appendRow([
         newId,
         budget.nomeCliente,

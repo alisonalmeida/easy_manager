@@ -83,8 +83,9 @@ class CustomerScreen extends ConsumerWidget {
                                 Customer customer =
                                     Customer.fromMap(mapList[index]);
 
-                                return CustomListTile(
-                                    deleteCallback: () async =>
+                                return CustomListTile(listOptions: Container(),
+                                    /**
+                                     * deleteCallback: () async =>
                                         await _showDeleteAlertDialog(
                                             context, customer),
                                     editCallback: () async {
@@ -95,6 +96,7 @@ class CustomerScreen extends ConsumerWidget {
                                                   CrudCustomerScreen(
                                                       id: customer.id)));
                                     },
+                                     */
                                     title: customer.nome!,
                                     icon: Icons.person,
                                     subtitle: customer.documento!);

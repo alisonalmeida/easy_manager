@@ -88,7 +88,9 @@ class BudgetsScreen extends ConsumerWidget {
                                 Budget budget = Budget.fromJson(mapList[index]);
 
                                 return CustomListTile(
-                                    deleteCallback: () async {
+                                    listOptions: Container(),
+                                    /**
+                                     * deleteCallback: () async {
                                       await _showDeleteAlertDialog(
                                           context, budget);
                                     },
@@ -108,6 +110,7 @@ class BudgetsScreen extends ConsumerWidget {
                                         ref.refresh(budgetsProvider);
                                       }
                                     },
+                                     */
                                     title: budget.nomeCliente!,
                                     icon: Icons.list,
                                     subtitle: budget.valorTotal.toString());

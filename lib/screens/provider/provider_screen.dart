@@ -84,8 +84,9 @@ class ProvidersScreen extends ConsumerWidget {
                                 ProductProvider productProvider =
                                     ProductProvider.fromMap(mapList[index]);
 
-                                return CustomListTile(
-                                    deleteCallback: () async =>
+                                return CustomListTile(listOptions: Container(),
+                                    /**
+                                     * deleteCallback: () async =>
                                         await _showDeleteAlertDialog(
                                             context, productProvider),
                                     editCallback: () {
@@ -98,6 +99,7 @@ class ProvidersScreen extends ConsumerWidget {
                                         ),
                                       );
                                     },
+                                     */
                                     title: productProvider.nome!,
                                     icon: Icons.factory,
                                     subtitle: productProvider.documento!);

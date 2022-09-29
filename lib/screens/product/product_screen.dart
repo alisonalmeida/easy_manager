@@ -94,19 +94,8 @@ class ProductsScreen extends ConsumerWidget {
                                 productteste = product;
 
                                 return CustomListTile(
-                                    deleteCallback: () async {
-                                      await _showDeleteAlertDialog(
-                                          context, product);
-                                    },
-                                    editCallback: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              CrudProductScreen(id: product.id),
-                                        ),
-                                      );
-                                    },
+                                    listOptions:
+                                        buildOptionsMenu(context, product),
                                     title: product.nome!,
                                     icon: Icons.dry_cleaning_rounded,
                                     subtitle: 'R\$ ${product.valorVenda}');
@@ -131,7 +120,7 @@ class ProductsScreen extends ConsumerWidget {
           IconButton(
               onPressed: () async {
                 // Create a DataMatrix barcode
-                final dm = Barcode.dataMatrix();
+                final dm = Barcode.qrCode();
                 buildBarcode(productteste, dm, 'data');
               },
               icon: Icon(Icons.qr_code)),
@@ -183,6 +172,35 @@ class ProductsScreen extends ConsumerWidget {
     // Save the image
 
     GenerateProductQrCode(barcode: bc, product: product).generateDocument();
+  }
+
+  Widget buildOptionsMenu(BuildContext context, Product product) {
+    return PopupMenuButton<String>(
+      shape: Border.all(),
+      tooltip: 'Menu',
+      onSelected: (value) {
+        if (value == 'Editar') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CrudProductScreen(id: product.id),
+            ),
+          );
+        } else if (value == 'Deletar') {
+          _showDeleteAlertDialog(context, product);
+        }
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: 'Editar',
+          child: Text('Editar'),
+        ),
+        PopupMenuItem(
+          value: 'Deletar',
+          child: Text('Deletar'),
+        ),
+      ],
+    );
   }
 
   Future _showDeleteAlertDialog(context, Product product) async {

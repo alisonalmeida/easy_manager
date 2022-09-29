@@ -1,21 +1,22 @@
-import 'package:easy_manager/utils/colors.dart';
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 
 class CustomListTile extends StatelessWidget {
   const CustomListTile(
       {Key? key,
-      required this.deleteCallback,
-      required this.editCallback,
+      
       required this.title,
       required this.icon,
-      required this.subtitle})
+      required this.subtitle,
+      required this.listOptions})
       : super(key: key);
 
-  final VoidCallback editCallback;
-  final VoidCallback deleteCallback;
+  
   final String title;
   final IconData icon;
   final String subtitle;
+  final Widget listOptions;
 
   @override
   Widget build(BuildContext context) {
@@ -30,23 +31,7 @@ class CustomListTile extends StatelessWidget {
         )
       ], color: Colors.white, shape: Border.all()),
       child: ListTile(
-        trailing: Wrap(
-          children: [
-            IconButton(
-                icon: const Icon(
-                  Icons.mode_edit_outline_outlined,
-                  color: black,
-                ),
-                onPressed: editCallback),
-            const VerticalDivider(),
-            IconButton(
-                icon: const Icon(
-                  Icons.delete_outline_outlined,
-                  color: black,
-                ),
-                onPressed: deleteCallback),
-          ],
-        ),
+        trailing: listOptions,
         leading: Icon(icon, color: Colors.black),
         title: Text(title,
             style: const TextStyle(

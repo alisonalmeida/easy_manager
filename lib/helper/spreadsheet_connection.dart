@@ -237,7 +237,7 @@ class GSheetDb {
       for (var i = 0; i < list!.toList().length; i++) {
         Product testProduct = Product.fromJson(list.toList()[i]);
 
-        if (testProduct.codigo == product.codigo) {
+        if (testProduct.id == product.id) {
           await sheet.clearRow(i + 2);
 
           await sheet.values.insertRow(i + 2, [

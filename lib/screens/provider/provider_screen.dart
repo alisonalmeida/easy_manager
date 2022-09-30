@@ -81,28 +81,15 @@ class ProvidersScreen extends ConsumerWidget {
                           : ListView.builder(
                               itemCount: mapList.toList().length,
                               itemBuilder: (context, index) {
-                                ProductProvider productProvider =
+                                ProductProvider provider =
                                     ProductProvider.fromMap(mapList[index]);
 
-                                return CustomListTile(listOptions: Container(),
-                                    /**
-                                     * deleteCallback: () async =>
-                                        await _showDeleteAlertDialog(
-                                            context, productProvider),
-                                    editCallback: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              CrudProviderScreen(
-                                                  id: productProvider.id),
-                                        ),
-                                      );
-                                    },
-                                     */
-                                    title: productProvider.nome!,
-                                    icon: Icons.factory,
-                                    subtitle: productProvider.documento!);
+                                return CustomListTile(
+                                    listOptions:
+                                        buildOptionsMenu(context, provider),
+                                    title: provider.nome!,
+                                    icon: Icons.person,
+                                    subtitle: provider.documento!);
                               },
                             ),
                     );
@@ -147,6 +134,35 @@ class ProvidersScreen extends ConsumerWidget {
                 shadowColor: woodSmoke,
                 iconPath: kpathSvgPlus)
             : null);
+  }
+
+  Widget buildOptionsMenu(BuildContext context, ProductProvider provider) {
+    return PopupMenuButton<String>(
+      shape: Border.all(),
+      tooltip: 'Menu',
+      onSelected: (value) {
+        if (value == 'Editar') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CrudProviderScreen(id: provider.id),
+            ),
+          );
+        } else if (value == 'Deletar') {
+          _showDeleteAlertDialog(context, provider);
+        }
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: 'Editar',
+          child: Text('Editar'),
+        ),
+        PopupMenuItem(
+          value: 'Deletar',
+          child: Text('Deletar'),
+        ),
+      ],
+    );
   }
 
   Future _showDeleteAlertDialog(

@@ -68,6 +68,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
   }
 
   Future? _saveUpdate() async {
+    showGeneralLoading(context);
     Product product = Product(
         id: isUpdate ? widget.id : '',
         codigo: _productCodeController.text,
@@ -89,7 +90,7 @@ class _CrudProductScreenState extends State<CrudProductScreen> {
             : int.parse(
                 _minQuantityController.text.replaceAll(RegExp(r'[^0-9]'), '')),
         descricao: _descriptionController.text);
-    showGeneralLoading(context);
+
     await gSheetDb.putProduct(product);
     if (mounted) {
       Navigator.pop(context);

@@ -83,24 +83,14 @@ class CustomerScreen extends ConsumerWidget {
                                 Customer customer =
                                     Customer.fromMap(mapList[index]);
 
-                                return CustomListTile(listOptions: Container(),
-                                    /**
-                                     * deleteCallback: () async =>
-                                        await _showDeleteAlertDialog(
-                                            context, customer),
-                                    editCallback: () async {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  CrudCustomerScreen(
-                                                      id: customer.id)));
-                                    },
-                                     */
+                                return CustomListTile(
+                                    listOptions:
+                                        buildOptionsMenu(context, customer),
                                     title: customer.nome!,
                                     icon: Icons.person,
                                     subtitle: customer.documento!);
-                              }),
+                              },
+                            ),
                     );
                   },
                   error: (error, stackTrace) => Center(
@@ -143,6 +133,35 @@ class CustomerScreen extends ConsumerWidget {
                 shadowColor: woodSmoke,
                 iconPath: kpathSvgPlus)
             : null);
+  }
+
+  Widget buildOptionsMenu(BuildContext context, Customer customer) {
+    return PopupMenuButton<String>(
+      shape: Border.all(),
+      tooltip: 'Menu',
+      onSelected: (value) {
+        if (value == 'Editar') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CrudCustomerScreen(id: customer.id),
+            ),
+          );
+        } else if (value == 'Deletar') {
+          _showDeleteAlertDialog(context, customer);
+        }
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: 'Editar',
+          child: Text('Editar'),
+        ),
+        PopupMenuItem(
+          value: 'Deletar',
+          child: Text('Deletar'),
+        ),
+      ],
+    );
   }
 
   Future _showDeleteAlertDialog(context, Customer customer) async {

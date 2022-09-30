@@ -22,7 +22,7 @@ const String kpathSvgShuffle = 'lib/assets/svg/shuffle.svg';
 const String kpathSvgSettings = 'lib/assets/svg/settings.svg';
 const String kpathSvgBudgets = 'lib/assets/svg/budget.svg';
 const String kpathSvgSave = 'lib/assets/svg/save.svg';
-const String kpathSvgShare= 'lib/assets/svg/share.svg';
+const String kpathSvgShare = 'lib/assets/svg/share.svg';
 
 const String kpathLottieCheck = 'lib/assets/animations/home_page_check.json';
 const List<String> kpathLottieIntro = [
@@ -32,6 +32,7 @@ const List<String> kpathLottieIntro = [
 const String kpathMainLogo = 'lib/assets/img/logo-HBEstilo-sem-fundo.png';
 
 enum UserType { administrator, employee }
+
 enum BudgetStatus { pending, approved, canceled, finished }
 
 showGeneralInformationDialogErrorMessage(String message, BuildContext context) {
@@ -68,18 +69,19 @@ showGeneralLoading(BuildContext context) {
 
 Future<bool?> showGeneralConfirmationExitDialog(BuildContext context) async =>
     showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text('O cadastro não foi salvo. Deseja realmente sair?'),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(context, false),
-                    child: Text('NÃO')),
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context, true);
-                      Navigator.pop(context, true);
-                    },
-                    child: Text('SIM'))
-              ],
-            ));
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('O cadastro não foi salvo. Deseja realmente sair?'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text('NÃO')),
+          TextButton(
+              onPressed: () {
+                Navigator.pop(context, true);
+                Navigator.pop(context, true);
+              },
+              child: Text('SIM'))
+        ],
+      ),
+    );

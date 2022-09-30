@@ -74,7 +74,8 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
     _observationsController.text = productProvider.observacoes!;
   }
 
-  _saveUpdate() async {
+  Future? _saveUpdate() async {
+    showGeneralLoading(context);
     ProductProvider productProvider = ProductProvider(
         id: isUpdate ? widget.id : '',
         nome: _providerNameController.text,
@@ -90,8 +91,9 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
         bairro: _districtController.text,
         complemento: _complementController.text,
         observacoes: _observationsController.text);
-    gSheetDb.putProvider(productProvider);
+    await gSheetDb.putProvider(productProvider);
     if (mounted) {
+      Navigator.pop(context);
       Navigator.pop(context);
     }
   }
@@ -141,7 +143,9 @@ class _CrudProviderScreenState extends State<CrudProviderScreen> {
     return Consumer(
       builder: (context, ref, child) => WillPopScope(
         onWillPop: () async {
-          final shouldPop = await _showConfirmationExitDialog();
+          final shouldPop = await showGeneralConfirmationExitDialog(context);
+          shouldPop == true ? ref.refresh(productProvidersProvider) : null;
+
           return shouldPop ?? false;
         },
         child: GestureDetector(

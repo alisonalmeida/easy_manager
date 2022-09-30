@@ -2,8 +2,8 @@
 
 import 'dart:io';
 import 'package:easy_manager/models/product.dart';
-import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -14,18 +14,20 @@ class GenerateProductQrCode {
   final Product product;
 
   Future generateDocument() async {
-    final DateTime now = DateTime.now();
-    var dateFormattedForDocument = DateFormat('yyyy-MM-dd-hh-mm').format(now);
-
     final pdf = Document();
     pdf.addPage(MultiPage(
+      pageFormat: PdfPageFormat(100, 100),
       build: (context) {
         return [
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(product.nome!),
-              Center(child: SvgImage(svg: barcode.toSvg('data')))
+              SvgImage(
+                svg: barcode.toSvg(
+                    '''Código: ${product.codigo}, Nome: ${product.nome}, Valor: R\$ ${product.valorVenda}'''),
+              ),
+              Text('R\$ ${product.valorVenda}'),
             ],
           )
         ];
@@ -39,17 +41,14 @@ class GenerateProductQrCode {
       directory = await getApplicationSupportDirectory();
     }
     final bytes = await pdf.save();
-    final file = File(
-        '${directory!.path}/CadastrosCompilados-$dateFormattedForDocument.pdf');
+    final finalDirectory = '${directory!.path}/QrCode-${product.codigo}.pdf'
+        .replaceAll(RegExp(r'\s'), '-')
+        .toLowerCase();
+    final file = File(finalDirectory);
     await file.writeAsBytes(bytes);
 
     Platform.isWindows
-        ? launchUrlString(
-            '${directory.path}/CadastrosCompilados-$dateFormattedForDocument.pdf')
-        : Share.shareFiles([
-            '${directory.path}/CadastrosCompilados-$dateFormattedForDocument.pdf'
-          ], mimeTypes: [
-            'application/pdf'
-          ]);
+        ? launchUrlString(finalDirectory)
+        : Share.shareFiles([finalDirectory], mimeTypes: ['application/pdf']);
   }
 }

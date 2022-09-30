@@ -72,6 +72,8 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
   }
 
   Future? _saveUpdate() async {
+    showGeneralLoading(context);
+
     Customer customer = Customer(
         id: isUpdate ? widget.id : '',
         nome: _nameController.text,
@@ -87,7 +89,6 @@ class _CrudCustomerScreenState extends State<CrudCustomerScreen> {
         bairro: _districtController.text,
         complemento: _complementController.text,
         observacoes: _observationsController.text);
-    showGeneralLoading(context);
     await gSheetDb.putCustomer(customer);
     if (mounted) {
       Navigator.pop(context);

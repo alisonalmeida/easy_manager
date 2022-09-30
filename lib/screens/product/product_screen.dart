@@ -1,7 +1,5 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously, must_be_immutable
 
-import 'dart:io';
-
 import 'package:barcode/barcode.dart';
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/core/generate_product_qr_code.dart';
@@ -17,10 +15,6 @@ import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class ProductsScreen extends ConsumerWidget {
   ProductsScreen({Key? key}) : super(key: key);
@@ -35,7 +29,6 @@ class ProductsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var productList = ref.watch(productsProvider);
-    Product productteste = Product();
 
     return Scaffold(
         backgroundColor: productBackgroundColor,
@@ -91,7 +84,6 @@ class ProductsScreen extends ConsumerWidget {
                               itemBuilder: (context, index) {
                                 Product product =
                                     Product.fromJson(mapList[index]);
-                                productteste = product;
 
                                 return CustomListTile(
                                     listOptions:
@@ -117,13 +109,6 @@ class ProductsScreen extends ConsumerWidget {
           ),
         ),
         persistentFooterButtons: [
-          IconButton(
-              onPressed: () async {
-                // Create a DataMatrix barcode
-                final dm = Barcode.qrCode();
-                buildBarcode(productteste, dm, 'data');
-              },
-              icon: Icon(Icons.qr_code)),
           IconButton(
               onPressed: () {
                 listReverse = !listReverse;
@@ -161,16 +146,6 @@ class ProductsScreen extends ConsumerWidget {
     double? height,
     double? fontHeight,
   }) async {
-    /// Create the Barcode
-    final svg = bc.toSvg(
-      data,
-      width: width ?? 200,
-      height: height ?? 80,
-      fontHeight: fontHeight,
-    );
-
-    // Save the image
-
     GenerateProductQrCode(barcode: bc, product: product).generateDocument();
   }
 
@@ -188,6 +163,9 @@ class ProductsScreen extends ConsumerWidget {
           );
         } else if (value == 'Deletar') {
           _showDeleteAlertDialog(context, product);
+        } else if (value == 'Imprimir QrCode') {
+          final bc = Barcode.qrCode();
+          buildBarcode(product, bc, product.toString());
         }
       },
       itemBuilder: (context) => [
@@ -198,6 +176,10 @@ class ProductsScreen extends ConsumerWidget {
         PopupMenuItem(
           value: 'Deletar',
           child: Text('Deletar'),
+        ),
+        PopupMenuItem(
+          value: 'Imprimir QrCode',
+          child: Text('Imprimir QrCode'),
         ),
       ],
     );

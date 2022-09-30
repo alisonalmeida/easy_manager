@@ -1,8 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_manager/consts.dart';
-import 'package:easy_manager/helper/check_connectivity.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/user_model.dart';
 import 'package:easy_manager/screens/home_page_screen.dart';
@@ -106,24 +104,6 @@ class LoginPage extends ConsumerWidget {
             ),
           ],
         ),
-      ),
-      bottomSheet: StreamBuilder(
-        stream: Connection().checkConnection(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            ConnectivityResult result = snapshot.data as ConnectivityResult;
-            if (result == ConnectivityResult.none) {
-              return Text(
-                'SEM INTERNET',
-                style: TextStyle(backgroundColor: Colors.red),
-              );
-            } else {
-              return Row();
-            }
-          } else {
-            return Row();
-          }
-        },
       ),
     );
   }

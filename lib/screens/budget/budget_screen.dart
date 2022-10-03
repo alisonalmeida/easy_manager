@@ -9,6 +9,7 @@ import 'package:easy_manager/custom_widgets/custom_search_text_field.dart';
 import 'package:easy_manager/custom_widgets/empty_widget.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/budget.dart';
+import 'package:easy_manager/models/product_provider_model.dart';
 import 'package:easy_manager/screens/budget/crud_budget_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -88,32 +89,18 @@ class BudgetsScreen extends ConsumerWidget {
                                 Budget budget = Budget.fromJson(mapList[index]);
 
                                 return CustomListTile(
-                                    listOptions: Container(),
-                                    /**
-                                     * deleteCallback: () async {
-                                      await _showDeleteAlertDialog(
-                                          context, budget);
-                                    },
-                                    editCallback: () async {
-                                      bool? shoudRefresh =
-                                          await Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              CrudBudgetScreen(
-                                                  budget: budget,
-                                                  isUpdate: false),
-                                        ),
-                                      );
-
-                                      if (shoudRefresh == null ||
-                                          shoudRefresh) {
-                                        ref.refresh(budgetsProvider);
-                                      }
-                                    },
-                                     */
+                                    listOptions:
+                                        buildOptionsMenu(context, budget),
                                     title: budget.nomeCliente!,
                                     icon: Icons.list,
-                                    subtitle: budget.valorTotal.toString());
+                                    subtitle: Text(
+                                      'Total: R\$ ${budget.valorTotal}',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.green[900],
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ));
                               }),
                     );
                   },
@@ -168,6 +155,36 @@ class BudgetsScreen extends ConsumerWidget {
                 iconPath: kpathSvgPlus,
               )
             : null);
+  }
+
+  Widget buildOptionsMenu(BuildContext context, Budget budget) {
+    return PopupMenuButton<String>(
+      shape: Border.all(),
+      tooltip: 'Menu',
+      onSelected: (value) {
+        if (value == 'Editar') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  CrudBudgetScreen(isUpdate: true, budget: budget),
+            ),
+          );
+        } else if (value == 'Deletar') {
+          _showDeleteAlertDialog(context, budget);
+        }
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: 'Editar',
+          child: Text('Editar'),
+        ),
+        PopupMenuItem(
+          value: 'Deletar',
+          child: Text('Deletar'),
+        ),
+      ],
+    );
   }
 
   Future _showDeleteAlertDialog(context, Budget budget) async {

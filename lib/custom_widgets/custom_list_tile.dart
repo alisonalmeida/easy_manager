@@ -5,17 +5,15 @@ import 'package:flutter/material.dart';
 class CustomListTile extends StatelessWidget {
   const CustomListTile(
       {Key? key,
-      
       required this.title,
       required this.icon,
       required this.subtitle,
       required this.listOptions})
       : super(key: key);
 
-  
   final String title;
   final IconData icon;
-  final String subtitle;
+  final Widget subtitle;
   final Widget listOptions;
 
   @override
@@ -36,7 +34,7 @@ class CustomListTile extends StatelessWidget {
         title: Text(title,
             style: const TextStyle(
                 fontFamily: 'JosefinsSans', fontWeight: FontWeight.w700)),
-        subtitle: Text(subtitle),
+        subtitle: subtitle,
       ),
     );
   }

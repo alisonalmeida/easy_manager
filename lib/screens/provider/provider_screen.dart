@@ -88,8 +88,8 @@ class ProvidersScreen extends ConsumerWidget {
                                     listOptions:
                                         buildOptionsMenu(context, provider),
                                     title: provider.nome!,
-                                    icon: Icons.person,
-                                    subtitle: provider.documento!);
+                                    icon: Icons.factory,
+                                    subtitle: Text(provider.documento!));
                               },
                             ),
                     );

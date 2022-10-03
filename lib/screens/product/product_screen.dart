@@ -86,11 +86,19 @@ class ProductsScreen extends ConsumerWidget {
                                     Product.fromJson(mapList[index]);
 
                                 return CustomListTile(
-                                    listOptions:
-                                        buildOptionsMenu(context, product),
-                                    title: product.nome!,
-                                    icon: Icons.dry_cleaning_rounded,
-                                    subtitle: 'R\$ ${product.valorVenda}');
+                                  listOptions:
+                                      buildOptionsMenu(context, product),
+                                  title: product.nome!,
+                                  icon: Icons.dry_cleaning_rounded,
+                                  subtitle: Text(
+                                    'R\$ ${product.valorVenda}',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.green[900],
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                );
                               },
                             ),
                     );

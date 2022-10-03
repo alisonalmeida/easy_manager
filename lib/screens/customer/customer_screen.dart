@@ -88,7 +88,7 @@ class CustomerScreen extends ConsumerWidget {
                                         buildOptionsMenu(context, customer),
                                     title: customer.nome!,
                                     icon: Icons.person,
-                                    subtitle: customer.documento!);
+                                    subtitle: Text(customer.documento!));
                               },
                             ),
                     );

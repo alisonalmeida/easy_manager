@@ -18,7 +18,7 @@ class CustomButtonConfirm extends StatelessWidget {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
           padding: const EdgeInsets.all(16),
-          primary: isEnabled ? woodSmoke : Colors.grey),
+          primary: isEnabled ? black : Colors.grey),
       onPressed: onTap,
       child: Text(
         text,

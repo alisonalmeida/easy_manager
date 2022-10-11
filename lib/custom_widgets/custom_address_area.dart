@@ -53,8 +53,8 @@ class CustomAddressArea extends StatelessWidget {
                       textInputAction: TextInputAction.done,
                       callback: callback)),
               ButtonRoundWithShadow(
-                  borderColor: woodSmoke,
-                  shadowColor: woodSmoke,
+                  borderColor: black,
+                  shadowColor: black,
                   color: white,
                   iconPath: 'lib/assets/svg/refresh.svg',
                   size: 50,

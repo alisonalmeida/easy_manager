@@ -10,9 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 GSheetDb gSheetDb = GSheetDb();
 
-final usersProvider = FutureProvider(
-  (_) => gSheetDb.getUsers(),
-);
+
 final loggedUser = Provider<User>(
   (_) => User(),
 );

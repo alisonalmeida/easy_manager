@@ -45,7 +45,7 @@ Future<String> showProviderChoiceDialog(BuildContext context) async {
                         child: Text(
                       'Escolha um fornecedor ou adicone um novo',
                       style: TextStyle(
-                          color: woodSmoke,
+                          color: black,
                           fontSize: 20,
                           fontFamily: 'JosefinsSans',
                           fontWeight: FontWeight.w700),

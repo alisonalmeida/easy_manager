@@ -131,7 +131,7 @@ class BudgetsScreen extends ConsumerWidget {
         floatingActionButton: showFabVisible
             ? ButtonRoundWithShadow(
                 size: 60,
-                borderColor: woodSmoke,
+                borderColor: black,
                 color: white,
                 callback: () async {
                   try {
@@ -151,7 +151,7 @@ class BudgetsScreen extends ConsumerWidget {
                         e.toString(), context);
                   }
                 },
-                shadowColor: woodSmoke,
+                shadowColor: black,
                 iconPath: kpathSvgPlus,
               )
             : null);

@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 const white = Color(0xFFFFFFFF);
 const flamingo = Color(0xFFF95A2C);
 const black = Color(0xFF000000);
-const woodSmoke = Color(0xFF18191F);
-
 const selago = Color(0xFFE9E7FC);
-
 const providerBackgroundColor = Color(0xFF00C6AE);
 const providerBackgroundColorShadow = Color.fromARGB(255, 1, 141, 125);
 

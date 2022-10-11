@@ -43,17 +43,17 @@ class CustomAppBar extends StatelessWidget implements PreferredSize {
             children: [
               ButtonRoundWithShadow(
                   size: 45,
-                  borderColor: woodSmoke,
+                  borderColor: black,
                   color: white,
                   callback: callback,
-                  shadowColor: woodSmoke,
+                  shadowColor: black,
                   iconPath: 'lib/assets/svg/arrow_back.svg'),
               Flexible(
                 child: Text(
                   title,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                      color: woodSmoke,
+                      color: black,
                       fontSize: 20,
                       fontFamily: 'JosefinsSans',
                       fontWeight: FontWeight.w700),

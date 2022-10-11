@@ -134,13 +134,13 @@ class ProductsScreen extends ConsumerWidget {
         floatingActionButton: showFabVisible
             ? ButtonRoundWithShadow(
                 size: 60,
-                borderColor: woodSmoke,
+                borderColor: black,
                 color: white,
                 callback: () => Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => CrudProductScreen())),
-                shadowColor: woodSmoke,
+                shadowColor: black,
                 iconPath: kpathSvgPlus)
             : null);
   }

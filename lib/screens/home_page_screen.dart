@@ -1,3 +1,4 @@
+import 'package:easy_manager/components/drawer.dart';
 import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/custom_widgets/central_grid_button.dart';
 import 'package:easy_manager/screens/budget/budget_screen.dart';
@@ -32,14 +33,7 @@ class _HomePageState extends State<HomePage>
           style: TextStyle(color: white, fontWeight: FontWeight.bold),
         ),
       ),
-      drawer: Drawer(
-        child: ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: black),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text('data')),
-      ),
+      drawer: CustomDrawer(),
       body: Container(
         color: white,
         padding: const EdgeInsets.all(5),

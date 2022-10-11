@@ -125,13 +125,13 @@ class ProvidersScreen extends ConsumerWidget {
         floatingActionButton: showFabVisible
             ? ButtonRoundWithShadow(
                 size: 60,
-                borderColor: woodSmoke,
+                borderColor: black,
                 color: white,
                 callback: () => Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => CrudProviderScreen())),
-                shadowColor: woodSmoke,
+                shadowColor: black,
                 iconPath: kpathSvgPlus)
             : null);
   }

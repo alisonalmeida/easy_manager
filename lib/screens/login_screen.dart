@@ -6,54 +6,57 @@ import 'package:easy_manager/models/user_model.dart';
 import 'package:easy_manager/screens/home_page_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginPage extends ConsumerWidget {
-  LoginPage({Key? key}) : super(key: key);
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final users = ref.watch(usersProvider);
-    final providedLoggedUser = ref.watch(loggedUser);
+  State<LoginPage> createState() => _LoginPageState();
+}
 
-    tryLogin() async {
-      bool userFound = false;
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  List<Map<String, String>> listUsers = [];
 
-      users.when(
-        data: (data) {
-          for (var i = 0; i < data.length; i++) {
-            var user = User.fromMap(data[i]);
-            if (user.email == emailController.text &&
-                user.senha == passwordController.text) {
-              userFound = true;
-              providedLoggedUser.email = user.email;
-              providedLoggedUser.senha = user.senha;
-              break;
-            }
-          }
-          if (userFound) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomePage(),
-              ),
-            );
-          } else {
-            showGeneralInformationDialogErrorMessage(
-                'Usuário ou Senha incorretos', context);
-          }
-        },
-        error: (error, stackTrace) {
-          showGeneralInformationDialogErrorMessage(error.toString(), context);
-        },
-        loading: () {
-          showGeneralLoading(context);
-        },
-      );
+  tryLogin() async {
+    bool userFound = false;
+    for (var i = 0; i < listUsers.length; i++) {
+      var user = User.fromMap(listUsers[i]);
+      if (user.email == emailController.text &&
+          user.senha == passwordController.text) {
+        userFound = true;
+        break;
+      }
     }
+    if (userFound) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(),
+        ),
+      );
+    } else {
+      showGeneralInformationDialogErrorMessage(
+          'Usuário ou Senha incorretos', context);
+    }
+  }
 
+  @override
+  void initState() {
+    gSheetDb.getUsers().then((users) => listUsers = users);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(

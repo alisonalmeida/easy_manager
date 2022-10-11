@@ -44,7 +44,7 @@ Future<String> showCustomerChoiceDialog(BuildContext context) async {
                     child: Text(
                   'Escolha um cliente ou adicione um novo',
                   style: TextStyle(
-                      color: woodSmoke,
+                      color: black,
                       fontSize: 20,
                       fontFamily: 'JosefinsSans',
                       fontWeight: FontWeight.w700),

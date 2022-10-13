@@ -9,11 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 GSheetDb gSheetDb = GSheetDb();
+User loggedUser =User(nome: '',email: '',perfil: '',senha: '');
 
 
-final loggedUser = Provider<User>(
-  (_) => User(),
-);
+
 final productProvidersProvider = FutureProvider(
   (_) => gSheetDb.getProviders(),
 );

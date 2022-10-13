@@ -25,6 +25,7 @@ class _LoginPageState extends State<LoginPage> {
       var user = User.fromMap(listUsers[i]);
       if (user.email == emailController.text &&
           user.senha == passwordController.text) {
+        loggedUser = user;
         userFound = true;
         break;
       }

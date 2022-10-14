@@ -48,7 +48,7 @@ class GenerateBudgetPdf {
     itens.add(titleRow);
     itens.addAll(budget.itens!
         .map((element) => TableRow(children: [
-              Text('  ${element.produtoNome!}',
+              Text('  ${element.produtoNome!}'.replaceAll(RegExp('"'), ''),
                   style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
               Text(element.quantidade.toString(),
                   textAlign: TextAlign.center,

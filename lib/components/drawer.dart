@@ -2,6 +2,7 @@
 
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/screens/configurations_screen.dart';
+import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -15,11 +16,7 @@ class CustomDrawer extends StatelessWidget {
           DrawerHeader(
             child: UserAccountsDrawerHeader(
                 arrowColor: Colors.green,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topRight,
-                        end: Alignment.bottomLeft,
-                        colors: [Colors.yellow, Colors.lightBlue])),
+                decoration: BoxDecoration(color: providerBackgroundColorShadow),
                 accountName: Text(loggedUser.nome!),
                 accountEmail: Text(loggedUser.email!)),
           ),

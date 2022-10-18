@@ -1,7 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:easy_manager/main.dart';
+import 'package:easy_manager/models/product.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 const String appName = 'HB Estilo Manager';

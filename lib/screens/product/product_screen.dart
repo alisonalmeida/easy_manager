@@ -8,6 +8,7 @@ import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_list_tile.dart';
 import 'package:easy_manager/custom_widgets/custom_search_text_field.dart';
 import 'package:easy_manager/custom_widgets/empty_widget.dart';
+import 'package:easy_manager/custom_widgets/product_list_tile.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/product.dart';
 import 'package:easy_manager/screens/product/crud_product_screen.dart';
@@ -85,20 +86,12 @@ class ProductsScreen extends ConsumerWidget {
                                 Product product =
                                     Product.fromJson(mapList[index]);
 
-                                return CustomListTile(
-                                  listOptions:
-                                      buildOptionsMenu(context, product),
-                                  title: product.nome!,
-                                  icon: Icons.dry_cleaning_rounded,
-                                  subtitle: Text(
-                                    'R\$ ${product.valorVenda}',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.green[900],
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                );
+                                return ProductListTile(
+                                    listOptions:
+                                        buildOptionsMenu(context, product),
+                                    title: product.nome!,
+                                    icon: Icons.dry_cleaning_rounded,
+                                    value: product.valorVenda.toString());
                               },
                             ),
                     );

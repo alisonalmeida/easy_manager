@@ -4,6 +4,7 @@ import 'package:easy_manager/custom_widgets/central_grid_button.dart';
 import 'package:easy_manager/screens/budget/budget_screen.dart';
 import 'package:easy_manager/screens/customer/customer_screen.dart';
 import 'package:easy_manager/screens/configurations_screen.dart';
+import 'package:easy_manager/screens/pdv_screen.dart';
 import 'package:easy_manager/screens/product/product_screen.dart';
 import 'package:easy_manager/screens/provider/provider_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
@@ -99,20 +100,18 @@ class _HomePageState extends State<HomePage>
                     )),
                 title: BudgetsScreen.name,
                 hero: BudgetsScreen.name),
-            /**
-             * CentralGridButton(
+            CentralGridButton(
                 hero: 'PDV',
                 title: 'PDV',
                 backgroundColor: pdvBackgroundColor,
                 borderColor: pdvBackgroundColorShadow,
                 shadowColor: pdvBackgroundColorShadow,
-                color: white,
                 iconPath: kpathSvgPdv,
                 callback: () => Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const PdvScreen()))),
-             */
+
             /**
              * CentralGridButton(
                 hero: 'Gráficos',
@@ -127,28 +126,6 @@ class _HomePageState extends State<HomePage>
                     MaterialPageRoute(
                         builder: (context) => const CrudCustomerScreen()))),
              */
-            /**
-             * CentralGridButton(
-                hero: 'Entrada e Saída',
-                title: 'Entrada e Saída',
-                backgroundColor: Colors.indigo,
-                borderColor: greyShadow,
-                shadowColor: greyShadow,
-                color: white,
-                iconPath: kpathSvgMoney,
-                callback: () {}),
-             */
-            CentralGridButton(
-                borderColor: Colors.orangeAccent,
-                shadowColor: Colors.orangeAccent,
-                iconPath: kpathSvgSettings,
-                backgroundColor: Colors.orange,
-                callback: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const Configurations())),
-                title: Configurations.name,
-                hero: Configurations.name),
           ],
         ),
       ),

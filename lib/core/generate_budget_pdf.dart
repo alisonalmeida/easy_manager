@@ -17,7 +17,7 @@ class GenerateBudgetPdf {
 
   Future generateDocument() async {
     final DateTime now = DateTime.now();
-    var dateFormattedForDocument = DateFormat('yyyy-MM-dd-hh-mm').format(now);
+    var dateFormattedForDocument = DateFormat('yyyy-MM-dd').format(now);
     List<TableRow> itens = [];
     int quantidadeTotal = 0;
     for (var element in budget.itens!) {
@@ -162,23 +162,21 @@ class GenerateBudgetPdf {
     ));
 
     Directory? directory;
+    String docname =
+        '$dateFormattedForDocument Orcamento ${budget.nomeCliente!}';
+
     if (Platform.isWindows) {
       directory = await getDownloadsDirectory();
     } else {
       directory = await getApplicationSupportDirectory();
     }
     final bytes = await pdf.save();
-    final file = File(
-        '${directory!.path}/CadastrosCompilados-$dateFormattedForDocument.pdf');
+    final file = File('${directory!.path}/$docname.pdf');
     await file.writeAsBytes(bytes);
 
     Platform.isWindows
-        ? launchUrlString(
-            '${directory.path}/CadastrosCompilados-$dateFormattedForDocument.pdf')
-        : Share.shareFiles([
-            '${directory.path}/CadastrosCompilados-$dateFormattedForDocument.pdf'
-          ], mimeTypes: [
-            'application/pdf'
-          ]);
+        ? launchUrlString('${directory.path}/$docname.pdf')
+        : Share.shareFiles(['${directory.path}/$docname.pdf'],
+            mimeTypes: ['application/pdf']);
   }
 }

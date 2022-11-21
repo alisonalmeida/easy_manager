@@ -9,25 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 GSheetDb gSheetDb = GSheetDb();
-User loggedUser =User(nome: '',email: '',perfil: '',senha: '');
+User loggedUser = User(nome: '', email: '', perfil: '', senha: '');
 
+final productProvidersProvider = FutureProvider((_) => gSheetDb.getProviders());
+final productsProvider = FutureProvider((_) => gSheetDb.getProducts());
 
-
-final productProvidersProvider = FutureProvider(
-  (_) => gSheetDb.getProviders(),
-);
-final productsProvider = FutureProvider(
-  (_) => gSheetDb.getProducts(),
-);
-
-final customersProvider = FutureProvider(
-  (_) {
-    return gSheetDb.getCustomers();
-  },
-);
-final budgetsProvider = FutureProvider(
-  (_) => gSheetDb.getBudgets(),
-);
+final customersProvider = FutureProvider((_) {
+  return gSheetDb.getCustomers();
+});
+final budgetsProvider = FutureProvider((_) => gSheetDb.getBudgets());
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();

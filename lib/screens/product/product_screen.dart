@@ -5,7 +5,6 @@ import 'package:easy_manager/consts.dart';
 import 'package:easy_manager/core/generate_product_qr_code.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
-import 'package:easy_manager/custom_widgets/custom_list_tile.dart';
 import 'package:easy_manager/custom_widgets/custom_search_text_field.dart';
 import 'package:easy_manager/custom_widgets/empty_widget.dart';
 import 'package:easy_manager/custom_widgets/product_list_tile.dart';
@@ -33,80 +32,87 @@ class ProductsScreen extends ConsumerWidget {
 
     return Scaffold(
         backgroundColor: productBackgroundColor,
-        appBar: CustomAppBar(
-            title: ProductsScreen.name,
-            backgroundColor: productBackgroundColor,
-            callback: () async => Navigator.pop(context),
-            svgImage: kpathSvgProduct,
-            heroAnimation: ProductsScreen.name),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: Column(
-            children: [
-              isSearching
-                  ? SearchTextField(
-                      clearField: () {
-                        searchController.clear();
-                        ref.refresh(productsProvider);
-                      },
-                      focusNode: focusNode,
-                      searchController: searchController,
-                      onChanged: (v) => ref.refresh(productsProvider),
-                    )
-                  : Container(),
-              Expanded(
-                child: productList.when(
-                  data: (data) {
-                    List<Map<String, String>> mapList = data;
-                    listReverse ? mapList = mapList.reversed.toList() : null;
-                    isSearching
-                        ? mapList = mapList
-                            .where((element) => element['nome']
-                                .toString()
-                                .toLowerCase()
-                                .contains(searchController.text.toLowerCase()))
-                            .toList()
-                        : null;
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            CustomAppBar(
+                title: ProductsScreen.name,
+                backgroundColor: productBackgroundColor,
+                callback: () async => Navigator.pop(context),
+                svgImage: kpathSvgProduct,
+                heroAnimation: ProductsScreen.name),
+          ],
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: Column(
+              children: [
+                isSearching
+                    ? SearchTextField(
+                        clearField: () {
+                          searchController.clear();
+                          ref.refresh(productsProvider);
+                        },
+                        focusNode: focusNode,
+                        searchController: searchController,
+                        onChanged: (v) => ref.refresh(productsProvider),
+                      )
+                    : Container(),
+                Expanded(
+                  child: productList.when(
+                    data: (data) {
+                      List<Map<String, String>> mapList = data;
+                      listReverse ? mapList = mapList.reversed.toList() : null;
+                      isSearching
+                          ? mapList = mapList
+                              .where((element) => element['nome']
+                                  .toString()
+                                  .toLowerCase()
+                                  .contains(
+                                      searchController.text.toLowerCase()))
+                              .toList()
+                          : null;
 
-                    return NotificationListener<UserScrollNotification>(
-                      onNotification: (notification) {
-                        if (notification.direction == ScrollDirection.reverse) {
-                          showFabVisible = false;
-                        }
-                        if (notification.direction == ScrollDirection.forward) {
-                          showFabVisible = true;
-                        }
-                        return true;
-                      },
-                      child: mapList.isEmpty
-                          ? EmptyWidget()
-                          : ListView.builder(
-                              itemCount: mapList.toList().length,
-                              itemBuilder: (context, index) {
-                                Product product =
-                                    Product.fromJson(mapList[index]);
+                      return NotificationListener<UserScrollNotification>(
+                        onNotification: (notification) {
+                          if (notification.direction ==
+                              ScrollDirection.reverse) {
+                            showFabVisible = false;
+                          }
+                          if (notification.direction ==
+                              ScrollDirection.forward) {
+                            showFabVisible = true;
+                          }
+                          return true;
+                        },
+                        child: mapList.isEmpty
+                            ? EmptyWidget()
+                            : ListView.builder(
+                                itemCount: mapList.toList().length,
+                                itemBuilder: (context, index) {
+                                  Product product =
+                                      Product.fromJson(mapList[index]);
 
-                                return ProductListTile(
-                                    listOptions:
-                                        buildOptionsMenu(context, product),
-                                    title: product.nome!,
-                                    icon: Icons.dry_cleaning_rounded,
-                                    value: product.valorVenda.toString());
-                              },
-                            ),
-                    );
-                  },
-                  error: (error, stackTrace) => Center(
-                    child: Text(error.toString() + stackTrace.toString()),
+                                  return ProductListTile(
+                                      listOptions:
+                                          buildOptionsMenu(context, product),
+                                      title: product.nome!,
+                                      icon: Icons.dry_cleaning_rounded,
+                                      value: product.valorVenda.toString());
+                                },
+                              ),
+                      );
+                    },
+                    error: (error, stackTrace) => Center(
+                      child: Text(error.toString() + stackTrace.toString()),
+                    ),
+                    loading: () {
+                      return Center(
+                        child: CircularProgressIndicator(color: black),
+                      );
+                    },
                   ),
-                  loading: () {
-                    return Center(
-                      child: CircularProgressIndicator(color: black),
-                    );
-                  },
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         persistentFooterButtons: [

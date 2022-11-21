@@ -14,7 +14,6 @@ import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:screenshot/screenshot.dart';
 
 class CrudBudgetScreen extends StatefulWidget {
   const CrudBudgetScreen({Key? key, this.budget, required this.isUpdate})
@@ -209,7 +208,7 @@ class _CrudBudgetScreenState extends State<CrudBudgetScreen> {
           borderColor: black,
           shadowColor: black,
           color: white,
-          iconPath: kpathSvgSave,
+          iconPath: kpathSvgShare,
           size: 50,
           callback: () async {
             showGeneralLoading(context);

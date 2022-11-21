@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'package:easy_manager/consts.dart';
+import 'package:easy_manager/core/generate_budget_pdf.dart';
 import 'package:easy_manager/custom_widgets/button_round_with_shadow.dart';
 import 'package:easy_manager/custom_widgets/custom_app_bar.dart';
 import 'package:easy_manager/custom_widgets/custom_list_tile.dart';
@@ -9,7 +10,7 @@ import 'package:easy_manager/custom_widgets/custom_search_text_field.dart';
 import 'package:easy_manager/custom_widgets/empty_widget.dart';
 import 'package:easy_manager/main.dart';
 import 'package:easy_manager/models/budget.dart';
-import 'package:easy_manager/models/product_provider_model.dart';
+
 import 'package:easy_manager/screens/budget/crud_budget_screen.dart';
 import 'package:easy_manager/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -38,61 +39,68 @@ class BudgetsScreen extends ConsumerWidget {
     var budgetList = ref.watch(budgetsProvider);
     return Scaffold(
         backgroundColor: budgetBackgroundColor,
-        appBar: CustomAppBar(
-            title: BudgetsScreen.name,
-            backgroundColor: budgetBackgroundColor,
-            callback: () async => Navigator.pop(context),
-            svgImage: kpathSvgBudgets,
-            heroAnimation: BudgetsScreen.name),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: Column(
-            children: [
-              isSearching
-                  ? SearchTextField(
-                      clearField: () {
-                        searchController.clear();
-                      },
-                      focusNode: focusNode,
-                      searchController: searchController,
-                      onChanged: (p0) => ref.refresh(budgetsProvider),
-                    )
-                  : Container(),
-              Expanded(
-                child: budgetList.when(
-                  data: (data) {
-                    List<Map<String, String>> mapList = data;
-                    listReverse ? mapList = mapList.reversed.toList() : null;
-                    isSearching
-                        ? mapList = mapList
-                            .where((element) => element['nomeCliente']
-                                .toString()
-                                .toLowerCase()
-                                .contains(searchController.text.toLowerCase()))
-                            .toList()
-                        : null;
-                    return NotificationListener<UserScrollNotification>(
-                      onNotification: (notification) {
-                        if (notification.direction == ScrollDirection.reverse) {
-                          showFabVisible = false;
-                        }
-                        if (notification.direction == ScrollDirection.forward) {
-                          showFabVisible = true;
-                        }
-                        return true;
-                      },
-                      child: mapList.isEmpty
-                          ? EmptyWidget()
-                          : ListView.builder(
-                              itemCount: mapList.toList().length,
-                              itemBuilder: (context, index) {
-                                Budget budget = Budget.fromJson(mapList[index]);
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            CustomAppBar(
+                title: BudgetsScreen.name,
+                backgroundColor: budgetBackgroundColor,
+                callback: () async => Navigator.pop(context),
+                svgImage: kpathSvgBudgets,
+                heroAnimation: BudgetsScreen.name),
+          ],
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: Column(
+              children: [
+                isSearching
+                    ? SearchTextField(
+                        clearField: () {
+                          searchController.clear();
+                        },
+                        focusNode: focusNode,
+                        searchController: searchController,
+                        onChanged: (p0) => ref.refresh(budgetsProvider),
+                      )
+                    : Container(),
+                Expanded(
+                  child: budgetList.when(
+                    data: (data) {
+                      List<Map<String, String>> mapList = data;
+                      listReverse ? mapList = mapList.reversed.toList() : null;
+                      isSearching
+                          ? mapList = mapList
+                              .where((element) => element['nomeCliente']
+                                  .toString()
+                                  .toLowerCase()
+                                  .contains(
+                                      searchController.text.toLowerCase()))
+                              .toList()
+                          : null;
+                      return NotificationListener<UserScrollNotification>(
+                        onNotification: (notification) {
+                          if (notification.direction ==
+                              ScrollDirection.reverse) {
+                            showFabVisible = false;
+                          }
+                          if (notification.direction ==
+                              ScrollDirection.forward) {
+                            showFabVisible = true;
+                          }
+                          return true;
+                        },
+                        child: mapList.isEmpty
+                            ? EmptyWidget()
+                            : ListView.builder(
+                                itemCount: mapList.toList().length,
+                                itemBuilder: (context, index) {
+                                  Budget budget =
+                                      Budget.fromJson(mapList[index]);
 
-                                return CustomListTile(
+                                  return CustomListTile(
                                     listOptions:
                                         buildOptionsMenu(context, budget),
                                     title: budget.nomeCliente!,
-                                    icon: Icons.list,
+                                    icon: Icons.table_rows,
                                     subtitle: Text(
                                       'Total: R\$ ${budget.valorTotal}',
                                       style: TextStyle(
@@ -100,17 +108,19 @@ class BudgetsScreen extends ConsumerWidget {
                                         color: Colors.green[900],
                                         fontWeight: FontWeight.bold,
                                       ),
-                                    ));
-                              }),
-                    );
-                  },
-                  error: (error, stackTrace) => Center(
-                      child: Text(error.toString() + stackTrace.toString())),
-                  loading: () =>
-                      Center(child: CircularProgressIndicator(color: black)),
+                                    ),
+                                  );
+                                }),
+                      );
+                    },
+                    error: (error, stackTrace) => Center(
+                        child: Text(error.toString() + stackTrace.toString())),
+                    loading: () =>
+                        Center(child: CircularProgressIndicator(color: black)),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         persistentFooterButtons: [
@@ -161,7 +171,7 @@ class BudgetsScreen extends ConsumerWidget {
     return PopupMenuButton<String>(
       shape: Border.all(),
       tooltip: 'Menu',
-      onSelected: (value) {
+      onSelected: (value) async {
         if (value == 'Editar') {
           Navigator.push(
             context,
@@ -172,6 +182,10 @@ class BudgetsScreen extends ConsumerWidget {
           );
         } else if (value == 'Deletar') {
           _showDeleteAlertDialog(context, budget);
+        } else if (value == 'Compartilhar') {
+          showGeneralLoading(context);
+          await GenerateBudgetPdf(budget: budget).generateDocument();
+          Navigator.pop(context);
         }
       },
       itemBuilder: (context) => [
@@ -182,6 +196,10 @@ class BudgetsScreen extends ConsumerWidget {
         PopupMenuItem(
           value: 'Deletar',
           child: Text('Deletar'),
+        ),
+        PopupMenuItem(
+          value: 'Compartilhar',
+          child: Text('Compartilhar'),
         ),
       ],
     );

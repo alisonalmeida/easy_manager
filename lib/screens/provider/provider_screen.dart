@@ -31,80 +31,87 @@ class ProvidersScreen extends ConsumerWidget {
 
     return Scaffold(
         backgroundColor: providerBackgroundColor,
-        appBar: CustomAppBar(
-            title: ProvidersScreen.name,
-            backgroundColor: providerBackgroundColor,
-            callback: () async => Navigator.pop(context),
-            svgImage: kpathSvgFactory,
-            heroAnimation: ProvidersScreen.name),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: Column(
-            children: [
-              isSearching
-                  ? SearchTextField(
-                      clearField: () {
-                        searchController.clear();
-                        ref.refresh(productProvidersProvider);
-                      },
-                      focusNode: focusNode,
-                      searchController: searchController,
-                      onChanged: (v) => ref.refresh(productProvidersProvider),
-                    )
-                  : Container(),
-              Expanded(
-                child: productProviderList.when(
-                  data: (data) {
-                    List<Map<String, String>> mapList = data;
-                    listReverse ? mapList = mapList.reversed.toList() : null;
-                    isSearching
-                        ? mapList = mapList
-                            .where((element) => element['nome']
-                                .toString()
-                                .toLowerCase()
-                                .contains(searchController.text.toLowerCase()))
-                            .toList()
-                        : null;
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            CustomAppBar(
+                title: ProvidersScreen.name,
+                backgroundColor: providerBackgroundColor,
+                callback: () async => Navigator.pop(context),
+                svgImage: kpathSvgFactory,
+                heroAnimation: ProvidersScreen.name),
+          ],
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: Column(
+              children: [
+                isSearching
+                    ? SearchTextField(
+                        clearField: () {
+                          searchController.clear();
+                          ref.refresh(productProvidersProvider);
+                        },
+                        focusNode: focusNode,
+                        searchController: searchController,
+                        onChanged: (v) => ref.refresh(productProvidersProvider),
+                      )
+                    : Container(),
+                Expanded(
+                  child: productProviderList.when(
+                    data: (data) {
+                      List<Map<String, String>> mapList = data;
+                      listReverse ? mapList = mapList.reversed.toList() : null;
+                      isSearching
+                          ? mapList = mapList
+                              .where((element) => element['nome']
+                                  .toString()
+                                  .toLowerCase()
+                                  .contains(
+                                      searchController.text.toLowerCase()))
+                              .toList()
+                          : null;
 
-                    return NotificationListener<UserScrollNotification>(
-                      onNotification: (notification) {
-                        if (notification.direction == ScrollDirection.reverse) {
-                          showFabVisible = false;
-                        }
-                        if (notification.direction == ScrollDirection.forward) {
-                          showFabVisible = true;
-                        }
-                        return true;
-                      },
-                      child: mapList.isEmpty
-                          ? EmptyWidget()
-                          : ListView.builder(
-                              itemCount: mapList.toList().length,
-                              itemBuilder: (context, index) {
-                                ProductProvider provider =
-                                    ProductProvider.fromMap(mapList[index]);
+                      return NotificationListener<UserScrollNotification>(
+                        onNotification: (notification) {
+                          if (notification.direction ==
+                              ScrollDirection.reverse) {
+                            showFabVisible = false;
+                          }
+                          if (notification.direction ==
+                              ScrollDirection.forward) {
+                            showFabVisible = true;
+                          }
+                          return true;
+                        },
+                        child: mapList.isEmpty
+                            ? EmptyWidget()
+                            : ListView.builder(
+                                itemCount: mapList.toList().length,
+                                itemBuilder: (context, index) {
+                                  ProductProvider provider =
+                                      ProductProvider.fromMap(mapList[index]);
 
-                                return CustomListTile(
-                                    listOptions:
-                                        buildOptionsMenu(context, provider),
-                                    title: provider.nome!,
-                                    icon: Icons.factory,
-                                    subtitle: Text(provider.documento!));
-                              },
-                            ),
-                    );
-                  },
-                  error: (error, stackTrace) => Center(
-                    child: Text(error.toString() + stackTrace.toString()),
+                                  return CustomListTile(
+                                      listOptions:
+                                          buildOptionsMenu(context, provider),
+                                      title: provider.nome!,
+                                      icon: Icons.factory,
+                                      subtitle: Text(provider.documento!));
+                                },
+                              ),
+                      );
+                    },
+                    error: (error, stackTrace) => Center(
+                      child: Text(error.toString() + stackTrace.toString()),
+                    ),
+                    loading: () {
+                      return Center(
+                        child: CircularProgressIndicator(color: black),
+                      );
+                    },
                   ),
-                  loading: () {
-                    return Center(
-                      child: CircularProgressIndicator(color: black),
-                    );
-                  },
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         persistentFooterButtons: [

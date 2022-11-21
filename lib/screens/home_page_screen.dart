@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage>
           style: TextStyle(color: white, fontWeight: FontWeight.bold),
         ),
       ),
-      drawer: CustomDrawer(),
+      drawer: const CustomDrawer(),
       body: Container(
         color: white,
         padding: const EdgeInsets.all(5),

@@ -29,7 +29,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSize {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
+    return SliverAppBar(
+      floating: true,
       leadingWidth: 10,
       titleSpacing: 20,
       automaticallyImplyLeading: false,

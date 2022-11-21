@@ -29,81 +29,88 @@ class CustomerScreen extends ConsumerWidget {
     var customerList = ref.watch(customersProvider);
     return Scaffold(
         backgroundColor: customerBackgroundColor,
-        appBar: CustomAppBar(
-          title: CustomerScreen.name,
-          backgroundColor: customerBackgroundColor,
-          callback: () async => Navigator.pop(context),
-          svgImage: kpathSvgPerson,
-          heroAnimation: CustomerScreen.name,
-        ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: Column(
-            children: [
-              isSearching
-                  ? SearchTextField(
-                      clearField: () {
-                        searchController.clear();
-                        ref.refresh(customersProvider);
-                      },
-                      focusNode: focusNode,
-                      searchController: searchController,
-                      onChanged: (v) => ref.refresh(customersProvider),
-                    )
-                  : Container(),
-              Expanded(
-                child: customerList.when(
-                  data: (data) {
-                    List<Map<String, String>> mapList = data;
-                    listReverse ? mapList = mapList.reversed.toList() : null;
-                    isSearching
-                        ? mapList = mapList
-                            .where((element) => element['nome']
-                                .toString()
-                                .toLowerCase()
-                                .contains(searchController.text.toLowerCase()))
-                            .toList()
-                        : null;
+        body: NestedScrollView(floatHeaderSlivers: true,
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            CustomAppBar(
+              title: CustomerScreen.name,
+              backgroundColor: customerBackgroundColor,
+              callback: () async => Navigator.pop(context),
+              svgImage: kpathSvgPerson,
+              heroAnimation: CustomerScreen.name,
+            ),
+          ],
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: Column(
+              children: [
+                isSearching
+                    ? SearchTextField(
+                        clearField: () {
+                          searchController.clear();
+                          ref.refresh(customersProvider);
+                        },
+                        focusNode: focusNode,
+                        searchController: searchController,
+                        onChanged: (v) => ref.refresh(customersProvider),
+                      )
+                    : Container(),
+                Expanded(
+                  child: customerList.when(
+                    data: (data) {
+                      List<Map<String, String>> mapList = data;
+                      listReverse ? mapList = mapList.reversed.toList() : null;
+                      isSearching
+                          ? mapList = mapList
+                              .where((element) => element['nome']
+                                  .toString()
+                                  .toLowerCase()
+                                  .contains(
+                                      searchController.text.toLowerCase()))
+                              .toList()
+                          : null;
 
-                    return NotificationListener<UserScrollNotification>(
-                      onNotification: (notification) {
-                        if (notification.direction == ScrollDirection.reverse) {
-                          showFabVisible = false;
-                        }
-                        if (notification.direction == ScrollDirection.forward) {
-                          showFabVisible = true;
-                        }
-                        return true;
-                      },
-                      child: mapList.isEmpty
-                          ? EmptyWidget()
-                          : ListView.builder(
-                              itemCount: mapList.toList().length,
-                              itemBuilder: (context, index) {
-                                Customer customer =
-                                    Customer.fromMap(mapList[index]);
+                      return NotificationListener<UserScrollNotification>(
+                        onNotification: (notification) {
+                          if (notification.direction ==
+                              ScrollDirection.reverse) {
+                            showFabVisible = false;
+                          }
+                          if (notification.direction ==
+                              ScrollDirection.forward) {
+                            showFabVisible = true;
+                          }
+                          return true;
+                        },
+                        child: mapList.isEmpty
+                            ? EmptyWidget()
+                            : ListView.builder(
+                                itemCount: mapList.toList().length,
+                                itemBuilder: (context, index) {
+                                  Customer customer =
+                                      Customer.fromMap(mapList[index]);
 
-                                return CustomListTile(
-                                    listOptions:
-                                        buildOptionsMenu(context, customer),
-                                    title: customer.nome!,
-                                    icon: Icons.person,
-                                    subtitle: Text(customer.documento!));
-                              },
-                            ),
-                    );
-                  },
-                  error: (error, stackTrace) => Center(
-                    child: Text(error.toString() + stackTrace.toString()),
+                                  return CustomListTile(
+                                      listOptions:
+                                          buildOptionsMenu(context, customer),
+                                      title: customer.nome!,
+                                      icon: Icons.person,
+                                      subtitle: Text(customer.documento!));
+                                },
+                              ),
+                      );
+                    },
+                    error: (error, stackTrace) => Center(
+                      child: Text(error.toString() + stackTrace.toString()),
+                    ),
+                    loading: () {
+                      return Center(
+                        child: CircularProgressIndicator(color: black),
+                      );
+                    },
                   ),
-                  loading: () {
-                    return Center(
-                      child: CircularProgressIndicator(color: black),
-                    );
-                  },
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         persistentFooterButtons: [

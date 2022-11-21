@@ -103,9 +103,7 @@ class _LoginPageState extends State<LoginPage> {
                     fontWeight: FontWeight.bold, fontSize: 25, color: black),
               ),
             ),
-            const SizedBox(
-              height: 100,
-            ),
+            const SizedBox(height: 100),
           ],
         ),
       ),
